@@ -1,16 +1,11 @@
 package main
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"io"
 	"net/http"
-)
 
-func getMD5Hash(text []byte) string {
-	hash := md5.Sum(text)
-	return hex.EncodeToString(hash[:])
-}
+	"internal/hasher"
+)
 
 func createURLHandler(postResponse http.ResponseWriter, postRequest *http.Request) {
 	if postRequest.Method != http.MethodPost {
@@ -23,7 +18,7 @@ func createURLHandler(postResponse http.ResponseWriter, postRequest *http.Reques
 		panic(err)
 	}
 
-	hashed := getMD5Hash(body)
+	hashed := hasher.GetMD5Hash(body)
 
 	http.HandleFunc(
 		"/"+hashed, func(getResponse http.ResponseWriter, getRequest *http.Request) {
