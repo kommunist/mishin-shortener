@@ -3,6 +3,7 @@ package config
 import (
 	"flag"
 	"fmt"
+	"os"
 )
 
 var Config MainConfig
@@ -20,4 +21,11 @@ func init() {
 
 func Parse() {
 	flag.Parse()
+
+	if e := os.Getenv("SERVER_ADDRESS"); e != "" {
+		Config.BaseServerUrl = e
+  }
+	if e := os.Getenv("BASE_URL"); e != "" {
+		Config.BaseRedirectUrl = e
+  }
 }
