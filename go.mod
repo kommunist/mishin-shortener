@@ -6,6 +6,8 @@ replace internal/storage => ./internal/app/storage
 
 replace internal/handlers => ./internal/app/handlers
 
+replace internal/config => ./internal/app/config
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-chi/chi/v5 v5.1.0 // indirect
@@ -15,6 +17,7 @@ require (
 	internal/handlers v0.0.0-00010101000000-000000000000 // indirect
 	internal/hasher v0.0.0-00010101000000-000000000000 // indirect
 	internal/storage v0.0.0-00010101000000-000000000000 // indirect
+	internal/config v0.0.0-00010101000000-000000000000 // indirect
 )
 
 go 1.22.0

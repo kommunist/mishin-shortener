@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func PostHandler(w http.ResponseWriter, r *http.Request, db *storage.Database) {
+func PostHandler(w http.ResponseWriter, r *http.Request, db *storage.Database, redirectHost string) {
 	if r.RequestURI == "/" {
 
 		body, err := io.ReadAll(r.Body)
@@ -20,7 +20,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request, db *storage.Database) {
 		db.Push("/"+hashed, string(body))
 
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte("http://" + r.Host + "/" + hashed))
+		w.Write([]byte(redirectHost + "/" + hashed))
 
 	} else {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
