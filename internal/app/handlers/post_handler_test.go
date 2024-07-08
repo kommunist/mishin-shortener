@@ -17,7 +17,7 @@ func TestPostHandler(t *testing.T) {
 
       request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("ya.ru"))
       w := httptest.NewRecorder()
-      PostHandler(w, request, &database)
+      PostHandler(w, request, &database, "http://example.com")
 
       res := w.Result()
       assert.Equal(t, http.StatusCreated, res.StatusCode)
