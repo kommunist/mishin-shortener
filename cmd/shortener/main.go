@@ -19,7 +19,7 @@ func main() {
 	config.Parse()
 
 	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
-		handlers.PostHandler(w, r, &db, config.Config.BaseRedirectUrl)
+		handlers.PostHandler(w, r, &db, config.Config.BaseRedirectURL)
 	})
 	r.Get("/{shortened}", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetHandler(w, r, &db)
