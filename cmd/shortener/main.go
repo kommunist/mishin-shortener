@@ -3,9 +3,9 @@ package main
 import (
 	"net/http"
 
-	"internal/config"
-	"internal/handlers"
-	"internal/storage"
+	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/app/handlers"
+	"mishin-shortener/internal/app/storage"
 
 	"fmt"
 	"github.com/go-chi/chi/v5"
@@ -19,14 +19,14 @@ func main() {
 	config.Parse()
 
 	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
-		handlers.PostHandler(w, r, &db, config.Config.BaseRedirectUrl)
+		handlers.PostHandler(w, r, &db, config.Config.BaseRedirectURL)
 	})
 	r.Get("/{shortened}", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetHandler(w, r, &db)
 	})
 
-	fmt.Println("Server started on", config.Config.BaseServerUrl)
-	err := http.ListenAndServe(config.Config.BaseServerUrl, r)
+	fmt.Println("Server started on", config.Config.BaseServerURL)
+	err := http.ListenAndServe(config.Config.BaseServerURL, r)
 	if err != nil {
 		panic(err)
 	}

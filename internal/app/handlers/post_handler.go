@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"internal/hasher"
-	"internal/storage"
+	"mishin-shortener/internal/app/hasher"
+	"mishin-shortener/internal/app/storage"
 	"io"
 	"net/http"
 )

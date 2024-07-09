@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"internal/storage"
+	"mishin-shortener/internal/app/storage"
 	"net/http"
 )
 
