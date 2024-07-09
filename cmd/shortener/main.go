@@ -25,8 +25,8 @@ func main() {
 		handlers.GetHandler(w, r, &db)
 	})
 
-	fmt.Println("Server started on", config.Config.BaseServerUrl)
-	err := http.ListenAndServe(config.Config.BaseServerUrl, r)
+	fmt.Println("Server started on", config.Config.BaseServerURL)
+	err := http.ListenAndServe(config.Config.BaseServerURL, r)
 	if err != nil {
 		panic(err)
 	}

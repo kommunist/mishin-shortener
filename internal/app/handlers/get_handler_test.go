@@ -18,6 +18,7 @@ func TestGetHandler(t *testing.T) {
         GetHandler(w, request, &database)
 
         res := w.Result()
+        res.Body.Close()
         assert.Equal(t, http.StatusBadRequest, res.StatusCode)
     })
 
@@ -32,6 +33,7 @@ func TestGetHandler(t *testing.T) {
         GetHandler(w, request, &database)
 
         res := w.Result()
+        res.Body.Close()
         assert.Equal(t, http.StatusTemporaryRedirect, res.StatusCode)
         assert.Equal(t, expected, res.Header.Get("Location"))
     })
