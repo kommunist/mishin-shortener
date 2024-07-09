@@ -5,7 +5,7 @@ import (
     "net/http"
     "net/http/httptest"
     "testing"
-    "internal/storage"
+    "mishin-shortener/internal/app/storage"
 )
 
 func TestGetHandler(t *testing.T) {

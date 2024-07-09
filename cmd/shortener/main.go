@@ -3,9 +3,9 @@ package main
 import (
 	"net/http"
 
-	"internal/config"
-	"internal/handlers"
-	"internal/storage"
+	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/app/handlers"
+	"mishin-shortener/internal/app/storage"
 
 	"fmt"
 	"github.com/go-chi/chi/v5"
