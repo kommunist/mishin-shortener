@@ -1,13 +1,14 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
 
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/handlers"
 	"mishin-shortener/internal/app/storage"
 
-	"fmt"
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 )
 

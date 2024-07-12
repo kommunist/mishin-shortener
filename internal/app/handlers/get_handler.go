@@ -6,9 +6,9 @@ import (
 )
 
 func GetHandler(w http.ResponseWriter, r *http.Request, db *storage.Database) {
-  toLocation := db.Get(r.RequestURI)
+	toLocation := db.Get(r.RequestURI)
 
-  if toLocation != "" {
+	if toLocation != "" {
 		w.Header().Set("Location", toLocation)
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	} else {

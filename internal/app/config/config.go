@@ -7,6 +7,7 @@ import (
 )
 
 var Config MainConfig
+
 type MainConfig struct {
 	BaseServerURL   string
 	BaseRedirectURL string
@@ -24,8 +25,8 @@ func Parse() {
 
 	if e := os.Getenv("SERVER_ADDRESS"); e != "" {
 		Config.BaseServerURL = e
-  }
+	}
 	if e := os.Getenv("BASE_URL"); e != "" {
 		Config.BaseRedirectURL = e
-  }
+	}
 }
