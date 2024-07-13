@@ -1,7 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"os"
 
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/handlers"
@@ -13,22 +14,20 @@ import (
 )
 
 func main() {
+	c := config.MakeConfig()
+	c.InitConfig()
+	db := storage.MakeDatabase()
+	h := handlers.MakeShortanerHandler(&c, &db)
 
-	db := storage.Database{}
 	r := chi.NewRouter()
 
-	config.Parse()
+	r.Post("/", h.CreateURLHandler)
+	r.Get("/{shortened}", h.RedirectHandler)
 
-	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
-		handlers.PostHandler(w, r, &db, config.Config.BaseRedirectURL)
-	})
-	r.Get("/{shortened}", func(w http.ResponseWriter, r *http.Request) {
-		handlers.GetHandler(w, r, &db)
-	})
-
-	fmt.Println("Server started on", config.Config.BaseServerURL)
-	err := http.ListenAndServe(config.Config.BaseServerURL, r)
+	log.Printf("Server started on %s", c.BaseServerURL)
+	err := http.ListenAndServe(c.BaseServerURL, r)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Server failed to start: %v", err)
+		os.Exit(1)
 	}
 }

@@ -2,31 +2,43 @@ package config
 
 import (
 	"flag"
-	"fmt"
+	"log"
 	"os"
 )
-
-var Config MainConfig
 
 type MainConfig struct {
 	BaseServerURL   string
 	BaseRedirectURL string
 }
 
-func init() {
-	flag.StringVar(&Config.BaseServerURL, "a", "localhost:8080", "default host for server")
-	flag.StringVar(&Config.BaseRedirectURL, "b", "http://localhost:8080", "default host for server")
+func MakeConfig() MainConfig {
+	config := MainConfig{
+		BaseServerURL:   "localhost:8080",
+		BaseRedirectURL: "http://localhost:8080",
+	}
 
-	fmt.Println("flags inited")
+	return config
 }
 
-func Parse() {
+func (c *MainConfig) InitConfig() {
+	c.InitFlags()
+	c.Parse()
+}
+
+func (c *MainConfig) InitFlags() {
+	flag.StringVar(&c.BaseServerURL, "a", "localhost:8080", "default host for server")
+	flag.StringVar(&c.BaseRedirectURL, "b", "http://localhost:8080", "default host for server")
+
+	log.Printf("flags inited")
+}
+
+func (c *MainConfig) Parse() {
 	flag.Parse()
 
 	if e := os.Getenv("SERVER_ADDRESS"); e != "" {
-		Config.BaseServerURL = e
+		c.BaseServerURL = e
 	}
 	if e := os.Getenv("BASE_URL"); e != "" {
-		Config.BaseRedirectURL = e
+		c.BaseRedirectURL = e
 	}
 }
