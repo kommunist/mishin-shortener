@@ -5,7 +5,7 @@ import (
 )
 
 func (h *ShortanerHandler) RedirectHandler(w http.ResponseWriter, r *http.Request) {
-	toLocation, err := h.Db.Get(r.RequestURI)
+	toLocation, err := h.DB.Get(r.RequestURI)
 
 	if err != nil {
 		http.Error(w, "Not Found", http.StatusNotFound)

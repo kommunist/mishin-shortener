@@ -30,7 +30,7 @@ func TestGetHandler(t *testing.T) {
 				return MakeShortanerHandler(&c, &db)
 			}(),
 			beforeFunction: func(h *ShortanerHandler, shorted string, expected string) {
-				h.Db.Push(shorted, expected)
+				h.DB.Push(shorted, expected)
 			},
 		},
 		{

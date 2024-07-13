@@ -6,13 +6,13 @@ import (
 )
 
 type ShortanerHandler struct {
-	Db      *storage.Database
+	DB      *storage.Database
 	Options *config.MainConfig
 }
 
 func MakeShortanerHandler(c *config.MainConfig, db *storage.Database) ShortanerHandler {
 	return ShortanerHandler{
-		Db:      db,
+		DB:      db,
 		Options: c,
 	}
 }

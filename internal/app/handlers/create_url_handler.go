@@ -17,7 +17,7 @@ func (h *ShortanerHandler) CreateURLHandler(w http.ResponseWriter, r *http.Reque
 
 	hashed := hasher.GetMD5Hash(body)
 
-	h.Db.Push("/"+hashed, string(body))
+	h.DB.Push("/"+hashed, string(body))
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(h.Options.BaseRedirectURL + "/" + hashed))
