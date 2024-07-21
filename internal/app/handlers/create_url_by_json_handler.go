@@ -38,8 +38,8 @@ func (h *ShortanerHandler) CreateURLByJSONHandler(w http.ResponseWriter, r *http
 
 	output.Result = h.Options.BaseRedirectURL + "/" + hashed
 
-	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 
 	out, err := json.Marshal(output)
 	if err != nil {
