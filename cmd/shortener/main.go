@@ -23,6 +23,7 @@ func main() {
 	r.Use(middleware.WithLogRequest)
 
 	r.Post("/", h.CreateURLHandler)
+	r.Post("/api/shorten", h.CreateURLByJSONHandler)
 	r.Get("/{shortened}", h.RedirectHandler)
 
 	log.Printf("Server started on %s", c.BaseServerURL)
