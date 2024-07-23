@@ -21,6 +21,7 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.WithLogRequest)
+	r.Use(middleware.GzipMiddleware)
 
 	r.Post("/", h.CreateURLHandler)
 	r.Post("/api/shorten", h.CreateURLByJSONHandler)
