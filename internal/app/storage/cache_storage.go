@@ -7,7 +7,7 @@ import (
 )
 
 type storageItem struct {
-	Uid         string `json:"uuid"`
+	UUID        string `json:"uuid"`
 	ShortURL    string `json:"short_url"`
 	OriginalURL string `json:"original_url"`
 }
@@ -19,7 +19,7 @@ func MakeCacheStorage() CacheStorage {
 }
 
 func (db *CacheStorage) Push(short string, original string) {
-	(*db)[short] = storageItem{Uid: uuid.New().String(), ShortURL: short, OriginalURL: original}
+	(*db)[short] = storageItem{UUID: uuid.New().String(), ShortURL: short, OriginalURL: original}
 }
 
 func (db *CacheStorage) Get(short string) (string, error) {
