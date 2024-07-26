@@ -6,11 +6,11 @@ import (
 )
 
 type ShortanerHandler struct {
-	DB      *storage.Database
-	Options *config.MainConfig
+	DB      storage.Abstract
+	Options config.MainConfig
 }
 
-func MakeShortanerHandler(c *config.MainConfig, db *storage.Database) ShortanerHandler {
+func MakeShortanerHandler(c config.MainConfig, db storage.Abstract) ShortanerHandler {
 	return ShortanerHandler{
 		DB:      db,
 		Options: c,

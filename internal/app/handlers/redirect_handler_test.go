@@ -26,8 +26,8 @@ func TestGetHandler(t *testing.T) {
 			expectedStatus: http.StatusTemporaryRedirect,
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
-				db := storage.MakeDatabase()
-				return MakeShortanerHandler(&c, &db)
+				db := storage.MakeCacheStorage()
+				return MakeShortanerHandler(c, &db)
 			}(),
 			beforeFunction: func(h *ShortanerHandler, shorted string, expected string) {
 				h.DB.Push(shorted, expected)
@@ -40,8 +40,8 @@ func TestGetHandler(t *testing.T) {
 			expectedStatus: http.StatusNotFound,
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
-				db := storage.MakeDatabase()
-				return MakeShortanerHandler(&c, &db)
+				db := storage.MakeCacheStorage()
+				return MakeShortanerHandler(c, &db)
 			}(),
 		},
 	}

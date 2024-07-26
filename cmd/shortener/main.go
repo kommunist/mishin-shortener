@@ -16,8 +16,8 @@ import (
 func main() {
 	c := config.MakeConfig()
 	c.InitConfig()
-	db := storage.MakeDatabase()
-	h := handlers.MakeShortanerHandler(&c, &db)
+	db := storage.MakeFileStorage(c)
+	h := handlers.MakeShortanerHandler(c, &db)
 
 	r := chi.NewRouter()
 	r.Use(middleware.WithLogRequest)
