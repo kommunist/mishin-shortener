@@ -15,6 +15,11 @@ func readAndParse(file *os.File) []storageItem {
 	for {
 		data, eof := reader.ReadBytes('\n')
 
+		if eof == io.EOF {
+			slog.Info("Full file readed.", "num_items_founded", len(list))
+			break
+		}
+
 		item := storageItem{}
 
 		err := json.Unmarshal(data, &item)
@@ -23,11 +28,6 @@ func readAndParse(file *os.File) []storageItem {
 			os.Exit(1)
 		}
 		list = append(list, item)
-
-		if eof == io.EOF {
-			slog.Info("Full file readed.", "num_items_founded", len(list))
-			break
-		}
 	}
 
 	return list
