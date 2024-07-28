@@ -6,8 +6,8 @@ import (
 
 type Storage map[string]string
 
-func Make() Storage {
-	return Storage{}
+func Make() *Storage {
+	return &Storage{}
 }
 
 func (db *Storage) Push(short string, original string) error {

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"io"
+	"log/slog"
 	"mishin-shortener/internal/app/hasher"
 	"net/http"
 )
@@ -11,6 +12,7 @@ func (h *ShortanerHandler) CreateURLHandler(w http.ResponseWriter, r *http.Reque
 	defer r.Body.Close()
 
 	if err != nil {
+		slog.Error("read body error", "err", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -19,6 +21,7 @@ func (h *ShortanerHandler) CreateURLHandler(w http.ResponseWriter, r *http.Reque
 
 	err = h.DB.Push("/"+hashed, string(body))
 	if err != nil {
+		slog.Error("push to storage error", "err", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}

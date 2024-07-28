@@ -2,7 +2,7 @@ package config
 
 import (
 	"flag"
-	"log"
+	"log/slog"
 	"os"
 )
 
@@ -32,7 +32,7 @@ func (c *MainConfig) InitFlags() {
 	flag.StringVar(&c.BaseRedirectURL, "b", "http://localhost:8080", "default host for server")
 	flag.StringVar(&c.FileStoragePath, "f", "", "file path for file storage")
 
-	log.Printf("flags inited")
+	slog.Info("flags inited")
 }
 
 func (c *MainConfig) Parse() {

@@ -27,7 +27,7 @@ func TestGetHandler(t *testing.T) {
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
 				db := mapstorage.Make()
-				return MakeShortanerHandler(c, &db)
+				return MakeShortanerHandler(c, db)
 			}(),
 			beforeFunction: func(h *ShortanerHandler, shorted string, expected string) {
 				h.DB.Push(shorted, expected)
@@ -41,7 +41,7 @@ func TestGetHandler(t *testing.T) {
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
 				db := mapstorage.Make()
-				return MakeShortanerHandler(c, &db)
+				return MakeShortanerHandler(c, db)
 			}(),
 		},
 	}

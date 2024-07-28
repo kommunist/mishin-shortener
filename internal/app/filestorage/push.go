@@ -2,13 +2,14 @@ package filestorage
 
 import (
 	"encoding/json"
-	"log"
+
+	"log/slog"
 )
 
 func (fs *Storage) Push(short string, original string) error {
 	err := fs.cache.Push(short, original)
 	if err != nil {
-		log.Println(err)
+		slog.Error("Push to cache storage error", "err", err)
 		return err
 	}
 
@@ -16,7 +17,7 @@ func (fs *Storage) Push(short string, original string) error {
 
 	data, err := json.Marshal(item)
 	if err != nil {
-		log.Println(err)
+		slog.Error("When convert to json error", "err", err)
 		return err
 	}
 
@@ -24,7 +25,7 @@ func (fs *Storage) Push(short string, original string) error {
 
 	_, err = fs.file.Write(data)
 	if err != nil {
-		log.Println(err)
+		slog.Error("When write to file error", "err", err)
 		return err
 	}
 

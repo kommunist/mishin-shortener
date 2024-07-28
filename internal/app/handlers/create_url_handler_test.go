@@ -17,7 +17,7 @@ func TestCreateURLHandler(t *testing.T) {
 	t.Run("Start_POST_to_create_record_in_db", func(t *testing.T) {
 		db := mapstorage.Make()
 		c := config.MakeConfig()
-		h := MakeShortanerHandler(c, &db)
+		h := MakeShortanerHandler(c, db)
 
 		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("ya.ru"))
 		w := httptest.NewRecorder()

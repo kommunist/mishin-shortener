@@ -4,17 +4,17 @@ import (
 	"mishin-shortener/internal/app/config"
 )
 
-type abstractStorage interface {
+type AbstractStorage interface {
 	Push(string, string) error
 	Get(string) (string, error)
 }
 
 type ShortanerHandler struct {
-	DB      abstractStorage
+	DB      AbstractStorage
 	Options config.MainConfig
 }
 
-func MakeShortanerHandler(c config.MainConfig, db abstractStorage) ShortanerHandler {
+func MakeShortanerHandler(c config.MainConfig, db AbstractStorage) ShortanerHandler {
 	return ShortanerHandler{
 		DB:      db,
 		Options: c,

@@ -1,8 +1,7 @@
 package filestorage
 
 import (
-	"fmt"
-	"mishin-shortener/internal/app/config"
+	"log/slog"
 	"mishin-shortener/internal/app/mapstorage"
 	"os"
 
@@ -14,25 +13,22 @@ type Storage struct {
 	file  *os.File
 }
 
-func MakeStorage(c config.MainConfig) Storage {
-	var file *os.File
-	cache := mapstorage.Make()
+func Make(fileStoragePath string) *Storage {
+	cache := *mapstorage.Make()
 
-	if c.FileStoragePath != "" {
-		openedFile, err := os.OpenFile(c.FileStoragePath, os.O_RDWR|os.O_CREATE, 0666)
-		file = openedFile
+	file, err := os.OpenFile(fileStoragePath, os.O_RDWR|os.O_CREATE, 0666)
 
-		if err != nil {
-			fmt.Println("FATAL")
-		}
-		items := readAndParse(file)
-		for _, v := range items {
-			cache[v.ShortURL] = v.OriginalURL
-		}
-		fmt.Printf("Readed %d items", len(cache))
+	if err != nil {
+		slog.Error("open file error", "err", err)
+		os.Exit(1)
 	}
+	items := readAndParse(file)
+	for _, v := range items {
+		cache[v.ShortURL] = v.OriginalURL
+	}
+	slog.Info("readed n items", "n", len(cache))
 
-	return Storage{cache: cache, file: file}
+	return &Storage{cache: cache, file: file}
 }
 
 type storageItem struct {
