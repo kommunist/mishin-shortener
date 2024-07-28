@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"mishin-shortener/internal/app/config"
-	"mishin-shortener/internal/app/storage"
+	"mishin-shortener/internal/app/mapstorage"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -26,7 +26,7 @@ func TestGetHandler(t *testing.T) {
 			expectedStatus: http.StatusTemporaryRedirect,
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
-				db := storage.MakeCacheStorage()
+				db := mapstorage.Make()
 				return MakeShortanerHandler(c, &db)
 			}(),
 			beforeFunction: func(h *ShortanerHandler, shorted string, expected string) {
@@ -40,7 +40,7 @@ func TestGetHandler(t *testing.T) {
 			expectedStatus: http.StatusNotFound,
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
-				db := storage.MakeCacheStorage()
+				db := mapstorage.Make()
 				return MakeShortanerHandler(c, &db)
 			}(),
 		},

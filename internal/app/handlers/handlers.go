@@ -2,15 +2,19 @@ package handlers
 
 import (
 	"mishin-shortener/internal/app/config"
-	"mishin-shortener/internal/app/storage"
 )
 
+type abstractStorage interface {
+	Push(string, string) error
+	Get(string) (string, error)
+}
+
 type ShortanerHandler struct {
-	DB      storage.Abstract
+	DB      abstractStorage
 	Options config.MainConfig
 }
 
-func MakeShortanerHandler(c config.MainConfig, db storage.Abstract) ShortanerHandler {
+func MakeShortanerHandler(c config.MainConfig, db abstractStorage) ShortanerHandler {
 	return ShortanerHandler{
 		DB:      db,
 		Options: c,

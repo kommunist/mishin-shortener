@@ -3,7 +3,7 @@ package handlers
 import (
 	"io"
 	"mishin-shortener/internal/app/config"
-	"mishin-shortener/internal/app/storage"
+	"mishin-shortener/internal/app/mapstorage"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -15,7 +15,7 @@ import (
 
 func TestCreateURLHandler(t *testing.T) {
 	t.Run("Start_POST_to_create_record_in_db", func(t *testing.T) {
-		db := storage.MakeCacheStorage()
+		db := mapstorage.Make()
 		c := config.MakeConfig()
 		h := MakeShortanerHandler(c, &db)
 

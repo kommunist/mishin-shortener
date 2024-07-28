@@ -17,7 +17,11 @@ func (h *ShortanerHandler) CreateURLHandler(w http.ResponseWriter, r *http.Reque
 
 	hashed := hasher.GetMD5Hash(body)
 
-	h.DB.Push("/"+hashed, string(body))
+	err = h.DB.Push("/"+hashed, string(body))
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(h.Options.BaseRedirectURL + "/" + hashed))

@@ -4,9 +4,9 @@ import (
 	"log"
 
 	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/app/filestorage"
 	"mishin-shortener/internal/app/handlers"
 	middleware "mishin-shortener/internal/app/midleware"
-	"mishin-shortener/internal/app/storage"
 
 	"net/http"
 
@@ -16,7 +16,7 @@ import (
 func main() {
 	c := config.MakeConfig()
 	c.InitConfig()
-	db := storage.MakeFileStorage(c)
+	db := filestorage.MakeStorage(c)
 	h := handlers.MakeShortanerHandler(c, &db)
 
 	r := chi.NewRouter()
