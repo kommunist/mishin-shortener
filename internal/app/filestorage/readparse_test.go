@@ -7,8 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// данный тест проверяет, что происходит корректный пар запись в файл и причем так, что потом
-// этот результат можно попарсить
+// данный тест проверяет, что корректно парсятся список записей из файла
 
 func TestReadAndParse(t *testing.T) {
 	t.Run("read_and_parse_data_from_file", func(t *testing.T) {
