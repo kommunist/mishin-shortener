@@ -15,19 +15,20 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func setStorage(c config.MainConfig) handlers.AbstractStorage {
-	if c.FileStoragePath != "" {
-		return filestorage.Make(c.FileStoragePath)
-	} else {
-		return mapstorage.Make()
-	}
-}
-
 func main() {
 	c := config.MakeConfig()
 	c.InitConfig()
 
-	storage := setStorage(c)
+	var storage handlers.AbstractStorage
+
+	// Если файлик определен, то заведем файлохранилище. Иначе хватит просто мапы
+	if c.FileStoragePath != "" {
+		storage = filestorage.Make(c.FileStoragePath)
+	} else {
+		storage = mapstorage.Make()
+	}
+
+	defer storage.Finish()
 
 	h := handlers.MakeShortanerHandler(c, storage)
 

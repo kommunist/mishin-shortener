@@ -24,3 +24,7 @@ func (db *Storage) Get(short string) (string, error) {
 
 	return "", errors.New("not found")
 }
+
+func (db *Storage) Finish() error {
+	return nil
+}

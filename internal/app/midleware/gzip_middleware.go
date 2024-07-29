@@ -34,7 +34,6 @@ func (c *compressWriter) WriteHeader(statusCode int) {
 	c.w.WriteHeader(statusCode)
 }
 
-// Close закрывает gzip.Writer и досылает все данные из буфера.
 func (c *compressWriter) Close() error {
 	return c.zw.Close()
 }
@@ -69,8 +68,9 @@ func (c *compressReader) Close() error {
 
 func GzipMiddleware(h http.Handler) http.Handler {
 	compressFn := func(w http.ResponseWriter, r *http.Request) {
-		ow := w
+		ow := w // сохранил оригинальный writer
 
+		// Если клиент поддерживает шифрование gzip, то подменяем на свой writer
 		acceptEncoding := r.Header.Get("Accept-Encoding")
 		supportsGzip := strings.Contains(acceptEncoding, "gzip")
 		if supportsGzip {
@@ -79,10 +79,11 @@ func GzipMiddleware(h http.Handler) http.Handler {
 			defer cw.Close()
 		}
 
+		// Проверяем, а не зашифрован ли контент
 		contentEncoding := r.Header.Get("Content-Encoding")
 		sendsGzip := strings.Contains(contentEncoding, "gzip")
 
-		if sendsGzip {
+		if sendsGzip { // А если зашфирован, то вставляем gzip reader "между" хендлером и body
 			cr, err := newCompressReader(r.Body)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)

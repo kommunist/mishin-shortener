@@ -13,10 +13,10 @@ type Storage struct {
 	file  *os.File
 }
 
-func Make(fileStoragePath string) *Storage {
+func Make(filePath string) *Storage {
 	cache := *mapstorage.Make()
 
-	file, err := os.OpenFile(fileStoragePath, os.O_RDWR|os.O_CREATE, 0666)
+	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0666)
 
 	if err != nil {
 		slog.Error("open file error", "err", err)
