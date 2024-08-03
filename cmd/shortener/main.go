@@ -39,6 +39,7 @@ func main() {
 	r.Post("/", h.CreateURLHandler)
 	r.Post("/api/shorten", h.CreateURLByJSONHandler)
 	r.Get("/{shortened}", h.RedirectHandler)
+	r.Get("/ping", h.PingHandler)
 
 	slog.Info("server started", "URL", c.BaseServerURL)
 
