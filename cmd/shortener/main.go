@@ -1,12 +1,14 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"os"
 
 	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/app/filestorage"
 	"mishin-shortener/internal/app/handlers"
-	"mishin-shortener/internal/app/storage"
+	"mishin-shortener/internal/app/mapstorage"
+	middleware "mishin-shortener/internal/app/midleware"
 
 	"net/http"
 
@@ -16,18 +18,33 @@ import (
 func main() {
 	c := config.MakeConfig()
 	c.InitConfig()
-	db := storage.MakeDatabase()
-	h := handlers.MakeShortanerHandler(&c, &db)
+
+	var storage handlers.AbstractStorage
+
+	// Если файлик определен, то заведем файлохранилище. Иначе хватит просто мапы
+	if c.FileStoragePath != "" {
+		storage = filestorage.Make(c.FileStoragePath)
+	} else {
+		storage = mapstorage.Make()
+	}
+
+	defer storage.Finish()
+
+	h := handlers.MakeShortanerHandler(c, storage)
 
 	r := chi.NewRouter()
+	r.Use(middleware.WithLogRequest)
+	r.Use(middleware.GzipMiddleware)
 
 	r.Post("/", h.CreateURLHandler)
+	r.Post("/api/shorten", h.CreateURLByJSONHandler)
 	r.Get("/{shortened}", h.RedirectHandler)
 
-	log.Printf("Server started on %s", c.BaseServerURL)
+	slog.Info("server started", "URL", c.BaseServerURL)
+
 	err := http.ListenAndServe(c.BaseServerURL, r)
 	if err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+		slog.Error("Server failed to start", "err", err)
 		os.Exit(1)
 	}
 }

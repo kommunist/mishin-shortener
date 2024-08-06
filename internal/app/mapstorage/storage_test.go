@@ -1,4 +1,4 @@
-package storage
+package mapstorage
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestPush(t *testing.T) {
-	db := Database{}
+	db := Storage{}
 
 	t.Run("simple_push_data_to_database", func(t *testing.T) {
 		db.Push("key", "value")
@@ -17,7 +17,7 @@ func TestPush(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	db := Database{"key": "value"}
+	db := Storage{"key": "value"}
 
 	t.Run("simple_get_data_from_database", func(t *testing.T) {
 		value, err := db.Get("key")
