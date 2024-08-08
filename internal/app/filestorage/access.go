@@ -37,7 +37,7 @@ func (fs *Storage) Push(short string, original string) error {
 	return nil
 }
 
-func (db *Storage) Ping(ctx context.Context) error {
+func (fs *Storage) Ping(ctx context.Context) error {
 	return nil
 }
 
