@@ -1,6 +1,7 @@
 package mapstorage
 
 import (
+	"context"
 	"errors"
 )
 
@@ -23,6 +24,10 @@ func (db *Storage) Get(short string) (string, error) {
 	}
 
 	return "", errors.New("not found")
+}
+
+func (db *Storage) Ping(ctx context.Context) error {
+	return nil
 }
 
 func (db *Storage) Finish() error {

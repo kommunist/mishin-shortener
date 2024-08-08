@@ -1,10 +1,15 @@
 package filestorage
 
 import (
+	"context"
 	"encoding/json"
-
 	"log/slog"
 )
+
+func (fs *Storage) Get(shortURL string) (string, error) {
+
+	return fs.cache.Get(shortURL)
+}
 
 func (fs *Storage) Push(short string, original string) error {
 	err := fs.cache.Push(short, original)
@@ -30,4 +35,18 @@ func (fs *Storage) Push(short string, original string) error {
 	}
 
 	return nil
+}
+
+func (db *Storage) Ping(ctx context.Context) error {
+	return nil
+}
+
+func (fs *Storage) Finish() error {
+	err := fs.file.Close()
+
+	if err != nil {
+		slog.Error("Failed close write to file", "err", err)
+	}
+
+	return err
 }
