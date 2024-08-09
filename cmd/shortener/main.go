@@ -9,25 +9,29 @@ import (
 	"mishin-shortener/internal/app/handlers"
 	"mishin-shortener/internal/app/mapstorage"
 	middleware "mishin-shortener/internal/app/midleware"
+	"mishin-shortener/internal/app/pgstorage"
 
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
+func initStorage(c config.MainConfig) handlers.AbstractStorage {
+	if c.DatabaseDSN != "" {
+		return pgstorage.Make(c)
+	}
+	if c.FileStoragePath != "" {
+		return filestorage.Make(c.FileStoragePath)
+	}
+
+	return mapstorage.Make()
+}
+
 func main() {
 	c := config.MakeConfig()
 	c.InitConfig()
 
-	var storage handlers.AbstractStorage
-
-	// Если файлик определен, то заведем файлохранилище. Иначе хватит просто мапы
-	if c.FileStoragePath != "" {
-		storage = filestorage.Make(c.FileStoragePath)
-	} else {
-		storage = mapstorage.Make()
-	}
-
+	storage := initStorage(c)
 	defer storage.Finish()
 
 	h := handlers.MakeShortanerHandler(c, storage)
@@ -38,7 +42,9 @@ func main() {
 
 	r.Post("/", h.CreateURLHandler)
 	r.Post("/api/shorten", h.CreateURLByJSONHandler)
+	r.Post("/api/shorten/batch", h.CreateURLByJSONBatch)
 	r.Get("/{shortened}", h.RedirectHandler)
+	r.Get("/ping", h.PingHandler)
 
 	slog.Info("server started", "URL", c.BaseServerURL)
 
