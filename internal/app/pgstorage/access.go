@@ -2,6 +2,7 @@ package pgstorage
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"log/slog"
 )
@@ -9,7 +10,39 @@ import (
 // чтобы поддержать логику "кто последний, тот и прав" как было в mapstorage
 // сделаем он conflict update
 func (d *Driver) Push(short string, original string) error {
-	_, err := d.driver.Exec(
+	err := insert(short, original, d.driver)
+
+	if err != nil {
+		slog.Error("When push to db error", "err", err)
+		return err
+	}
+	return nil
+}
+
+func (d *Driver) PushBatch(list *map[string]string) error {
+	tx, err := d.driver.Begin()
+	if err != nil {
+		slog.Error("When open transaction error", "err", err)
+		return err
+	}
+
+	for k, v := range *list {
+		err := insert(k, v, tx)
+		if err != nil {
+			slog.Error("When batch insert error", "err", err)
+			tx.Rollback()
+			return err
+		}
+
+	}
+	tx.Commit()
+	return nil
+}
+
+func insert(short string, original string, d interface {
+	Exec(string, ...any) (sql.Result, error)
+}) error {
+	_, err := d.Exec(
 		`
 		 INSERT INTO short_urls (short, original) 
 		 VALUES ($1, $2) 
@@ -19,18 +52,6 @@ func (d *Driver) Push(short string, original string) error {
 	if err != nil {
 		slog.Error("When insert to db error", "err", err)
 		return err
-	}
-	return nil
-}
-
-func (d *Driver) PushBatch(list *map[string]string) error {
-	for k, v := range *list {
-		err := d.Push(k, v)
-		if err != nil {
-			slog.Error("When batch push to mapstorage error", "err", err)
-			return err
-		}
-
 	}
 	return nil
 }
