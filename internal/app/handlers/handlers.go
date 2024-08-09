@@ -7,6 +7,7 @@ import (
 
 type AbstractStorage interface {
 	Push(string, string) error
+	PushBatch(*map[string]string) error
 	Get(string) (string, error)
 	Finish() error
 	Ping(context.Context) error

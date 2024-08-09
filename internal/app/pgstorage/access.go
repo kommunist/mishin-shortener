@@ -23,6 +23,18 @@ func (d *Driver) Push(short string, original string) error {
 	return nil
 }
 
+func (d *Driver) PushBatch(list *map[string]string) error {
+	for k, v := range *list {
+		err := d.Push(k, v)
+		if err != nil {
+			slog.Error("When batch push to mapstorage error", "err", err)
+			return err
+		}
+
+	}
+	return nil
+}
+
 func (d *Driver) Get(short string) (string, error) {
 	var result string
 

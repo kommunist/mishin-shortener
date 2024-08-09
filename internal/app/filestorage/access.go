@@ -37,6 +37,18 @@ func (fs *Storage) Push(short string, original string) error {
 	return nil
 }
 
+func (fs *Storage) PushBatch(list *map[string]string) error {
+	for k, v := range *list {
+		err := fs.Push(k, v)
+		if err != nil {
+			slog.Error("When batch push to file error", "err", err)
+			return err
+		}
+
+	}
+	return nil
+}
+
 func (fs *Storage) Ping(ctx context.Context) error {
 	return nil
 }
