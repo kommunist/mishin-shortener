@@ -43,7 +43,10 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 
 		output = append(
 			output,
-			ResponseBatchItem{CorrelationID: v.CorrelationID, ShortURL: hashed},
+			ResponseBatchItem{
+				CorrelationID: v.CorrelationID,
+				ShortURL:      h.Options.BaseRedirectURL + "/" + hashed,
+			},
 		)
 	}
 
