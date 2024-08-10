@@ -8,12 +8,12 @@ import (
 )
 
 type RequestBatchItem struct {
-	CorrelationId string `json:"correlation_id"`
+	CorrelationID string `json:"correlation_id"`
 	OriginalURL   string `json:"original_url"`
 }
 
 type ResponseBatchItem struct {
-	CorrelationId string `json:"correlation_id"`
+	CorrelationID string `json:"correlation_id"`
 	ShortURL      string `json:"short_url"`
 }
 
@@ -43,7 +43,7 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 
 		output = append(
 			output,
-			ResponseBatchItem{CorrelationId: v.CorrelationId, ShortURL: hashed},
+			ResponseBatchItem{CorrelationID: v.CorrelationID, ShortURL: hashed},
 		)
 	}
 
