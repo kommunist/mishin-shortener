@@ -3,6 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	"io"
+	"log/slog"
+	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/hasher"
 	"net/http"
 )
@@ -33,17 +35,28 @@ func (h *ShortanerHandler) CreateURLByJSONHandler(w http.ResponseWriter, r *http
 	}
 
 	hashed := hasher.GetMD5Hash([]byte(input.URL))
+	err = h.DB.Push("/"+hashed, string(input.URL))
 
-	h.DB.Push("/"+hashed, string(input.URL))
+	status := http.StatusCreated
 
-	output.Result = h.Options.BaseRedirectURL + "/" + hashed
+	if err != nil {
+		if _, ok := err.(*exsist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
+			status = http.StatusConflict
+		} else {
+			slog.Error("push to storage error", "err", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	output.Result = string(h.resultUrl(hashed))
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(status)
 
 	out, err := json.Marshal(output)
 	if err != nil {
-		http.Error(w, "Parsing Error", http.StatusInternalServerError)
+		http.Error(w, "Encoding json Error", http.StatusInternalServerError)
 		return
 	}
 

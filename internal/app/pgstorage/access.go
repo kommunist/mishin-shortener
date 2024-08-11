@@ -5,15 +5,22 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"mishin-shortener/internal/app/exsist"
+
+	"github.com/jackc/pgerrcode"
+	"github.com/lib/pq"
 )
 
-// чтобы поддержать логику "кто последний, тот и прав" как было в mapstorage
-// сделаем он conflict update
 func (d *Driver) Push(short string, original string) error {
-	err := insert(short, original, d.driver)
+	err := insert(short, original, false, d.driver)
 
 	if err != nil {
 		slog.Error("When push to db error", "err", err)
+
+		if errStruct, ok := err.(*pq.Error); ok && errStruct.Code == pgerrcode.UniqueViolation {
+			return exsist.NewExistError(err) // если уже существует такая запись, то возвращаем ошибку
+		}
+
 		return err
 	}
 	return nil
@@ -27,7 +34,7 @@ func (d *Driver) PushBatch(list *map[string]string) error {
 	}
 
 	for k, v := range *list {
-		err := insert(k, v, tx)
+		err := insert(k, v, true, tx) // в случае инстерта батчами будем с форсом
 		if err != nil {
 			slog.Error("When batch insert error", "err", err)
 			tx.Rollback()
@@ -39,16 +46,15 @@ func (d *Driver) PushBatch(list *map[string]string) error {
 	return nil
 }
 
-func insert(short string, original string, d interface {
+func insert(short string, original string, force bool, d interface {
 	Exec(string, ...any) (sql.Result, error)
 }) error {
-	_, err := d.Exec(
-		`
-		 INSERT INTO short_urls (short, original) 
-		 VALUES ($1, $2) 
-		 ON CONFLICT (short) DO UPDATE SET original = excluded.original 
-		`, short, original,
-	)
+	query := "INSERT INTO short_urls (short, original) VALUES ($1, $2)"
+	if force {
+		query += " ON CONFLICT (short) DO UPDATE SET original = excluded.original"
+	}
+	_, err := d.Exec(query, short, original)
+
 	if err != nil {
 		slog.Error("When insert to db error", "err", err)
 		return err

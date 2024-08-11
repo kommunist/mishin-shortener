@@ -24,3 +24,7 @@ func MakeShortanerHandler(c config.MainConfig, db AbstractStorage) ShortanerHand
 		Options: c,
 	}
 }
+
+func (h *ShortanerHandler) resultUrl(hashed string) []byte {
+	return []byte(h.Options.BaseRedirectURL + "/" + hashed)
+}
