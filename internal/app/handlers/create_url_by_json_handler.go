@@ -49,7 +49,7 @@ func (h *ShortanerHandler) CreateURLByJSONHandler(w http.ResponseWriter, r *http
 		}
 	}
 
-	output.Result = string(h.resultUrl(hashed))
+	output.Result = string(h.resultURL(hashed))
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)

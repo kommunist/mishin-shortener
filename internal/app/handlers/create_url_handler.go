@@ -34,5 +34,5 @@ func (h *ShortanerHandler) CreateURLHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	w.WriteHeader(status)
-	w.Write(h.resultUrl(hashed))
+	w.Write(h.resultURL(hashed))
 }
