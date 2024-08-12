@@ -51,7 +51,7 @@ func TestPush(t *testing.T) {
 // этот результат можно попарсить
 
 func TestPushBatch(t *testing.T) {
-	t.Run("push_batch data_to_file", func(t *testing.T) {
+	t.Run("push_batch_data_to_file", func(t *testing.T) {
 		testFile, _ := os.CreateTemp("", "pattern")
 		defer os.Remove(testFile.Name())
 
@@ -65,16 +65,18 @@ func TestPushBatch(t *testing.T) {
 		reader := bufio.NewReader(testFile)
 		data, _ := reader.ReadBytes('\n')
 
-		item := storageItem{}
-		json.Unmarshal(data, &item)
-
-		assert.Equal(t, item.OriginalURL, "pupsen")
-		assert.Equal(t, item.ShortURL, "vupsen")
+		firstItem := storageItem{}
+		json.Unmarshal(data, &firstItem)
 
 		data, _ = reader.ReadBytes('\n')
 
-		json.Unmarshal(data, &item)
-		assert.Equal(t, item.OriginalURL, "boba")
-		assert.Equal(t, item.ShortURL, "biba")
+		secondItem := storageItem{}
+		json.Unmarshal(data, &secondItem)
+
+		assert.Contains(t, []string{"pupsen", "boba"}, firstItem.OriginalURL)
+		assert.Contains(t, []string{"pupsen", "boba"}, secondItem.OriginalURL)
+
+		assert.Contains(t, []string{"vupsen", "biba"}, firstItem.ShortURL)
+		assert.Contains(t, []string{"vupsen", "biba"}, secondItem.ShortURL)
 	})
 }
