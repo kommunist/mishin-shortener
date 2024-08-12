@@ -5,11 +5,14 @@ import (
 	"encoding/json"
 	"io"
 	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/mocks"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -52,12 +55,15 @@ func TestCreateURLByJSON(t *testing.T) {
 	})
 
 	t.Run("Start_POST_to_create_record_in_storage_when_already_exist", func(t *testing.T) {
-		db := mapstorage.Make()
+		// создаём контроллер мока
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
 
-		db.Push("/931691969b142b3a0f11a03e36fcc3b7", "biba") //заранее добавим значение
+		stor := mocks.NewMockAbstractStorage(ctrl)
+		stor.EXPECT().Push("/931691969b142b3a0f11a03e36fcc3b7", "biba").Return(exsist.NewExistError(nil))
 
 		c := config.MakeConfig()
-		h := MakeShortanerHandler(c, db)
+		h := MakeShortanerHandler(c, stor)
 
 		inputData := RequestData{URL: "biba"}
 		inputJson, _ := json.Marshal(inputData)

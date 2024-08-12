@@ -59,5 +59,4 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		v, _ = db.Get("/2cce0ec300cfe8dd3024939db0448893")
 		assert.Equal(t, "boba", v)
 	})
-
 }
