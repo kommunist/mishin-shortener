@@ -23,13 +23,13 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 			{CorrelationID: "123", OriginalURL: "biba"},
 			{CorrelationID: "456", OriginalURL: "boba"},
 		}
-		inputJson, _ := json.Marshal(inputData)
+		inputJSON, _ := json.Marshal(inputData)
 
 		request :=
 			httptest.NewRequest(
 				http.MethodPost,
 				"/api/shorten/batch",
-				bytes.NewReader(inputJson),
+				bytes.NewReader(inputJSON),
 			)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат

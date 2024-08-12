@@ -23,13 +23,13 @@ func TestCreateURLByJSON(t *testing.T) {
 		h := MakeShortanerHandler(c, db)
 
 		inputData := RequestData{URL: "biba"}
-		inputJson, _ := json.Marshal(inputData)
+		inputJSON, _ := json.Marshal(inputData)
 
 		request :=
 			httptest.NewRequest(
 				http.MethodPost,
 				"/api/shorten",
-				bytes.NewReader(inputJson),
+				bytes.NewReader(inputJSON),
 			)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
@@ -66,13 +66,13 @@ func TestCreateURLByJSON(t *testing.T) {
 		h := MakeShortanerHandler(c, stor)
 
 		inputData := RequestData{URL: "biba"}
-		inputJson, _ := json.Marshal(inputData)
+		inputJSON, _ := json.Marshal(inputData)
 
 		request :=
 			httptest.NewRequest(
 				http.MethodPost,
 				"/api/shorten",
-				bytes.NewReader(inputJson),
+				bytes.NewReader(inputJSON),
 			)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
