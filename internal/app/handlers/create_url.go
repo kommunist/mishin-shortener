@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (h *ShortanerHandler) CreateURLHandler(w http.ResponseWriter, r *http.Request) {
+func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 

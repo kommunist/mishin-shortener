@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateURLHandler(t *testing.T) {
+func TestCreateURL(t *testing.T) {
 	t.Run("Start_POST_to_create_record_in_db", func(t *testing.T) {
 		db := mapstorage.Make()
 		c := config.MakeConfig()
@@ -21,7 +21,7 @@ func TestCreateURLHandler(t *testing.T) {
 
 		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("ya.ru"))
 		w := httptest.NewRecorder()
-		h.CreateURLHandler(w, request)
+		h.CreateURL(w, request)
 
 		res := w.Result()
 		assert.Equal(t, http.StatusCreated, res.StatusCode)

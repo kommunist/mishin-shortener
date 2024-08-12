@@ -17,11 +17,12 @@ type ResponseData struct {
 	Result string `json:"result"`
 }
 
-func (h *ShortanerHandler) CreateURLByJSONHandler(w http.ResponseWriter, r *http.Request) {
+func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 
 	if err != nil {
+		slog.Error("Error when read body", "err", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -30,6 +31,7 @@ func (h *ShortanerHandler) CreateURLByJSONHandler(w http.ResponseWriter, r *http
 	output := ResponseData{}
 
 	if err = json.Unmarshal(body, &input); err != nil {
+		slog.Error("Parsing Error", "err", err)
 		http.Error(w, "Parsing Error", http.StatusInternalServerError)
 		return
 	}
@@ -56,6 +58,7 @@ func (h *ShortanerHandler) CreateURLByJSONHandler(w http.ResponseWriter, r *http
 
 	out, err := json.Marshal(output)
 	if err != nil {
+		slog.Error("error when encoding data", "err", err)
 		http.Error(w, "Encoding json Error", http.StatusInternalServerError)
 		return
 	}

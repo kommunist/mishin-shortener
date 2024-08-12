@@ -11,7 +11,6 @@ func (h *ShortanerHandler) PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	if h.Options.DatabaseDSN == "" {
 		slog.Error("database DSN not defined for ping")
-		// поменять на другой тип ошибки
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
