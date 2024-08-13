@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/mapstorage"
 	"net/http"
@@ -30,7 +31,7 @@ func TestGetHandler(t *testing.T) {
 				return MakeShortanerHandler(c, db)
 			}(),
 			beforeFunction: func(h *ShortanerHandler, shorted string, expected string) {
-				h.DB.Push(shorted, expected)
+				h.DB.Push(context.Background(), shorted, expected)
 			},
 		},
 		{

@@ -50,7 +50,7 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 		)
 	}
 
-	err = h.DB.PushBatch(&prepareToSave)
+	err = h.DB.PushBatch(r.Context(), &prepareToSave)
 	if err != nil {
 		http.Error(w, "Error when push to storage", http.StatusInternalServerError)
 		return

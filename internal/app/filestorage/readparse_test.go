@@ -1,6 +1,7 @@
 package filestorage
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -15,8 +16,8 @@ func TestReadAndParse(t *testing.T) {
 		defer os.Remove(testFile.Name())
 
 		fs := Make(testFile.Name()) // создаем fs
-		fs.Push("short0", "original0")
-		fs.Push("short1", "original1")
+		fs.Push(context.Background(), "short0", "original0")
+		fs.Push(context.Background(), "short1", "original1")
 
 		list := readAndParse(testFile)
 

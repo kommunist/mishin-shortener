@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"os"
+	"time"
 
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/filestorage"
@@ -10,6 +11,8 @@ import (
 	"mishin-shortener/internal/app/mapstorage"
 	middleware "mishin-shortener/internal/app/midleware"
 	"mishin-shortener/internal/app/pgstorage"
+
+	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 
 	"net/http"
 
@@ -39,6 +42,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.WithLogRequest)
 	r.Use(middleware.GzipMiddleware)
+	r.Use(chiMiddleware.Timeout(60 * time.Second))
 
 	r.Post("/", h.CreateURL)
 	r.Post("/api/shorten", h.CreateURLByJSON)

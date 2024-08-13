@@ -6,13 +6,13 @@ import (
 	"log/slog"
 )
 
-func (fs *Storage) Get(shortURL string) (string, error) {
+func (fs *Storage) Get(ctx context.Context, shortURL string) (string, error) {
 
-	return fs.cache.Get(shortURL)
+	return fs.cache.Get(ctx, shortURL)
 }
 
-func (fs *Storage) Push(short string, original string) error {
-	err := fs.cache.Push(short, original)
+func (fs *Storage) Push(ctx context.Context, short string, original string) error {
+	err := fs.cache.Push(ctx, short, original)
 	if err != nil {
 		slog.Error("Push to cache storage error", "err", err)
 		return err
@@ -37,9 +37,9 @@ func (fs *Storage) Push(short string, original string) error {
 	return nil
 }
 
-func (fs *Storage) PushBatch(list *map[string]string) error {
+func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string) error {
 	for k, v := range *list {
-		err := fs.Push(k, v)
+		err := fs.Push(ctx, k, v)
 		if err != nil {
 			slog.Error("When batch push to file error", "err", err)
 			return err

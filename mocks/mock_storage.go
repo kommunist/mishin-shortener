@@ -49,18 +49,18 @@ func (mr *MockAbstractStorageMockRecorder) Finish() *gomock.Call {
 }
 
 // Get mocks base method.
-func (m *MockAbstractStorage) Get(arg0 string) (string, error) {
+func (m *MockAbstractStorage) Get(arg0 context.Context, arg1 string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", arg0)
+	ret := m.ctrl.Call(m, "Get", arg0, arg1)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockAbstractStorageMockRecorder) Get(arg0 interface{}) *gomock.Call {
+func (mr *MockAbstractStorageMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAbstractStorage)(nil).Get), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAbstractStorage)(nil).Get), arg0, arg1)
 }
 
 // Ping mocks base method.
@@ -78,29 +78,29 @@ func (mr *MockAbstractStorageMockRecorder) Ping(arg0 interface{}) *gomock.Call {
 }
 
 // Push mocks base method.
-func (m *MockAbstractStorage) Push(arg0, arg1 string) error {
+func (m *MockAbstractStorage) Push(arg0 context.Context, arg1, arg2 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Push", arg0, arg1)
+	ret := m.ctrl.Call(m, "Push", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Push indicates an expected call of Push.
-func (mr *MockAbstractStorageMockRecorder) Push(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockAbstractStorageMockRecorder) Push(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Push", reflect.TypeOf((*MockAbstractStorage)(nil).Push), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Push", reflect.TypeOf((*MockAbstractStorage)(nil).Push), arg0, arg1, arg2)
 }
 
 // PushBatch mocks base method.
-func (m *MockAbstractStorage) PushBatch(arg0 *map[string]string) error {
+func (m *MockAbstractStorage) PushBatch(arg0 context.Context, arg1 *map[string]string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PushBatch", arg0)
+	ret := m.ctrl.Call(m, "PushBatch", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // PushBatch indicates an expected call of PushBatch.
-func (mr *MockAbstractStorageMockRecorder) PushBatch(arg0 interface{}) *gomock.Call {
+func (mr *MockAbstractStorageMockRecorder) PushBatch(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PushBatch", reflect.TypeOf((*MockAbstractStorage)(nil).PushBatch), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PushBatch", reflect.TypeOf((*MockAbstractStorage)(nil).PushBatch), arg0, arg1)
 }

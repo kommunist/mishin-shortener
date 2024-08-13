@@ -1,10 +1,12 @@
 package pgstorage
 
 import (
+	"context"
 	"database/sql"
 	"log/slog"
 	"mishin-shortener/internal/app/config"
 	"os"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -31,14 +33,20 @@ func Make(c config.MainConfig) *Driver {
 
 // тут хорошо было бы, наверное, затащить какой-нибудь мигратор, но пока обойдемся IF NOT EXIST
 func (d *Driver) initSchema() {
-	_, err := d.driver.Exec(
+	// здесь нет внешнего, поэтому нужен отдельный context
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	_, err := d.driver.ExecContext(
+		ctx,
 		"CREATE TABLE IF NOT EXISTS short_urls (id SERIAL PRIMARY KEY, short TEXT, original TEXT);")
 	if err != nil {
 		slog.Error("Eror when create table", "err", err)
 		os.Exit(1)
 	}
 
-	_, err = d.driver.Exec(
+	_, err = d.driver.ExecContext(
+		ctx,
 		"CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);")
 	if err != nil {
 		slog.Error("Eror when create index", "err", err)

@@ -11,8 +11,8 @@ import (
 	"github.com/lib/pq"
 )
 
-func (d *Driver) Push(short string, original string) error {
-	err := insert(short, original, false, d.driver)
+func (d *Driver) Push(ctx context.Context, short string, original string) error {
+	err := insert(ctx, short, original, false, d.driver)
 
 	if err != nil {
 		slog.Error("When push to db error", "err", err)
@@ -26,7 +26,7 @@ func (d *Driver) Push(short string, original string) error {
 	return nil
 }
 
-func (d *Driver) PushBatch(list *map[string]string) error {
+func (d *Driver) PushBatch(ctx context.Context, list *map[string]string) error {
 	tx, err := d.driver.Begin()
 	if err != nil {
 		slog.Error("When open transaction error", "err", err)
@@ -34,7 +34,7 @@ func (d *Driver) PushBatch(list *map[string]string) error {
 	}
 
 	for k, v := range *list {
-		err := insert(k, v, true, tx) // в случае инстерта батчами будем с форсом
+		err := insert(ctx, k, v, true, tx) // в случае инстерта батчами будем с форсом
 		if err != nil {
 			slog.Error("When batch insert error", "err", err)
 			tx.Rollback()
@@ -46,14 +46,16 @@ func (d *Driver) PushBatch(list *map[string]string) error {
 	return nil
 }
 
-func insert(short string, original string, force bool, d interface {
-	Exec(string, ...any) (sql.Result, error)
+// вот тут правильнее было бы использовать какой-то библиотечый интерфейс в качестве аргумента,
+// но я такой не нашел
+func insert(ctx context.Context, short string, original string, force bool, d interface {
+	ExecContext(context.Context, string, ...any) (sql.Result, error)
 }) error {
 	query := "INSERT INTO short_urls (short, original) VALUES ($1, $2)"
 	if force {
 		query += " ON CONFLICT (short) DO UPDATE SET original = excluded.original"
 	}
-	_, err := d.Exec(query, short, original)
+	_, err := d.ExecContext(ctx, query, short, original)
 
 	if err != nil {
 		slog.Error("When insert to db error", "err", err)
@@ -62,10 +64,10 @@ func insert(short string, original string, force bool, d interface {
 	return nil
 }
 
-func (d *Driver) Get(short string) (string, error) {
+func (d *Driver) Get(ctx context.Context, short string) (string, error) {
 	var result string
 
-	row := d.driver.QueryRow("SELECT original FROM short_urls where short = $1 LIMIT 1", short)
+	row := d.driver.QueryRowContext(ctx, "SELECT original FROM short_urls where short = $1 LIMIT 1", short)
 
 	err := row.Scan(&result)
 	if err != nil {

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"io"
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/exsist"
@@ -42,12 +43,19 @@ func TestCreateURL(t *testing.T) {
 		defer ctrl.Finish()
 
 		stor := mocks.NewMockAbstractStorage(ctrl)
-		stor.EXPECT().Push("/931691969b142b3a0f11a03e36fcc3b7", "biba").Return(exsist.NewExistError(nil))
+
+		baseContext := context.Background()
+
+		stor.EXPECT().Push(
+			baseContext,
+			"/931691969b142b3a0f11a03e36fcc3b7",
+			"biba",
+		).Return(exsist.NewExistError(nil))
 
 		c := config.MakeConfig()
 		h := MakeShortanerHandler(c, stor)
 
-		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("biba"))
+		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("biba")).WithContext(baseContext)
 		w := httptest.NewRecorder()
 		h.CreateURL(w, request)
 

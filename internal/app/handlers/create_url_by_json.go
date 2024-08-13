@@ -37,7 +37,7 @@ func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Reques
 	}
 
 	hashed := hasher.GetMD5Hash([]byte(input.URL))
-	err = h.DB.Push("/"+hashed, string(input.URL))
+	err = h.DB.Push(r.Context(), "/"+hashed, string(input.URL))
 
 	status := http.StatusCreated
 

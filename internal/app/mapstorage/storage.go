@@ -12,15 +12,15 @@ func Make() *Storage {
 	return &Storage{}
 }
 
-func (db *Storage) Push(short string, original string) error {
+func (db *Storage) Push(ctx context.Context, short string, original string) error {
 	(*db)[short] = original
 
 	return nil
 }
 
-func (db *Storage) PushBatch(list *map[string]string) error {
+func (db *Storage) PushBatch(ctx context.Context, list *map[string]string) error {
 	for k, v := range *list {
-		err := db.Push(k, v)
+		err := db.Push(ctx, k, v)
 		if err != nil {
 			slog.Error("When batch push to mapstorage error", "err", err)
 			return err
@@ -30,7 +30,7 @@ func (db *Storage) PushBatch(list *map[string]string) error {
 	return nil
 }
 
-func (db *Storage) Get(short string) (string, error) {
+func (db *Storage) Get(ctx context.Context, short string) (string, error) {
 	value, ok := (*db)[short]
 	if ok {
 		return value, nil

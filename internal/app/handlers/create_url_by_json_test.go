@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"mishin-shortener/internal/app/config"
@@ -50,7 +51,7 @@ func TestCreateURLByJSON(t *testing.T) {
 
 		// проверим содержимое базы
 		var v string
-		v, _ = db.Get("/931691969b142b3a0f11a03e36fcc3b7")
+		v, _ = db.Get(context.Background(), "/931691969b142b3a0f11a03e36fcc3b7")
 		assert.Equal(t, "biba", v)
 	})
 
@@ -59,8 +60,14 @@ func TestCreateURLByJSON(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
+		baseContext := context.Background()
+
 		stor := mocks.NewMockAbstractStorage(ctrl)
-		stor.EXPECT().Push("/931691969b142b3a0f11a03e36fcc3b7", "biba").Return(exsist.NewExistError(nil))
+		stor.EXPECT().Push(
+			baseContext,
+			"/931691969b142b3a0f11a03e36fcc3b7",
+			"biba",
+		).Return(exsist.NewExistError(nil))
 
 		c := config.MakeConfig()
 		h := MakeShortanerHandler(c, stor)
@@ -73,7 +80,7 @@ func TestCreateURLByJSON(t *testing.T) {
 				http.MethodPost,
 				"/api/shorten",
 				bytes.NewReader(inputJSON),
-			)
+			).WithContext(baseContext)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
 		w := httptest.NewRecorder()

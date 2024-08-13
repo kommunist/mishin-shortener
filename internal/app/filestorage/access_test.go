@@ -2,6 +2,7 @@ package filestorage
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"mishin-shortener/internal/app/mapstorage"
 	"os"
@@ -14,11 +15,11 @@ import (
 func TestGet(t *testing.T) {
 	t.Run("get_data_from_cache", func(t *testing.T) {
 		db := mapstorage.Make()
-		db.Push("short", "original")
+		db.Push(context.Background(), "short", "original")
 
 		fs := Storage{cache: *db, file: nil}
 
-		value, err := fs.Get("short")
+		value, err := fs.Get(context.Background(), "short")
 		assert.Equal(t, value, "original")
 
 		require.NoError(t, err)
@@ -34,7 +35,7 @@ func TestPush(t *testing.T) {
 		defer os.Remove(testFile.Name())
 
 		fs := Make(testFile.Name()) // создаем fs
-		fs.Push("short", "original")
+		fs.Push(context.Background(), "short", "original")
 
 		reader := bufio.NewReader(testFile)
 		data, _ := reader.ReadBytes('\n')
@@ -60,7 +61,7 @@ func TestPushBatch(t *testing.T) {
 		testData["biba"] = "boba"
 
 		fs := Make(testFile.Name()) // создаем fs
-		fs.PushBatch(&testData)
+		fs.PushBatch(context.Background(), &testData)
 
 		reader := bufio.NewReader(testFile)
 		data, _ := reader.ReadBytes('\n')
