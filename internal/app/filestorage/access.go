@@ -11,8 +11,8 @@ func (fs *Storage) Get(ctx context.Context, shortURL string) (string, error) {
 	return fs.cache.Get(ctx, shortURL)
 }
 
-func (fs *Storage) Push(ctx context.Context, short string, original string, userId string) error {
-	err := fs.cache.Push(ctx, short, original, userId)
+func (fs *Storage) Push(ctx context.Context, short string, original string, userID string) error {
+	err := fs.cache.Push(ctx, short, original, userID)
 	if err != nil {
 		slog.Error("Push to cache storage error", "err", err)
 		return err
@@ -37,9 +37,9 @@ func (fs *Storage) Push(ctx context.Context, short string, original string, user
 	return nil
 }
 
-func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string, userId string) error {
+func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string, userID string) error {
 	for k, v := range *list {
-		err := fs.Push(ctx, k, v, userId)
+		err := fs.Push(ctx, k, v, userID)
 		if err != nil {
 			slog.Error("When batch push to file error", "err", err)
 			return err

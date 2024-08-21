@@ -11,7 +11,7 @@ import (
 
 func AuthMiddleware(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
-		var userId string
+		var userID string
 
 		authHeader := r.Header.Get("Authorization")
 
@@ -19,21 +19,21 @@ func AuthMiddleware(h http.Handler) http.Handler {
 			var err error
 			slog.Info("Authorization founded", "auth", authHeader)
 
-			userId, err = secure.Decrypt(authHeader)
+			userID, err = secure.Decrypt(authHeader)
 			if err != nil { // и если не удалось расшифровать
 				slog.Warn("Error when decrypt header", "Header", authHeader)
-				userId = newUserId() // создадим новый
+				userID = newuserID() // создадим новый
 			}
-			if userId != "" {
-				slog.Info("User id decrypted from header", "Id", userId)
+			if userID != "" {
+				slog.Info("User id decrypted from header", "Id", userID)
 			}
 		} else { // если хедера с авторизацией нет
-			userId = newUserId()
+			userID = newuserID()
 		}
 
-		ctx := context.WithValue(r.Context(), "UserId", userId)
+		ctx := context.WithValue(r.Context(), "userID", userID)
 
-		encryptedId, _ := secure.Encrypt(userId) // сделать обработку ошибки
+		encryptedId, _ := secure.Encrypt(userID) // сделать обработку ошибки
 		w.Header().Set("Authorization", encryptedId)
 
 		h.ServeHTTP(w, r.WithContext(ctx))
@@ -41,6 +41,6 @@ func AuthMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(authFn)
 }
 
-func newUserId() string {
+func newuserID() string {
 	return uuid.New().String()
 }

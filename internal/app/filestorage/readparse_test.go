@@ -16,8 +16,8 @@ func TestReadAndParse(t *testing.T) {
 		defer os.Remove(testFile.Name())
 
 		fs := Make(testFile.Name()) // создаем fs
-		fs.Push(context.Background(), "short0", "original0", "userId")
-		fs.Push(context.Background(), "short1", "original1", "userId")
+		fs.Push(context.Background(), "short0", "original0", "userID")
+		fs.Push(context.Background(), "short1", "original1", "userID")
 
 		list := readAndParse(testFile)
 

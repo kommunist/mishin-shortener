@@ -50,9 +50,9 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 		)
 	}
 
-	userId := r.Context().Value("UserId").(string)
+	userID := r.Context().Value("userID").(string)
 
-	err = h.DB.PushBatch(r.Context(), &prepareToSave, userId)
+	err = h.DB.PushBatch(r.Context(), &prepareToSave, userID)
 
 	if err != nil {
 		http.Error(w, "Error when push to storage", http.StatusInternalServerError)

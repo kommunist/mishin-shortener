@@ -27,9 +27,9 @@ func TestCreateURLByJSON(t *testing.T) {
 		inputJSON, _ := json.Marshal(inputData)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "UserId", "qq")
+		ctx = context.WithValue(ctx, "userID", "qq")
 
-    request :=
+		request :=
 			httptest.NewRequest(
 				http.MethodPost,
 				"/api/shorten",
@@ -64,7 +64,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		defer ctrl.Finish()
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "UserId", "qq")
+		ctx = context.WithValue(ctx, "userID", "qq")
 
 		stor := mocks.NewMockAbstractStorage(ctrl)
 		stor.EXPECT().Push(

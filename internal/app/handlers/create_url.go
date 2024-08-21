@@ -21,9 +21,9 @@ func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusCreated
 	hashed := hasher.GetMD5Hash(body)
 
-	userId := r.Context().Value("UserId").(string)
+	userID := r.Context().Value("userID").(string)
 
-	err = h.DB.Push(r.Context(), "/"+hashed, string(body), userId)
+	err = h.DB.Push(r.Context(), "/"+hashed, string(body), userID)
 	if err != nil {
 		if _, ok := err.(*exsist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
 			status = http.StatusConflict

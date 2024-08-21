@@ -31,7 +31,7 @@ func TestGetHandler(t *testing.T) {
 				return MakeShortanerHandler(c, db)
 			}(),
 			beforeFunction: func(h *ShortanerHandler, shorted string, expected string) {
-				h.DB.Push(context.Background(), shorted, expected, "userId")
+				h.DB.Push(context.Background(), shorted, expected, "userID")
 			},
 		},
 		{
