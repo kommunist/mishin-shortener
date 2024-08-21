@@ -6,8 +6,8 @@ import (
 )
 
 type AbstractStorage interface {
-	Push(context.Context, string, string) error
-	PushBatch(context.Context, *map[string]string) error
+	Push(context.Context, string, string, string) error          // short, original, userId
+	PushBatch(context.Context, *map[string]string, string) error // collection, userId
 	Get(context.Context, string) (string, error)
 	Finish() error
 	Ping(context.Context) error

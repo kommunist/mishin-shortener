@@ -26,12 +26,15 @@ func TestCreateURLByJSON(t *testing.T) {
 		inputData := RequestData{URL: "biba"}
 		inputJSON, _ := json.Marshal(inputData)
 
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, "UserId", "qq")
+
 		request :=
 			httptest.NewRequest(
 				http.MethodPost,
 				"/api/shorten",
 				bytes.NewReader(inputJSON),
-			)
+			).WithContext(ctx)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
 		w := httptest.NewRecorder()
@@ -60,13 +63,15 @@ func TestCreateURLByJSON(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		baseContext := context.Background()
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, "UserId", "qq")
 
 		stor := mocks.NewMockAbstractStorage(ctrl)
 		stor.EXPECT().Push(
-			baseContext,
+			ctx,
 			"/931691969b142b3a0f11a03e36fcc3b7",
 			"biba",
+			"qq",
 		).Return(exsist.NewExistError(nil))
 
 		c := config.MakeConfig()
@@ -80,7 +85,7 @@ func TestCreateURLByJSON(t *testing.T) {
 				http.MethodPost,
 				"/api/shorten",
 				bytes.NewReader(inputJSON),
-			).WithContext(baseContext)
+			).WithContext(ctx)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
 		w := httptest.NewRecorder()

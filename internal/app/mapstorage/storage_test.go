@@ -11,7 +11,7 @@ func TestPush(t *testing.T) {
 	db := Storage{}
 
 	t.Run("simple_push_data_to_database", func(t *testing.T) {
-		db.Push(context.Background(), "key", "value")
+		db.Push(context.Background(), "key", "value", "userId")
 		value, _ := db.Get(context.Background(), "key")
 		assert.Equal(t, value, "value")
 	})
@@ -25,7 +25,7 @@ func TestPushBatch(t *testing.T) {
 		data["key"] = "value"
 		data["biba"] = "boba"
 
-		db.PushBatch(context.Background(), &data)
+		db.PushBatch(context.Background(), &data, "userId")
 
 		var v string
 		v, _ = db.Get(context.Background(), "key")

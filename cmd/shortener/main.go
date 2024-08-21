@@ -40,9 +40,10 @@ func main() {
 	h := handlers.MakeShortanerHandler(c, storage)
 
 	r := chi.NewRouter()
+	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)
 	r.Use(middleware.GzipMiddleware)
-	r.Use(chiMiddleware.Timeout(60 * time.Second))
+	r.Use(middleware.AuthMiddleware)
 
 	r.Post("/", h.CreateURL)
 	r.Post("/api/shorten", h.CreateURLByJSON)

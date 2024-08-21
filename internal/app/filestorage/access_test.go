@@ -15,7 +15,7 @@ import (
 func TestGet(t *testing.T) {
 	t.Run("get_data_from_cache", func(t *testing.T) {
 		db := mapstorage.Make()
-		db.Push(context.Background(), "short", "original")
+		db.Push(context.Background(), "short", "original", "userId")
 
 		fs := Storage{cache: *db, file: nil}
 
@@ -35,7 +35,7 @@ func TestPush(t *testing.T) {
 		defer os.Remove(testFile.Name())
 
 		fs := Make(testFile.Name()) // создаем fs
-		fs.Push(context.Background(), "short", "original")
+		fs.Push(context.Background(), "short", "original", "userId")
 
 		reader := bufio.NewReader(testFile)
 		data, _ := reader.ReadBytes('\n')
@@ -61,7 +61,7 @@ func TestPushBatch(t *testing.T) {
 		testData["biba"] = "boba"
 
 		fs := Make(testFile.Name()) // создаем fs
-		fs.PushBatch(context.Background(), &testData)
+		fs.PushBatch(context.Background(), &testData, "userId")
 
 		reader := bufio.NewReader(testFile)
 		data, _ := reader.ReadBytes('\n')
