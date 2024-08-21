@@ -13,8 +13,7 @@ import (
 
 func (d *Driver) Push(ctx context.Context, short string, original string, userId string) error {
 	err := insert(ctx, short, original, userId, false, d.driver)
-
-	if err != nil {
+  if err != nil {
 		slog.Error("When push to db error", "err", err)
 
 		if errStruct, ok := err.(*pq.Error); ok && errStruct.Code == pgerrcode.UniqueViolation {

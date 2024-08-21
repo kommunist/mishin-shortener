@@ -45,6 +45,7 @@ func main() {
 	r.Use(middleware.GzipMiddleware)
 	r.Use(middleware.AuthMiddleware)
 
+
 	r.Post("/", h.CreateURL)
 	r.Post("/api/shorten", h.CreateURLByJSON)
 	r.Post("/api/shorten/batch", h.CreateURLByJSONBatch)
