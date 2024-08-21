@@ -1,13 +1,16 @@
 package handlers
 
 import (
+	"context"
 	"mishin-shortener/internal/app/config"
 )
 
 type AbstractStorage interface {
-	Push(string, string) error
-	Get(string) (string, error)
+	Push(context.Context, string, string) error
+	PushBatch(context.Context, *map[string]string) error
+	Get(context.Context, string) (string, error)
 	Finish() error
+	Ping(context.Context) error
 }
 
 type ShortanerHandler struct {
@@ -20,4 +23,8 @@ func MakeShortanerHandler(c config.MainConfig, db AbstractStorage) ShortanerHand
 		DB:      db,
 		Options: c,
 	}
+}
+
+func (h *ShortanerHandler) resultURL(hashed string) []byte {
+	return []byte(h.Options.BaseRedirectURL + "/" + hashed)
 }
