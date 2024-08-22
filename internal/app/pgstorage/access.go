@@ -105,7 +105,7 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 	}
 
 	err = rows.Err()
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 
