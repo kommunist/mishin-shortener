@@ -43,14 +43,16 @@ func main() {
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)
 	r.Use(middleware.GzipMiddleware)
-	r.Use(middleware.AuthMiddleware)
+	r.Use(middleware.AuthSet)
 
 	r.Post("/", h.CreateURL)
 	r.Post("/api/shorten", h.CreateURLByJSON)
 	r.Post("/api/shorten/batch", h.CreateURLByJSONBatch)
+
+	r.With(middleware.AuthCheck).Get("/api/user/urls", h.UserURLs)
+
 	r.Get("/{shortened}", h.RedirectHandler)
 	r.Get("/ping", h.PingHandler)
-	r.Get("/api/user/urls", h.UserURLs)
 
 	slog.Info("server started", "URL", c.BaseServerURL)
 

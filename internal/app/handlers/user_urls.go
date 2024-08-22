@@ -11,7 +11,11 @@ type UserURLsItem struct {
 }
 
 func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("userID").(string)
+	u := r.Context().Value("userID")
+	if u == nil {
+		return
+	}
+	userID := u.(string)
 
 	data, err := h.DB.GetByUserID(r.Context(), userID)
 	if err != nil {
