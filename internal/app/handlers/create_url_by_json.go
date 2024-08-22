@@ -36,7 +36,12 @@ func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	userID := r.Context().Value("userID").(string)
+	var userID string
+	if r.Context().Value("userID") == nil {
+		userID = ""
+	} else {
+		userID = r.Context().Value("userID").(string)
+	}
 
 	hashed := hasher.GetMD5Hash([]byte(input.URL))
 	err = h.DB.Push(r.Context(), "/"+hashed, string(input.URL), userID)

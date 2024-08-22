@@ -50,7 +50,12 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 		)
 	}
 
-	userID := r.Context().Value("userID").(string)
+	var userID string
+	if r.Context().Value("userID") == nil {
+		userID = ""
+	} else {
+		userID = r.Context().Value("userID").(string)
+	}
 
 	err = h.DB.PushBatch(r.Context(), &prepareToSave, userID)
 

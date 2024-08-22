@@ -21,7 +21,12 @@ func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusCreated
 	hashed := hasher.GetMD5Hash(body)
 
-	userID := r.Context().Value("userID").(string)
+	var userID string
+	if r.Context().Value("userID") == nil {
+		userID = ""
+	} else {
+		userID = r.Context().Value("userID").(string)
+	}
 
 	err = h.DB.Push(r.Context(), "/"+hashed, string(body), userID)
 	if err != nil {
