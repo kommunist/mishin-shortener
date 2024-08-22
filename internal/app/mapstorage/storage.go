@@ -39,6 +39,10 @@ func (db *Storage) Get(ctx context.Context, short string) (string, error) {
 	return "", errors.New("not found")
 }
 
+func (db *Storage) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
+	return nil, nil
+}
+
 func (db *Storage) Ping(ctx context.Context) error {
 	return nil
 }

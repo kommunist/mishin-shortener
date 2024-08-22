@@ -49,6 +49,10 @@ func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string, userI
 	return nil
 }
 
+func (fs *Storage) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
+	return nil, nil
+}
+
 func (fs *Storage) Ping(ctx context.Context) error {
 	return nil
 }

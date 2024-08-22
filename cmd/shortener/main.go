@@ -45,12 +45,12 @@ func main() {
 	r.Use(middleware.GzipMiddleware)
 	r.Use(middleware.AuthMiddleware)
 
-
 	r.Post("/", h.CreateURL)
 	r.Post("/api/shorten", h.CreateURLByJSON)
 	r.Post("/api/shorten/batch", h.CreateURLByJSONBatch)
 	r.Get("/{shortened}", h.RedirectHandler)
 	r.Get("/ping", h.PingHandler)
+	r.Get("/api/user/urls", h.UserURLs)
 
 	slog.Info("server started", "URL", c.BaseServerURL)
 

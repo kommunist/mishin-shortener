@@ -82,6 +82,32 @@ func (d *Driver) Get(ctx context.Context, short string) (string, error) {
 
 }
 
+func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
+	rows, err := d.driver.QueryContext(ctx, "SELECT short, original FROM short_urls where user_id = $1", userID)
+	if err != nil {
+		slog.Error("When select data from db", "err", err)
+		return nil, err
+	}
+
+	result := make(map[string]string)
+
+	for rows.Next() {
+		var short string
+		var original string
+
+		err := rows.Scan(&short, &original)
+		if err != nil {
+			slog.Error("When scan data from select", "err", err)
+			return nil, err
+		}
+		result[short] = original
+	}
+
+	defer rows.Close()
+
+	return result, nil
+}
+
 // для проверки, что живо соединение
 func (d *Driver) Ping(ctx context.Context) error {
 	return d.driver.PingContext(ctx)
