@@ -11,6 +11,10 @@ import (
 
 var keyRandom []byte // использовать глобальные переменные не хорошо. Но пока не стал загонять в файл
 
+type UserIdKeyType int
+
+const UserIdKey UserIdKeyType = 0
+
 func setKeyRandom(size int) {
 	if len(keyRandom) > 0 {
 		return

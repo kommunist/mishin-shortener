@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"mishin-shortener/internal/app/hasher"
+	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
 
@@ -51,10 +52,10 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 	}
 
 	var userID string
-	if r.Context().Value("userID") == nil {
+	if r.Context().Value(secure.UserIdKey) == nil {
 		userID = ""
 	} else {
-		userID = r.Context().Value("userID").(string)
+		userID = r.Context().Value(secure.UserIdKey).(string)
 	}
 
 	err = h.DB.PushBatch(r.Context(), &prepareToSave, userID)

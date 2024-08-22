@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"log/slog"
+	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
 
@@ -12,7 +13,7 @@ type UserURLsItem struct {
 }
 
 func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
-	u := r.Context().Value("userID")
+	u := r.Context().Value(secure.UserIdKey)
 	slog.Info("User id in context", "user_id", u)
 	if u == nil {
 		return

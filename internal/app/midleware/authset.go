@@ -25,7 +25,7 @@ func AuthSet(h http.Handler) http.Handler {
 			userID = newuserID()
 		}
 
-		ctx := context.WithValue(r.Context(), "userID", userID)
+		ctx := context.WithValue(r.Context(), secure.UserIdKey, userID)
 
 		encryptedId, _ := secure.Encrypt(userID) // сделать обработку ошибки
 		w.Header().Set("Authorization", encryptedId)

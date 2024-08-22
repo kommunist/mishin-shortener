@@ -17,7 +17,7 @@ func AuthCheck(h http.Handler) http.Handler {
 			if err != nil || userID == "" { // и если не удалось расшифровать
 				w.WriteHeader(http.StatusUnauthorized)
 			} else { // единственный положительный сценарий
-				ctx = context.WithValue(ctx, "userID", userID)
+				ctx = context.WithValue(ctx, secure.UserIdKey, userID)
 			}
 		} else { // если хедера с авторизацией нет
 			w.WriteHeader(http.StatusUnauthorized)

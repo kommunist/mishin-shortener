@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/hasher"
+	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
 
@@ -22,10 +23,10 @@ func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 	hashed := hasher.GetMD5Hash(body)
 
 	var userID string
-	if r.Context().Value("userID") == nil {
+	if r.Context().Value(secure.UserIdKey) == nil {
 		userID = ""
 	} else {
-		userID = r.Context().Value("userID").(string)
+		userID = r.Context().Value(secure.UserIdKey).(string)
 	}
 
 	err = h.DB.Push(r.Context(), "/"+hashed, string(body), userID)

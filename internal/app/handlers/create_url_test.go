@@ -6,6 +6,7 @@ import (
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/internal/app/secure"
 	"mishin-shortener/mocks"
 	"net/http"
 	"net/http/httptest"
@@ -24,7 +25,7 @@ func TestCreateURL(t *testing.T) {
 		h := MakeShortanerHandler(c, db)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "userID", "qq")
+		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
 
 		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("ya.ru")).WithContext(ctx)
 		w := httptest.NewRecorder()
@@ -48,7 +49,7 @@ func TestCreateURL(t *testing.T) {
 		stor := mocks.NewMockAbstractStorage(ctrl)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "userID", "qq")
+		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
 
 		stor.EXPECT().Push(
 			ctx,

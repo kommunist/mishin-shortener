@@ -7,6 +7,7 @@ import (
 	"io"
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/internal/app/secure"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -27,7 +28,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		inputJSON, _ := json.Marshal(inputData)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "userID", "qq")
+		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
 
 		request :=
 			httptest.NewRequest(

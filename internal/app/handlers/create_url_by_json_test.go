@@ -8,6 +8,7 @@ import (
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/internal/app/secure"
 	"mishin-shortener/mocks"
 	"net/http"
 	"net/http/httptest"
@@ -27,7 +28,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		inputJSON, _ := json.Marshal(inputData)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "userID", "qq")
+		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
 
 		request :=
 			httptest.NewRequest(
@@ -64,7 +65,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		defer ctrl.Finish()
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, "userID", "qq")
+		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
 
 		stor := mocks.NewMockAbstractStorage(ctrl)
 		stor.EXPECT().Push(
