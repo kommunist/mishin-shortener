@@ -43,11 +43,10 @@ func main() {
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)
 	r.Use(middleware.GzipMiddleware)
-	r.Use(middleware.AuthSet)
 
-	r.Post("/", h.CreateURL)
-	r.Post("/api/shorten", h.CreateURLByJSON)
-	r.Post("/api/shorten/batch", h.CreateURLByJSONBatch)
+	r.With(middleware.AuthSet).Post("/", h.CreateURL)
+	r.With(middleware.AuthSet).Post("/api/shorten", h.CreateURLByJSON)
+	r.With(middleware.AuthSet).Post("/api/shorten/batch", h.CreateURLByJSONBatch)
 
 	r.With(middleware.AuthCheck).Get("/api/user/urls", h.UserURLs)
 

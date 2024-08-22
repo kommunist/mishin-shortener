@@ -10,19 +10,17 @@ func AuthCheck(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		if r.Context().Value("userID") != nil { // если на этапе Set уже удалось декодировать
-			authHeader := r.Header.Get("Authorization")
+		authHeader := r.Header.Get("Authorization")
 
-			if authHeader != "" { // если хедер с авторизацией есть
-				userID, err := secure.Decrypt(authHeader)
-				if err != nil || userID == "" { // и если не удалось расшифровать
-					w.WriteHeader(http.StatusUnauthorized)
-				} else { // единственный положительный сценарий
-					ctx = context.WithValue(ctx, "userID", userID)
-				}
-			} else { // если хедера с авторизацией нет
+		if authHeader != "" { // если хедер с авторизацией есть
+			userID, err := secure.Decrypt(authHeader)
+			if err != nil || userID == "" { // и если не удалось расшифровать
 				w.WriteHeader(http.StatusUnauthorized)
+			} else { // единственный положительный сценарий
+				ctx = context.WithValue(ctx, "userID", userID)
 			}
+		} else { // если хедера с авторизацией нет
+			w.WriteHeader(http.StatusUnauthorized)
 		}
 
 		h.ServeHTTP(w, r.WithContext(ctx))
