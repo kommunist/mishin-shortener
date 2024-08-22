@@ -11,7 +11,6 @@ import (
 func AuthSet(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		var userID string
-		ctx := r.Context()
 
 		authHeader := r.Header.Get("Authorization")
 
@@ -21,12 +20,12 @@ func AuthSet(h http.Handler) http.Handler {
 			userID, err = secure.Decrypt(authHeader)
 			if err != nil || userID == "" { // и если не удалось расшифровать
 				userID = newuserID()
-			} else { // если расшифровался, то сохраним
-				ctx = context.WithValue(r.Context(), "userID", userID)
 			}
 		} else { // если хедера с авторизацией нет
 			userID = newuserID()
 		}
+
+		ctx := context.WithValue(r.Context(), "userID", userID)
 
 		encryptedId, _ := secure.Encrypt(userID) // сделать обработку ошибки
 		w.Header().Set("Authorization", encryptedId)
