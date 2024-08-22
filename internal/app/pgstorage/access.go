@@ -88,6 +88,7 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 		slog.Error("When select data from db", "err", err)
 		return nil, err
 	}
+	defer rows.Close()
 
 	result := make(map[string]string)
 
@@ -103,7 +104,10 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 		result[short] = original
 	}
 
-	defer rows.Close()
+	err = rows.Err()
+	if err == nil {
+		return nil, err
+	}
 
 	return result, nil
 }

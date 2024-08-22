@@ -38,10 +38,10 @@ func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Reques
 	}
 
 	var userID string
-	if r.Context().Value(secure.UserIdKey) == nil {
+	if r.Context().Value(secure.UserIDKey) == nil {
 		userID = ""
 	} else {
-		userID = r.Context().Value(secure.UserIdKey).(string)
+		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
 
 	hashed := hasher.GetMD5Hash([]byte(input.URL))

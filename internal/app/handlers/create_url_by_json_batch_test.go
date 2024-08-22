@@ -28,7 +28,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		inputJSON, _ := json.Marshal(inputData)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
 
 		request :=
 			httptest.NewRequest(

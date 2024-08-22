@@ -52,10 +52,10 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 	}
 
 	var userID string
-	if r.Context().Value(secure.UserIdKey) == nil {
+	if r.Context().Value(secure.UserIDKey) == nil {
 		userID = ""
 	} else {
-		userID = r.Context().Value(secure.UserIdKey).(string)
+		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
 
 	err = h.DB.PushBatch(r.Context(), &prepareToSave, userID)

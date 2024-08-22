@@ -25,7 +25,7 @@ func TestCreateURL(t *testing.T) {
 		h := MakeShortanerHandler(c, db)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
 
 		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("ya.ru")).WithContext(ctx)
 		w := httptest.NewRecorder()
@@ -49,7 +49,7 @@ func TestCreateURL(t *testing.T) {
 		stor := mocks.NewMockAbstractStorage(ctrl)
 
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, secure.UserIdKey, "qq")
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
 
 		stor.EXPECT().Push(
 			ctx,
