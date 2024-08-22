@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 )
 
@@ -12,6 +13,7 @@ type UserURLsItem struct {
 
 func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
 	u := r.Context().Value("userID")
+	slog.Info("User id in context", "user_id", u)
 	if u == nil {
 		return
 	}
