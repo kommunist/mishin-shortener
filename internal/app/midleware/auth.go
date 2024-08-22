@@ -20,12 +20,11 @@ func AuthMiddleware(h http.Handler) http.Handler {
 			slog.Info("Authorization founded", "auth", authHeader)
 
 			userID, err = secure.Decrypt(authHeader)
-			if err != nil { // и если не удалось расшифровать
+			slog.Info("UserID decrypted", "UserID", userID)
+
+			if err != nil || userID == "" { // и если не удалось расшифровать
 				slog.Warn("Error when decrypt header", "Header", authHeader)
-				userID = newuserID() // создадим новый
-			}
-			if userID != "" {
-				slog.Info("User id decrypted from header", "Id", userID)
+				w.WriteHeader(http.StatusUnauthorized)
 			}
 		} else { // если хедера с авторизацией нет
 			userID = newuserID()
