@@ -49,6 +49,7 @@ func main() {
 	r.With(middleware.AuthSet).Post("/api/shorten/batch", h.CreateURLByJSONBatch)
 
 	r.With(middleware.AuthCheck).Get("/api/user/urls", h.UserURLs)
+	r.With(middleware.AuthCheck).Delete("/api/user/urls", h.UserURLs)
 
 	r.Get("/{shortened}", h.RedirectHandler)
 	r.Get("/ping", h.PingHandler)

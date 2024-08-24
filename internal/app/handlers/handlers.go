@@ -10,6 +10,7 @@ type AbstractStorage interface {
 	PushBatch(context.Context, *map[string]string, string) error // collection, userID
 	Get(context.Context, string) (string, error)
 	GetByUserID(context.Context, string) (map[string]string, error) // userID
+	DeleteByUserID(context.Context, string, []string) error         // userID, list
 	Finish() error
 	Ping(context.Context) error
 }

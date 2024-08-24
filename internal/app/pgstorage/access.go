@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"log/slog"
+	"mishin-shortener/internal/app/deleted"
 	"mishin-shortener/internal/app/exsist"
 
 	"github.com/jackc/pgerrcode"
@@ -65,10 +66,11 @@ func insert(ctx context.Context, short string, original string, userID string, f
 
 func (d *Driver) Get(ctx context.Context, short string) (string, error) {
 	var result string
+	var dR bool
 
-	row := d.driver.QueryRowContext(ctx, "SELECT original FROM short_urls where short = $1 LIMIT 1", short)
+	row := d.driver.QueryRowContext(ctx, "SELECT original, deleted FROM short_urls where short = $1 LIMIT 1", short)
 
-	err := row.Scan(&result)
+	err := row.Scan(&result, &dR)
 	if err != nil {
 		slog.Error("When scan data from select", "err", err)
 		return "", err
@@ -76,6 +78,10 @@ func (d *Driver) Get(ctx context.Context, short string) (string, error) {
 
 	if result == "" {
 		return "", errors.New("not found")
+	}
+
+	if dR {
+		return "", deleted.NewDeletedError(nil)
 	}
 
 	return result, nil
@@ -110,6 +116,10 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 	}
 
 	return result, nil
+}
+
+func (d *Driver) DeleteByUserID(ctx context.Context, userID string, shorts []string) error {
+	return nil
 }
 
 // для проверки, что живо соединение

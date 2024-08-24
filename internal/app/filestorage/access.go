@@ -53,6 +53,10 @@ func (fs *Storage) GetByUserID(ctx context.Context, userID string) (map[string]s
 	return nil, nil
 }
 
+func (fs *Storage) DeleteByUserID(ctx context.Context, userID string, shorts []string) error {
+	return nil
+}
+
 func (fs *Storage) Ping(ctx context.Context) error {
 	return nil
 }
