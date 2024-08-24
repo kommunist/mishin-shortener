@@ -1,6 +1,7 @@
 package pgstorage
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"errors"
@@ -119,6 +120,26 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 }
 
 func (d *Driver) DeleteByUserID(ctx context.Context, userID string, shorts []string) error {
+	buf := bytes.NewBufferString("UPDATE short_urls set deleted = true where user_id = $1 and short in (")
+	for i, v := range shorts {
+		if i > 0 {
+			buf.WriteString(",")
+		}
+		buf.WriteString("'")
+		buf.WriteString(v)
+		buf.WriteString("'")
+	}
+	buf.WriteString(")")
+
+	slog.Info("Request to db", "query", buf.String())
+
+	_, err := d.driver.ExecContext(
+		ctx, buf.String(), userID,
+	)
+	if err != nil {
+		slog.Error("Error from DeleteByUserID", "err", err)
+		return err
+	}
 	return nil
 }
 
