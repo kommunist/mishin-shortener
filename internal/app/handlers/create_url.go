@@ -29,7 +29,7 @@ func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
 
-	err = h.DB.Push(r.Context(), "/"+hashed, string(body), userID)
+	err = h.DB.Push(r.Context(), hashed, string(body), userID)
 	if err != nil {
 		if _, ok := err.(*exsist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
 			status = http.StatusConflict

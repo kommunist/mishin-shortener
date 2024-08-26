@@ -40,7 +40,7 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 	for _, v := range input {
 		hashed := hasher.GetMD5Hash([]byte(v.OriginalURL))
 
-		prepareToSave["/"+hashed] = v.OriginalURL
+		prepareToSave[hashed] = v.OriginalURL
 
 		output = append(
 			output,
