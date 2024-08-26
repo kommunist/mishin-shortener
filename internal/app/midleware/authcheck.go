@@ -10,10 +10,11 @@ func AuthCheck(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		authHeader := r.Header.Get("Authorization")
+		authCookie, _ := r.Cookie("Authorization") // обработать ошибку
+		authCookieValue := authCookie.Value
 
-		if authHeader != "" { // если хедер с авторизацией есть
-			userID, err := secure.Decrypt(authHeader)
+		if authCookieValue != "" { // если хедер с авторизацией есть
+			userID, err := secure.Decrypt(authCookieValue)
 			if err != nil || userID == "" { // и если не удалось расшифровать
 				w.WriteHeader(http.StatusUnauthorized)
 			} else { // единственный положительный сценарий

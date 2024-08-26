@@ -12,12 +12,14 @@ func AuthSet(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		var userID string
 
-		authHeader := r.Header.Get("Authorization")
+		// authHeader := r.Header.Get("Authorization")
+		authCookie, _ := r.Cookie("Authorization") // обработать ошибку
+		authCookieValue := authCookie.Value
 
-		if authHeader != "" { // если хедер с авторизацией есть
+		if authCookieValue != "" { // если хедер с авторизацией есть
 			var err error
 
-			userID, err = secure.Decrypt(authHeader)
+			userID, err = secure.Decrypt(authCookieValue)
 			if err != nil || userID == "" { // и если не удалось расшифровать
 				userID = newuserID()
 			}
@@ -28,11 +30,22 @@ func AuthSet(h http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), secure.UserIDKey, userID)
 
 		encryptedID, _ := secure.Encrypt(userID) // сделать обработку ошибки
-		w.Header().Set("Authorization", encryptedID)
+
+		// w.Header().Set("Authorization", encryptedID)
+		newCookie := newAuthCookie(encryptedID)
+		http.SetCookie(w, &newCookie)
 
 		h.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(authFn)
+}
+
+func newAuthCookie(value string) http.Cookie {
+	return http.Cookie{
+		Name:  "Authorization",
+		Value: value,
+		Path:  "/",
+	}
 }
 
 func newuserID() string {
