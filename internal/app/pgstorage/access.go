@@ -1,7 +1,6 @@
 package pgstorage
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
 	"errors"
@@ -119,26 +118,20 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 	return result, nil
 }
 
+// Кажется, что переход в асинк тут вообще излишний. Но по заданию добавим.
+// Кмк правильнее было бы собрать все в один запрос и уже тогда писать в базу.
 func (d *Driver) DeleteByUserID(ctx context.Context, userID string, shorts []string) error {
-	buf := bytes.NewBufferString("UPDATE short_urls set deleted = true where user_id = $1 and short in (")
-	for i, v := range shorts {
-		if i > 0 {
-			buf.WriteString(",")
-		}
-		buf.WriteString("'")
-		buf.WriteString(v)
-		buf.WriteString("'")
-	}
-	buf.WriteString(")")
+	for _, v := range shorts {
+		go func(short string) {
+			_, err := d.driver.Exec(
+				"UPDATE short_urls set deleted = true where user_id = $1 and short = $2",
+				userID, short,
+			)
+			if err != nil {
+				slog.Error("Error from DeleteByUserID", "err", err)
+			}
+		}(v)
 
-	slog.Info("Request to db", "query", buf.String())
-
-	_, err := d.driver.ExecContext(
-		ctx, buf.String(), userID,
-	)
-	if err != nil {
-		slog.Error("Error from DeleteByUserID", "err", err)
-		return err
 	}
 	return nil
 }
