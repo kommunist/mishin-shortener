@@ -36,6 +36,9 @@ func generateRandom(size int) ([]byte, error) {
 
 func Encrypt(data string) (string, error) {
 	setKeyRandom(aes.BlockSize)
+
+	slog.Info("Encrypt data", "data", data)
+
 	aesblock, err := aes.NewCipher(keyRandom)
 	if err != nil {
 		slog.Error("Error when create encrypter", "err", err)
@@ -57,11 +60,7 @@ func Encrypt(data string) (string, error) {
 	encrypted := aesgcm.Seal(nil, nonce, []byte(data), nil) // зашифровываем
 	encrypted = append(encrypted, nonce...)                 // подложим вектор в конце
 
-	slog.Info("Encrypted data + nonce", "encrypted", encrypted)
-
 	result := base64.StdEncoding.EncodeToString(encrypted) // в base64
-
-	slog.Info("Encrypted in base64", "base64", result)
 
 	return result, nil
 }
@@ -87,9 +86,9 @@ func Decrypt(data string) (string, error) {
 	token := []byte(input[:len(input)-aesgcm.NonceSize()])
 	nonce := []byte(input[len(input)-aesgcm.NonceSize():])
 
-	slog.Info("decrypt data", "token", token, "nonce", nonce)
-
 	result, _ := aesgcm.Open(nil, nonce, token, nil) // расшифровываем // обработать ошибку
+
+	slog.Info("Decrypted data", "result", result)
 
 	return string(result), nil
 }
