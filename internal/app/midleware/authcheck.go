@@ -8,10 +8,13 @@ import (
 
 func AuthCheck(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
+		var authCookieValue string
 		ctx := r.Context()
 
 		authCookie, _ := r.Cookie("Authorization") // обработать ошибку
-		authCookieValue := authCookie.Value
+		if authCookie != nil {
+			authCookieValue = authCookie.Value
+		}
 
 		if authCookieValue != "" { // если хедер с авторизацией есть
 			userID, err := secure.Decrypt(authCookieValue)
