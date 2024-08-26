@@ -55,7 +55,7 @@ func TestCreateURLByJSON(t *testing.T) {
 
 		// проверим содержимое базы
 		var v string
-		v, _ = db.Get(context.Background(), "/931691969b142b3a0f11a03e36fcc3b7")
+		v, _ = db.Get(context.Background(), "931691969b142b3a0f11a03e36fcc3b7")
 		assert.Equal(t, "biba", v)
 	})
 
@@ -70,7 +70,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		stor := mocks.NewMockAbstractStorage(ctrl)
 		stor.EXPECT().Push(
 			ctx,
-			"/931691969b142b3a0f11a03e36fcc3b7",
+			"931691969b142b3a0f11a03e36fcc3b7",
 			"biba",
 			"qq",
 		).Return(exsist.NewExistError(nil))

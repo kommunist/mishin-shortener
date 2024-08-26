@@ -53,7 +53,7 @@ func TestCreateURL(t *testing.T) {
 
 		stor.EXPECT().Push(
 			ctx,
-			"/931691969b142b3a0f11a03e36fcc3b7",
+			"931691969b142b3a0f11a03e36fcc3b7",
 			"biba",
 			"qq",
 		).Return(exsist.NewExistError(nil))

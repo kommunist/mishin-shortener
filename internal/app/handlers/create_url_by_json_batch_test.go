@@ -58,10 +58,10 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 
 		// проверим содержимое базы
 		var v string
-		v, _ = db.Get(context.Background(), "/931691969b142b3a0f11a03e36fcc3b7")
+		v, _ = db.Get(context.Background(), "931691969b142b3a0f11a03e36fcc3b7")
 		assert.Equal(t, "biba", v)
 
-		v, _ = db.Get(context.Background(), "/2cce0ec300cfe8dd3024939db0448893")
+		v, _ = db.Get(context.Background(), "2cce0ec300cfe8dd3024939db0448893")
 		assert.Equal(t, "boba", v)
 	})
 }

@@ -22,7 +22,7 @@ func TestGetHandler(t *testing.T) {
 	}{
 		{
 			name:           "Start_GET_on_url_persisted_in_db",
-			shorted:        "/qwerty",
+			shorted:        "qwerty",
 			expected:       "ya.ru",
 			expectedStatus: http.StatusTemporaryRedirect,
 			handler: func() ShortanerHandler {
@@ -36,7 +36,7 @@ func TestGetHandler(t *testing.T) {
 		},
 		{
 			name:           "Start_GET_on_url_not_persisted_in_db",
-			shorted:        "/qqqq",
+			shorted:        "qqqq",
 			expected:       "",
 			expectedStatus: http.StatusNotFound,
 			handler: func() ShortanerHandler {
@@ -53,7 +53,7 @@ func TestGetHandler(t *testing.T) {
 				testItem.beforeFunction(&testItem.handler, testItem.shorted, testItem.expected)
 			}
 
-			request := httptest.NewRequest(http.MethodGet, testItem.shorted, nil)
+			request := httptest.NewRequest(http.MethodGet, "/"+testItem.shorted, nil)
 			w := httptest.NewRecorder()
 			testItem.handler.RedirectHandler(w, request)
 
