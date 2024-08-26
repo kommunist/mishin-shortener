@@ -29,7 +29,10 @@ func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
 
 	if len(data) > 0 {
 		for k, v := range data {
-			result = append(result, UserURLsItem{Short: h.Options.BaseRedirectURL + k, Original: v})
+			result = append(
+				result,
+				UserURLsItem{Short: h.Options.BaseRedirectURL + "/" + k, Original: v},
+			)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
