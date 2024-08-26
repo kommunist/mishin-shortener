@@ -11,10 +11,13 @@ import (
 func AuthSet(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		var userID string
+		var authCookieValue string
 
 		// authHeader := r.Header.Get("Authorization")
 		authCookie, _ := r.Cookie("Authorization") // обработать ошибку
-		authCookieValue := authCookie.Value
+		if authCookie != nil {
+			authCookieValue = authCookie.Value
+		}
 
 		if authCookieValue != "" { // если хедер с авторизацией есть
 			var err error
