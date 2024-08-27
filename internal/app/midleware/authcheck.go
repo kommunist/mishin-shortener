@@ -11,7 +11,7 @@ func AuthCheck(h http.Handler) http.Handler {
 		var authCookieValue string
 		ctx := r.Context()
 
-		authCookie, _ := r.Cookie("Authorization") // обработать ошибку
+		authCookie, _ := r.Cookie("Authorization")
 		if authCookie != nil {
 			authCookieValue = authCookie.Value
 		}

@@ -14,7 +14,7 @@ func AuthSet(h http.Handler) http.Handler {
 		var authCookieValue string
 
 		// authHeader := r.Header.Get("Authorization")
-		authCookie, _ := r.Cookie("Authorization") // обработать ошибку
+		authCookie, _ := r.Cookie("Authorization")
 		if authCookie != nil {
 			authCookieValue = authCookie.Value
 		}
@@ -32,7 +32,7 @@ func AuthSet(h http.Handler) http.Handler {
 
 		ctx := context.WithValue(r.Context(), secure.UserIDKey, userID)
 
-		encryptedID, _ := secure.Encrypt(userID) // сделать обработку ошибки
+		encryptedID, _ := secure.Encrypt(userID) // TODO сделать обработку ошибки
 
 		// w.Header().Set("Authorization", encryptedID)
 		newCookie := newAuthCookie(encryptedID)

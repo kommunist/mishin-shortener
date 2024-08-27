@@ -19,7 +19,7 @@ func setKeyRandom(size int) {
 	if len(keyRandom) > 0 {
 		return
 	} else {
-		keyRandom, _ = generateRandom(size) // добавить обработку ошибки
+		keyRandom, _ = generateRandom(size) // TODO сделать обработку ошибки
 	}
 }
 
@@ -79,14 +79,14 @@ func Decrypt(data string) (string, error) {
 		return "", err
 	}
 
-	input, _ := base64.StdEncoding.DecodeString(data) // из base64 // обработать ошибку
+	input, _ := base64.StdEncoding.DecodeString(data) // из base64 // TODO сделать обработку ошибки
 
 	slog.Info("Decoded from base64", "input", input)
 
 	token := []byte(input[:len(input)-aesgcm.NonceSize()])
 	nonce := []byte(input[len(input)-aesgcm.NonceSize():])
 
-	result, _ := aesgcm.Open(nil, nonce, token, nil) // расшифровываем // обработать ошибку
+	result, _ := aesgcm.Open(nil, nonce, token, nil) // расшифровываем // TODO сделать обработку ошибки
 
 	slog.Info("Decrypted data", "result", result)
 
