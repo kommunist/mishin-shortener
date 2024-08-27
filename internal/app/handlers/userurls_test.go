@@ -42,6 +42,7 @@ func TestUserURLs(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.UserURLs(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		assert.Equal(t, http.StatusOK, res.StatusCode)
 

@@ -45,6 +45,8 @@ func TestDeleteURLs(t *testing.T) {
 		h.DeleteURLs(w, request)
 		res := w.Result()
 
+		defer res.Body.Close()
+
 		assert.Equal(t, http.StatusAccepted, res.StatusCode)
 	})
 
