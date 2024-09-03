@@ -12,6 +12,7 @@ func (h *ShortanerHandler) DeleteURLs(w http.ResponseWriter, r *http.Request) {
 	u := r.Context().Value(secure.UserIDKey)
 	slog.Info("User id in context", "user_id", u)
 	if u == nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 	userID := u.(string)
