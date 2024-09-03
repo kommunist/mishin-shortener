@@ -27,7 +27,7 @@ func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
 	}
 	result := make([]UserURLsItem, 0)
 
-	if len(data) > 0 {
+	if len(data) == 0 {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
