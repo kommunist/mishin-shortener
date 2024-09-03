@@ -121,7 +121,7 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 }
 
 func (d *Driver) DeleteByUserID(ctx context.Context, list [][2]string) error {
-	start := "UPDATE short_urls set deleted = true where"
+	start := "UPDATE short_urls set deleted = true where "
 	var cond []string
 	cond = append(cond, start)
 
