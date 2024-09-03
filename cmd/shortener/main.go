@@ -47,7 +47,7 @@ func main() {
 
 		for v := range in {
 			buf = append(buf, v)
-			if len(buf) > 3 {
+			if len(buf) > 0 {
 				h.DB.DeleteByUserID(context.Background(), buf)
 				buf = nil
 			}
