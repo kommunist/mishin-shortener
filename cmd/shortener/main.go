@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log/slog"
 	"os"
 	"time"
@@ -40,6 +41,22 @@ func main() {
 	h := handlers.MakeShortanerHandler(c, storage)
 
 	r := chi.NewRouter()
+
+	go func(in <-chan [2]string) {
+		var buf [][2]string // сюда будем складывать накопленные
+
+		for v := range in {
+			buf = append(buf, v)
+			if len(buf) > 3 {
+				h.DB.DeleteByUserID(context.Background(), buf)
+				buf = nil
+			}
+		}
+		if len(buf) > 0 {
+			h.DB.DeleteByUserID(context.Background(), buf)
+		}
+
+	}(h.DelChan)
 
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)

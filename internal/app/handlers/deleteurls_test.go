@@ -23,11 +23,11 @@ func TestDeleteURLs(t *testing.T) {
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, secure.UserIDKey, "userId")
 
-		stor.EXPECT().DeleteByUserID(
-			ctx,
-			"userId",
-			[]string{"first", "second"},
-		)
+		// stor.EXPECT().DeleteByUserID(
+		// 	ctx,
+		// 	"userId",
+		// 	[]string{"first", "second"},
+		// )
 
 		c := config.MakeConfig()
 		h := MakeShortanerHandler(c, stor)
@@ -56,11 +56,11 @@ func TestDeleteURLs(t *testing.T) {
 
 		ctx := context.Background()
 
-		stor.EXPECT().DeleteByUserID(
-			ctx,
-			"userId",
-			[]string{"first", "second"},
-		).Times(0)
+		// stor.EXPECT().DeleteByUserID(
+		// 	ctx,
+		// 	"userId",
+		// 	[]string{"first", "second"},
+		// ).Times(0)
 
 		c := config.MakeConfig()
 		h := MakeShortanerHandler(c, stor)

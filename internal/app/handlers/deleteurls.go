@@ -34,11 +34,8 @@ func (h *ShortanerHandler) DeleteURLs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.DB.DeleteByUserID(r.Context(), userID, list)
-
-	if err != nil {
-		http.Error(w, "Error when delete data from db", http.StatusInternalServerError)
-		return
+	for _, v := range list {
+		h.DelChan <- [2]string{userID, v}
 	}
 
 	w.WriteHeader(http.StatusAccepted)

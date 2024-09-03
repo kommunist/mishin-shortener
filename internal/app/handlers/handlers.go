@@ -10,7 +10,7 @@ type AbstractStorage interface {
 	PushBatch(context.Context, *map[string]string, string) error // collection, userID
 	Get(context.Context, string) (string, error)
 	GetByUserID(context.Context, string) (map[string]string, error) // userID
-	DeleteByUserID(context.Context, string, []string) error         // userID, list
+	DeleteByUserID(context.Context, [][2]string) error              // слайс пар userID, list
 	Finish() error
 	Ping(context.Context) error
 }
@@ -18,12 +18,14 @@ type AbstractStorage interface {
 type ShortanerHandler struct {
 	DB      AbstractStorage
 	Options config.MainConfig
+	DelChan chan [2]string // [0] - для user_id и [1] для short
 }
 
 func MakeShortanerHandler(c config.MainConfig, db AbstractStorage) ShortanerHandler {
 	return ShortanerHandler{
 		DB:      db,
 		Options: c,
+		DelChan: make(chan [2]string, 5),
 	}
 }
 

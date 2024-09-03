@@ -43,7 +43,7 @@ func (db *Storage) GetByUserID(ctx context.Context, userID string) (map[string]s
 	return nil, nil
 }
 
-func (db *Storage) DeleteByUserID(ctx context.Context, userID string, shorts []string) error {
+func (db *Storage) DeleteByUserID(ctx context.Context, list [][2]string) error {
 	return nil
 }
 
