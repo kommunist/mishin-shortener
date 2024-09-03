@@ -40,17 +40,24 @@ func main() {
 	h := handlers.MakeShortanerHandler(c, storage)
 
 	r := chi.NewRouter()
+
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)
 	r.Use(middleware.GzipMiddleware)
 
+	r.Route("/api", func(r chi.Router) {
+		r.With(middleware.AuthSet).Route("/shorten", func(r chi.Router) {
+			r.Post("/", h.CreateURLByJSON)
+			r.Post("/batch", h.CreateURLByJSONBatch)
+		})
+
+		r.With(middleware.AuthCheck).Route("/user", func(r chi.Router) {
+			r.Get("/urls", h.UserURLs)
+			r.Delete("/urls", h.DeleteURLs)
+		})
+
+	})
 	r.With(middleware.AuthSet).Post("/", h.CreateURL)
-	r.With(middleware.AuthSet).Post("/api/shorten", h.CreateURLByJSON)
-	r.With(middleware.AuthSet).Post("/api/shorten/batch", h.CreateURLByJSONBatch)
-
-	r.With(middleware.AuthCheck).Get("/api/user/urls", h.UserURLs)
-	r.With(middleware.AuthCheck).Delete("/api/user/urls", h.DeleteURLs)
-
 	r.Get("/{shortened}", h.RedirectHandler)
 	r.Get("/ping", h.PingHandler)
 
