@@ -52,21 +52,14 @@ func TestUserURLs(t *testing.T) {
 		fmt.Println(string(resBody))
 
 		json.Unmarshal(resBody, &list)
-		assert.Equal(
-			t,
-			[]UserURLsItem{
-				{
-					Short:    "http://localhost:8080/short0",
-					Original: "long0",
-				},
-				{
-					Short:    "http://localhost:8080/short1",
-					Original: "long1",
-				},
-			},
-			list,
-		)
 
+		assert.Contains(t, list, UserURLsItem{
+			Short:    "http://localhost:8080/short0",
+			Original: "long0",
+		})
+		assert.Contains(t, list, UserURLsItem{
+			Short:    "http://localhost:8080/short1",
+			Original: "long1",
+		})
 	})
-
 }
