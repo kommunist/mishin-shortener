@@ -40,38 +40,9 @@ func main() {
 
 	h := handlers.MakeShortanerHandler(c, storage)
 
-	r := chi.NewRouter()
-
 	delasync.InitWorker(h.DelChan, h.DB.DeleteByUserID)
 
-	// go func(in <-chan delasync.DelPair) {
-	// 	var buf []delasync.DelPair // сюда будем складывать накопленные
-
-	// 	rf := func(in <-chan delasync.DelPair) (delasync.DelPair, bool) {
-	// 		select {
-	// 		case val := <-in:
-	// 			return val, true
-	// 		case <-time.After(5 * time.Second):
-	// 			return delasync.DelPair{}, false
-	// 		}
-	// 	}
-
-	// 	for {
-	// 		val, found := rf(in)
-	// 		if found {
-	// 			buf = append(buf, val)
-	// 			if len(buf) > 2 {
-	// 				h.DB.DeleteByUserID(context.Background(), buf)
-	// 				buf = nil
-	// 			}
-	// 		} else {
-	// 			if len(buf) > 0 {
-	// 				h.DB.DeleteByUserID(context.Background(), buf)
-	// 				buf = nil
-	// 			}
-	// 		}
-	// 	}
-	// }(h.DelChan)
+	r := chi.NewRouter()
 
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)
