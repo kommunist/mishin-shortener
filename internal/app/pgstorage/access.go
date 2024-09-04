@@ -134,9 +134,22 @@ func (d *Driver) DeleteByUserID(ctx context.Context, list []delasync.DelPair) er
 	}
 	resCond := strings.Join(cond, "")
 	slog.Info("Execute cond", "cond", resCond)
-	_, err := d.driver.Exec(resCond)
+
+	trn, err := d.driver.Begin()
 	if err != nil {
-		slog.Error("Error from DeleteByUserID", "err", err)
+		slog.Error("Error when open transaction", "err", err)
+		return err
+	}
+
+	_, err = trn.Exec(resCond)
+	if err != nil {
+		slog.Error("Error exec query", "err", err)
+		return err
+	}
+
+	err = trn.Commit()
+	if err != nil {
+		slog.Error("Error when commit transaction", "err", err)
 		return err
 	}
 	return nil
