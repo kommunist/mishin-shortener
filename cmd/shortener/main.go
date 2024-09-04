@@ -45,17 +45,30 @@ func main() {
 	go func(in <-chan [2]string) {
 		var buf [][2]string // сюда будем складывать накопленные
 
-		for v := range in {
-			buf = append(buf, v)
-			if len(buf) > 0 {
-				h.DB.DeleteByUserID(context.Background(), buf)
-				buf = nil
+		rf := func(in <-chan [2]string) ([2]string, bool) {
+			select {
+			case val := <-in:
+				return val, true
+			case <-time.After(5 * time.Second):
+				return [2]string{}, false
 			}
 		}
-		if len(buf) > 0 {
-			h.DB.DeleteByUserID(context.Background(), buf)
-		}
 
+		for {
+			val, found := rf(in)
+			if found {
+				buf = append(buf, val)
+				if len(buf) > 2 {
+					h.DB.DeleteByUserID(context.Background(), buf)
+					buf = nil
+				}
+			} else {
+				if len(buf) > 0 {
+					h.DB.DeleteByUserID(context.Background(), buf)
+					buf = nil
+				}
+			}
+		}
 	}(h.DelChan)
 
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
