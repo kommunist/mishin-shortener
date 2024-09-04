@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log/slog"
 	"os"
 	"time"
@@ -43,34 +42,36 @@ func main() {
 
 	r := chi.NewRouter()
 
-	go func(in <-chan delasync.DelPair) {
-		var buf []delasync.DelPair // сюда будем складывать накопленные
+	delasync.InitWorker(h.DelChan, h.DB.DeleteByUserID)
 
-		rf := func(in <-chan delasync.DelPair) (delasync.DelPair, bool) {
-			select {
-			case val := <-in:
-				return val, true
-			case <-time.After(5 * time.Second):
-				return delasync.DelPair{}, false
-			}
-		}
+	// go func(in <-chan delasync.DelPair) {
+	// 	var buf []delasync.DelPair // сюда будем складывать накопленные
 
-		for {
-			val, found := rf(in)
-			if found {
-				buf = append(buf, val)
-				if len(buf) > 2 {
-					h.DB.DeleteByUserID(context.Background(), buf)
-					buf = nil
-				}
-			} else {
-				if len(buf) > 0 {
-					h.DB.DeleteByUserID(context.Background(), buf)
-					buf = nil
-				}
-			}
-		}
-	}(h.DelChan)
+	// 	rf := func(in <-chan delasync.DelPair) (delasync.DelPair, bool) {
+	// 		select {
+	// 		case val := <-in:
+	// 			return val, true
+	// 		case <-time.After(5 * time.Second):
+	// 			return delasync.DelPair{}, false
+	// 		}
+	// 	}
+
+	// 	for {
+	// 		val, found := rf(in)
+	// 		if found {
+	// 			buf = append(buf, val)
+	// 			if len(buf) > 2 {
+	// 				h.DB.DeleteByUserID(context.Background(), buf)
+	// 				buf = nil
+	// 			}
+	// 		} else {
+	// 			if len(buf) > 0 {
+	// 				h.DB.DeleteByUserID(context.Background(), buf)
+	// 				buf = nil
+	// 			}
+	// 		}
+	// 	}
+	// }(h.DelChan)
 
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)
