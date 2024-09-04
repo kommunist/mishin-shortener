@@ -6,6 +6,7 @@ package mocks
 
 import (
 	context "context"
+	delasync "mishin-shortener/internal/app/delasync"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -35,7 +36,7 @@ func (m *MockAbstractStorage) EXPECT() *MockAbstractStorageMockRecorder {
 }
 
 // DeleteByUserID mocks base method.
-func (m *MockAbstractStorage) DeleteByUserID(arg0 context.Context, arg1 [][2]string) error {
+func (m *MockAbstractStorage) DeleteByUserID(arg0 context.Context, arg1 []delasync.DelPair) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteByUserID", arg0, arg1)
 	ret0, _ := ret[0].(error)

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/app/delasync"
 	"mishin-shortener/internal/app/filestorage"
 	"mishin-shortener/internal/app/handlers"
 	"mishin-shortener/internal/app/mapstorage"
@@ -42,15 +43,15 @@ func main() {
 
 	r := chi.NewRouter()
 
-	go func(in <-chan [2]string) {
-		var buf [][2]string // сюда будем складывать накопленные
+	go func(in <-chan delasync.DelPair) {
+		var buf []delasync.DelPair // сюда будем складывать накопленные
 
-		rf := func(in <-chan [2]string) ([2]string, bool) {
+		rf := func(in <-chan delasync.DelPair) (delasync.DelPair, bool) {
 			select {
 			case val := <-in:
 				return val, true
 			case <-time.After(5 * time.Second):
-				return [2]string{}, false
+				return delasync.DelPair{}, false
 			}
 		}
 

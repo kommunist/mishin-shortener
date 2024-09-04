@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
+	"mishin-shortener/internal/app/delasync"
 	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
@@ -35,7 +36,7 @@ func (h *ShortanerHandler) DeleteURLs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, v := range list {
-		h.DelChan <- [2]string{userID, v}
+		h.DelChan <- delasync.DelPair{UserID: userID, Item: v}
 	}
 
 	w.WriteHeader(http.StatusAccepted)

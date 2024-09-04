@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"mishin-shortener/internal/app/delasync"
 	"mishin-shortener/internal/app/deleted"
 	"mishin-shortener/internal/app/exsist"
 	"strings"
@@ -120,7 +121,7 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 	return result, nil
 }
 
-func (d *Driver) DeleteByUserID(ctx context.Context, list [][2]string) error {
+func (d *Driver) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	start := "UPDATE short_urls set deleted = true where "
 	var cond []string
 	cond = append(cond, start)
@@ -129,7 +130,7 @@ func (d *Driver) DeleteByUserID(ctx context.Context, list [][2]string) error {
 		if i != 0 {
 			cond = append(cond, " or ")
 		}
-		cond = append(cond, fmt.Sprintf("user_id = '%s' and short = '%s'", v[0], v[1]))
+		cond = append(cond, fmt.Sprintf("user_id = '%s' and short = '%s'", v.UserID, v.Item))
 	}
 	resCond := strings.Join(cond, "")
 	slog.Info("Execute cond", "cond", resCond)

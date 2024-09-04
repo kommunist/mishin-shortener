@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log/slog"
+	"mishin-shortener/internal/app/delasync"
 )
 
 func (fs *Storage) Get(ctx context.Context, shortURL string) (string, error) {
@@ -53,7 +54,7 @@ func (fs *Storage) GetByUserID(ctx context.Context, userID string) (map[string]s
 	return nil, nil
 }
 
-func (fs *Storage) DeleteByUserID(ctx context.Context, list [][2]string) error {
+func (fs *Storage) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	return nil
 }
 

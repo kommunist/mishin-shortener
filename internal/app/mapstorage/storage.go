@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"mishin-shortener/internal/app/delasync"
 )
 
 type Storage map[string]string
@@ -43,7 +44,7 @@ func (db *Storage) GetByUserID(ctx context.Context, userID string) (map[string]s
 	return nil, nil
 }
 
-func (db *Storage) DeleteByUserID(ctx context.Context, list [][2]string) error {
+func (db *Storage) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	return nil
 }
 
