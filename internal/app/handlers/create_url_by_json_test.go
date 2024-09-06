@@ -8,6 +8,7 @@ import (
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/internal/app/secure"
 	"mishin-shortener/mocks"
 	"net/http"
 	"net/http/httptest"
@@ -26,12 +27,15 @@ func TestCreateURLByJSON(t *testing.T) {
 		inputData := RequestData{URL: "biba"}
 		inputJSON, _ := json.Marshal(inputData)
 
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
+
 		request :=
 			httptest.NewRequest(
 				http.MethodPost,
 				"/api/shorten",
 				bytes.NewReader(inputJSON),
-			)
+			).WithContext(ctx)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
 		w := httptest.NewRecorder()
@@ -51,7 +55,7 @@ func TestCreateURLByJSON(t *testing.T) {
 
 		// проверим содержимое базы
 		var v string
-		v, _ = db.Get(context.Background(), "/931691969b142b3a0f11a03e36fcc3b7")
+		v, _ = db.Get(context.Background(), "931691969b142b3a0f11a03e36fcc3b7")
 		assert.Equal(t, "biba", v)
 	})
 
@@ -60,13 +64,15 @@ func TestCreateURLByJSON(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
-		baseContext := context.Background()
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
 
 		stor := mocks.NewMockAbstractStorage(ctrl)
 		stor.EXPECT().Push(
-			baseContext,
-			"/931691969b142b3a0f11a03e36fcc3b7",
+			ctx,
+			"931691969b142b3a0f11a03e36fcc3b7",
 			"biba",
+			"qq",
 		).Return(exsist.NewExistError(nil))
 
 		c := config.MakeConfig()
@@ -80,7 +86,7 @@ func TestCreateURLByJSON(t *testing.T) {
 				http.MethodPost,
 				"/api/shorten",
 				bytes.NewReader(inputJSON),
-			).WithContext(baseContext)
+			).WithContext(ctx)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
 		w := httptest.NewRecorder()

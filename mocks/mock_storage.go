@@ -6,6 +6,7 @@ package mocks
 
 import (
 	context "context"
+	delasync "mishin-shortener/internal/app/delasync"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -32,6 +33,20 @@ func NewMockAbstractStorage(ctrl *gomock.Controller) *MockAbstractStorage {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAbstractStorage) EXPECT() *MockAbstractStorageMockRecorder {
 	return m.recorder
+}
+
+// DeleteByUserID mocks base method.
+func (m *MockAbstractStorage) DeleteByUserID(arg0 context.Context, arg1 []delasync.DelPair) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteByUserID", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteByUserID indicates an expected call of DeleteByUserID.
+func (mr *MockAbstractStorageMockRecorder) DeleteByUserID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByUserID", reflect.TypeOf((*MockAbstractStorage)(nil).DeleteByUserID), arg0, arg1)
 }
 
 // Finish mocks base method.
@@ -63,6 +78,21 @@ func (mr *MockAbstractStorageMockRecorder) Get(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockAbstractStorage)(nil).Get), arg0, arg1)
 }
 
+// GetByUserID mocks base method.
+func (m *MockAbstractStorage) GetByUserID(arg0 context.Context, arg1 string) (map[string]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByUserID", arg0, arg1)
+	ret0, _ := ret[0].(map[string]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByUserID indicates an expected call of GetByUserID.
+func (mr *MockAbstractStorageMockRecorder) GetByUserID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUserID", reflect.TypeOf((*MockAbstractStorage)(nil).GetByUserID), arg0, arg1)
+}
+
 // Ping mocks base method.
 func (m *MockAbstractStorage) Ping(arg0 context.Context) error {
 	m.ctrl.T.Helper()
@@ -78,29 +108,29 @@ func (mr *MockAbstractStorageMockRecorder) Ping(arg0 interface{}) *gomock.Call {
 }
 
 // Push mocks base method.
-func (m *MockAbstractStorage) Push(arg0 context.Context, arg1, arg2 string) error {
+func (m *MockAbstractStorage) Push(arg0 context.Context, arg1, arg2, arg3 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Push", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "Push", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Push indicates an expected call of Push.
-func (mr *MockAbstractStorageMockRecorder) Push(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockAbstractStorageMockRecorder) Push(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Push", reflect.TypeOf((*MockAbstractStorage)(nil).Push), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Push", reflect.TypeOf((*MockAbstractStorage)(nil).Push), arg0, arg1, arg2, arg3)
 }
 
 // PushBatch mocks base method.
-func (m *MockAbstractStorage) PushBatch(arg0 context.Context, arg1 *map[string]string) error {
+func (m *MockAbstractStorage) PushBatch(arg0 context.Context, arg1 *map[string]string, arg2 string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PushBatch", arg0, arg1)
+	ret := m.ctrl.Call(m, "PushBatch", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // PushBatch indicates an expected call of PushBatch.
-func (mr *MockAbstractStorageMockRecorder) PushBatch(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockAbstractStorageMockRecorder) PushBatch(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PushBatch", reflect.TypeOf((*MockAbstractStorage)(nil).PushBatch), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PushBatch", reflect.TypeOf((*MockAbstractStorage)(nil).PushBatch), arg0, arg1, arg2)
 }

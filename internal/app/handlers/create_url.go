@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/hasher"
+	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
 
@@ -21,7 +22,14 @@ func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusCreated
 	hashed := hasher.GetMD5Hash(body)
 
-	err = h.DB.Push(r.Context(), "/"+hashed, string(body))
+	var userID string
+	if r.Context().Value(secure.UserIDKey) == nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	} else {
+		userID = r.Context().Value(secure.UserIDKey).(string)
+	}
+
+	err = h.DB.Push(r.Context(), hashed, string(body), userID)
 	if err != nil {
 		if _, ok := err.(*exsist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
 			status = http.StatusConflict

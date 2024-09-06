@@ -7,6 +7,7 @@ import (
 	"io"
 	"mishin-shortener/internal/app/config"
 	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/internal/app/secure"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -26,12 +27,15 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		}
 		inputJSON, _ := json.Marshal(inputData)
 
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
+
 		request :=
 			httptest.NewRequest(
 				http.MethodPost,
 				"/api/shorten/batch",
 				bytes.NewReader(inputJSON),
-			)
+			).WithContext(ctx)
 
 		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
 		w := httptest.NewRecorder()
@@ -54,10 +58,10 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 
 		// проверим содержимое базы
 		var v string
-		v, _ = db.Get(context.Background(), "/931691969b142b3a0f11a03e36fcc3b7")
+		v, _ = db.Get(context.Background(), "931691969b142b3a0f11a03e36fcc3b7")
 		assert.Equal(t, "biba", v)
 
-		v, _ = db.Get(context.Background(), "/2cce0ec300cfe8dd3024939db0448893")
+		v, _ = db.Get(context.Background(), "2cce0ec300cfe8dd3024939db0448893")
 		assert.Equal(t, "boba", v)
 	})
 }

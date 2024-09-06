@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log/slog"
+	"mishin-shortener/internal/app/delasync"
 )
 
 func (fs *Storage) Get(ctx context.Context, shortURL string) (string, error) {
@@ -11,8 +12,8 @@ func (fs *Storage) Get(ctx context.Context, shortURL string) (string, error) {
 	return fs.cache.Get(ctx, shortURL)
 }
 
-func (fs *Storage) Push(ctx context.Context, short string, original string) error {
-	err := fs.cache.Push(ctx, short, original)
+func (fs *Storage) Push(ctx context.Context, short string, original string, userID string) error {
+	err := fs.cache.Push(ctx, short, original, userID)
 	if err != nil {
 		slog.Error("Push to cache storage error", "err", err)
 		return err
@@ -37,15 +38,23 @@ func (fs *Storage) Push(ctx context.Context, short string, original string) erro
 	return nil
 }
 
-func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string) error {
+func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string, userID string) error {
 	for k, v := range *list {
-		err := fs.Push(ctx, k, v)
+		err := fs.Push(ctx, k, v, userID)
 		if err != nil {
 			slog.Error("When batch push to file error", "err", err)
 			return err
 		}
 
 	}
+	return nil
+}
+
+func (fs *Storage) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
+	return nil, nil
+}
+
+func (fs *Storage) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	return nil
 }
 

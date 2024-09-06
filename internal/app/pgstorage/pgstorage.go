@@ -39,7 +39,17 @@ func (d *Driver) initSchema() {
 
 	_, err := d.driver.ExecContext(
 		ctx,
-		"CREATE TABLE IF NOT EXISTS short_urls (id SERIAL PRIMARY KEY, short TEXT, original TEXT);")
+		`
+			CREATE TABLE IF NOT EXISTS short_urls (
+				id SERIAL PRIMARY KEY,
+				short     TEXT,
+				original  TEXT,
+				user_id   TEXT,
+				deleted   BOOLEAN DEFAULT false
+			);
+
+		`,
+	)
 	if err != nil {
 		slog.Error("Eror when create table", "err", err)
 		os.Exit(1)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"mishin-shortener/internal/app/hasher"
+	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
 
@@ -39,7 +40,7 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 	for _, v := range input {
 		hashed := hasher.GetMD5Hash([]byte(v.OriginalURL))
 
-		prepareToSave["/"+hashed] = v.OriginalURL
+		prepareToSave[hashed] = v.OriginalURL
 
 		output = append(
 			output,
@@ -50,7 +51,15 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 		)
 	}
 
-	err = h.DB.PushBatch(r.Context(), &prepareToSave)
+	var userID string
+	if r.Context().Value(secure.UserIDKey) == nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	} else {
+		userID = r.Context().Value(secure.UserIDKey).(string)
+	}
+
+	err = h.DB.PushBatch(r.Context(), &prepareToSave, userID)
+
 	if err != nil {
 		http.Error(w, "Error when push to storage", http.StatusInternalServerError)
 		return
