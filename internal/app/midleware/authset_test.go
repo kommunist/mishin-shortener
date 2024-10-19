@@ -9,8 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func testAuthHandler(w http.ResponseWriter, r *http.Request) {}
-
 func TestAuthSet(t *testing.T) {
 	t.Run("correct_auth", func(t *testing.T) {
 
