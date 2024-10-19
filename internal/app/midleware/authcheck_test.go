@@ -14,8 +14,8 @@ func testHandler(w http.ResponseWriter, r *http.Request) {}
 func TestAuth(t *testing.T) {
 	t.Run("correct_auth", func(t *testing.T) {
 
-		userId := "user"
-		encrypted, _ := secure.Encrypt(userId)
+		userID := "user"
+		encrypted, _ := secure.Encrypt(userID)
 
 		nextHandler := http.HandlerFunc(testHandler)
 		handlerToTest := AuthCheck(nextHandler)

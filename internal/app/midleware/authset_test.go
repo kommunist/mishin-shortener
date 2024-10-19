@@ -12,8 +12,8 @@ import (
 func TestAuthSet(t *testing.T) {
 	t.Run("correct_auth", func(t *testing.T) {
 
-		userId := "user"
-		encrypted, _ := secure.Encrypt(userId)
+		userID := "user"
+		encrypted, _ := secure.Encrypt(userID)
 
 		nextHandler := http.HandlerFunc(testHandler)
 		handlerToTest := AuthSet(nextHandler)
@@ -37,7 +37,7 @@ func TestAuthSet(t *testing.T) {
 
 		decrypted, _ := secure.Decrypt(res.Cookies()[0].Value)
 
-		assert.Equal(t, userId, decrypted, "response has same cookie as request")
+		assert.Equal(t, userID, decrypted, "response has same cookie as request")
 		assert.Equal(t, http.StatusOK, res.StatusCode, "response status must be 200 with auth")
 	})
 
