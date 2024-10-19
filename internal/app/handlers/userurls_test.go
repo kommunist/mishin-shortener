@@ -30,6 +30,7 @@ func TestUserURLs(t *testing.T) {
 		).Return(map[string]string{"short0": "long0", "short1": "long1"}, nil)
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		request :=

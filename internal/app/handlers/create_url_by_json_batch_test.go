@@ -19,6 +19,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 	t.Run("Start_POST_to_create_record_in_storage", func(t *testing.T) {
 		db := mapstorage.Make()
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, db)
 
 		inputData := []RequestBatchItem{

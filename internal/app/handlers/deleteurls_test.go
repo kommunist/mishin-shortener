@@ -30,6 +30,7 @@ func TestDeleteURLs(t *testing.T) {
 		// )
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		inputJSON, _ := json.Marshal([]string{"first", "second"})
@@ -63,6 +64,7 @@ func TestDeleteURLs(t *testing.T) {
 		// ).Times(0)
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		inputJSON, _ := json.Marshal([]string{"first", "second"})

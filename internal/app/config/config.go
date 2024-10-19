@@ -30,12 +30,15 @@ func (c *MainConfig) InitConfig() {
 }
 
 func (c *MainConfig) InitFlags() {
-	flag.StringVar(&c.BaseServerURL, "a", "localhost:8080", "default host for server")
-	flag.StringVar(&c.BaseRedirectURL, "b", "http://localhost:8080", "default host for server")
-	flag.StringVar(&c.FileStoragePath, "f", "", "file path for file storage")
-	flag.StringVar(&c.DatabaseDSN, "d", "", "database DSN")
-
-	slog.Info("flags inited")
+	if flag.Lookup("a") == nil {
+		flag.StringVar(&c.BaseServerURL, "a", "localhost:8080", "default host for server")
+		flag.StringVar(&c.BaseRedirectURL, "b", "http://localhost:8080", "default host for server")
+		flag.StringVar(&c.FileStoragePath, "f", "", "file path for file storage")
+		flag.StringVar(&c.DatabaseDSN, "d", "", "database DSN")
+		slog.Info("flags inited")
+	} else {
+		slog.Info("flags already inited")
+	}
 }
 
 func (c *MainConfig) Parse() {

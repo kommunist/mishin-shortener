@@ -14,6 +14,7 @@ func TestPingHandler(t *testing.T) {
 	t.Run("when_not_pg_storage_then_error", func(t *testing.T) {
 		db := mapstorage.Make() // сделаем, что база не postgres
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, db)
 
 		request := httptest.NewRequest(http.MethodGet, "/ping", nil)
