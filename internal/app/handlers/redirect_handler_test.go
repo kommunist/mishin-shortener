@@ -27,6 +27,7 @@ func TestGetHandler(t *testing.T) {
 			expectedStatus: http.StatusTemporaryRedirect,
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
+				c.InitConfig()
 				db := mapstorage.Make()
 				return MakeShortanerHandler(c, db)
 			}(),
@@ -41,6 +42,7 @@ func TestGetHandler(t *testing.T) {
 			expectedStatus: http.StatusNotFound,
 			handler: func() ShortanerHandler {
 				c := config.MakeConfig()
+				c.InitConfig()
 				db := mapstorage.Make()
 				return MakeShortanerHandler(c, db)
 			}(),

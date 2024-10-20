@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"log/slog"
 	"os"
 	"time"
@@ -17,6 +18,8 @@ import (
 
 	"net/http"
 
+	_ "net/http/pprof"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -32,6 +35,11 @@ func initStorage(c config.MainConfig) handlers.AbstractStorage {
 }
 
 func main() {
+
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	c := config.MakeConfig()
 	c.InitConfig()
 
