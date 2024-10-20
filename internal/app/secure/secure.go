@@ -88,7 +88,5 @@ func Decrypt(data string) (string, error) {
 
 	result, _ := aesgcm.Open(nil, nonce, token, nil) // расшифровываем // TODO сделать обработку ошибки
 
-	slog.Info("Decrypted data", "result", result)
-
 	return string(result), nil
 }
