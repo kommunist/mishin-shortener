@@ -3,12 +3,13 @@ package filestorage
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
 )
 
-func readAndParse(file *os.File) []storageItem {
+func readAndParse(file *os.File) ([]storageItem, error) {
 	reader := bufio.NewReader(file)
 	list := []storageItem{}
 
@@ -23,12 +24,14 @@ func readAndParse(file *os.File) []storageItem {
 		item := storageItem{}
 
 		err := json.Unmarshal(data, &item)
+		fmt.Println(string(data))
 		if err != nil {
+			fmt.Println(err)
 			slog.Error("input file JSON parsing error", "err", err)
-			os.Exit(1)
+			return nil, err
 		}
 		list = append(list, item)
 	}
 
-	return list
+	return list, nil
 }

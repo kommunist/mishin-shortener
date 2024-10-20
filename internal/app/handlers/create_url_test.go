@@ -22,6 +22,7 @@ func TestCreateURL(t *testing.T) {
 	t.Run("Start_POST_to_create_record_in_db", func(t *testing.T) {
 		db := mapstorage.Make()
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, db)
 
 		ctx := context.Background()
@@ -59,6 +60,7 @@ func TestCreateURL(t *testing.T) {
 		).Return(exsist.NewExistError(nil))
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("biba")).WithContext(ctx)
