@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Мидлварь логирования запроса
 func WithLogRequest(h http.Handler) http.Handler {
 	logfn := func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()

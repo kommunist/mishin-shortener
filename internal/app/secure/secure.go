@@ -12,8 +12,10 @@ import (
 
 var keyRandom []byte // использовать глобальные переменные не хорошо. Но пока не стал загонять в файл
 
+// Используется для прокидывания id пользователя через контекст
 type UserIDKeyType int
 
+// Используется для прокидывания id пользователя через контекст
 const UserIDKey UserIDKeyType = 0
 
 func setKeyRandom(size int) {
@@ -35,6 +37,7 @@ func generateRandom(size int) ([]byte, error) {
 	return b, nil
 }
 
+// Шифрование исходной строки. Используется для аутентификации
 func Encrypt(data string) (string, error) {
 	setKeyRandom(aes.BlockSize)
 
@@ -66,6 +69,7 @@ func Encrypt(data string) (string, error) {
 	return result, nil
 }
 
+// Расшифровка исходной строки. Используется для аутентификации
 func Decrypt(data string) (string, error) {
 	setKeyRandom(aes.BlockSize)
 	aesblock, err := aes.NewCipher(keyRandom)
