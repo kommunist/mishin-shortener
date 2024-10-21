@@ -40,8 +40,6 @@ func (c *MainConfig) initFlags() {
 		flag.StringVar(&c.FileStoragePath, "f", "", "file path for file storage")
 		flag.StringVar(&c.DatabaseDSN, "d", "", "database DSN")
 		slog.Info("flags inited")
-	} else {
-		slog.Info("flags already inited")
 	}
 }
 

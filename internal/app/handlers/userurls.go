@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log/slog"
 	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
@@ -16,7 +15,7 @@ type UserURLsItem struct {
 // Обработчик, возвращающий все сокращенные урлы пользователя.
 func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
 	u := r.Context().Value(secure.UserIDKey)
-	slog.Info("User id in context", "user_id", u)
+	// slog.Info("User id in context", "user_id", u)
 	if u == nil {
 		return
 	}
