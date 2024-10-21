@@ -105,3 +105,30 @@ func TestCreateURLByJSON(t *testing.T) {
 		assert.Equal(t, "http://localhost:8080/931691969b142b3a0f11a03e36fcc3b7", outputData.Result)
 	})
 }
+
+func BenchmarkCreateURLByJSON(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		db := mapstorage.Make()
+		c := config.MakeConfig()
+		h := MakeShortanerHandler(c, db)
+
+		inputData := RequestData{URL: "biba"}
+		inputJSON, _ := json.Marshal(inputData)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
+
+		request :=
+			httptest.NewRequest(
+				http.MethodPost,
+				"/api/shorten",
+				bytes.NewReader(inputJSON),
+			).WithContext(ctx)
+
+		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
+		w := httptest.NewRecorder()
+		b.StartTimer()
+		h.CreateURLByJSON(w, request)
+	}
+}

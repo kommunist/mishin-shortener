@@ -8,11 +8,13 @@ import (
 	"github.com/google/uuid"
 )
 
+// Основная структура хранилища
 type Storage struct {
 	cache mapstorage.Storage
 	file  *os.File
 }
 
+// Функция создания хранилища
 func Make(filePath string) *Storage {
 	cache := *mapstorage.Make()
 
@@ -22,7 +24,11 @@ func Make(filePath string) *Storage {
 		slog.Error("open file error", "err", err)
 		os.Exit(1)
 	}
-	items := readAndParse(file)
+	items, err := readAndParse(file)
+	if err != nil {
+		slog.Error("error when parse file", "err", err)
+		os.Exit(1)
+	}
 	for _, v := range items {
 		cache[v.ShortURL] = v.OriginalURL
 	}

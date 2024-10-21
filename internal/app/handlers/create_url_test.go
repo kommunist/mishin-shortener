@@ -22,6 +22,7 @@ func TestCreateURL(t *testing.T) {
 	t.Run("Start_POST_to_create_record_in_db", func(t *testing.T) {
 		db := mapstorage.Make()
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, db)
 
 		ctx := context.Background()
@@ -59,6 +60,7 @@ func TestCreateURL(t *testing.T) {
 		).Return(exsist.NewExistError(nil))
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("biba")).WithContext(ctx)
@@ -74,4 +76,22 @@ func TestCreateURL(t *testing.T) {
 
 		assert.Equal(t, "http://localhost:8080/931691969b142b3a0f11a03e36fcc3b7", string(resBody))
 	})
+}
+
+func BenchmarkCreateURL(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		db := mapstorage.Make()
+		c := config.MakeConfig()
+		c.InitConfig()
+		h := MakeShortanerHandler(c, db)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
+
+		request := httptest.NewRequest(http.MethodPost, "/", strings.NewReader("ya.ru")).WithContext(ctx)
+		w := httptest.NewRecorder()
+		b.StartTimer()
+		h.CreateURL(w, request)
+	}
 }

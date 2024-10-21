@@ -16,10 +16,11 @@ func TestReadAndParse(t *testing.T) {
 		defer os.Remove(testFile.Name())
 
 		fs := Make(testFile.Name()) // создаем fs
+		defer fs.Finish()
 		fs.Push(context.Background(), "short0", "original0", "userID")
 		fs.Push(context.Background(), "short1", "original1", "userID")
 
-		list := readAndParse(testFile)
+		list, _ := readAndParse(testFile)
 
 		assert.Equal(t, len(list), 2)
 
@@ -28,5 +29,22 @@ func TestReadAndParse(t *testing.T) {
 
 		assert.Equal(t, list[1].OriginalURL, "original1")
 		assert.Equal(t, list[1].ShortURL, "short1")
+	})
+
+	t.Run("read_and_parse_data_from_incorrect_file", func(t *testing.T) {
+		testFile, _ := os.CreateTemp("", "pattern")
+		defer os.Remove(testFile.Name())
+
+		fs := Make(testFile.Name()) // создаем fs
+		defer fs.Finish()
+
+		testFile.WriteString("aaa\n")
+		testFile.Close()
+
+		file, _ := os.OpenFile(testFile.Name(), os.O_RDWR|os.O_CREATE, 0666)
+		list, err := readAndParse(file)
+
+		assert.EqualError(t, err, "invalid character 'a' looking for beginning of value")
+		assert.Equal(t, len(list), 0)
 	})
 }

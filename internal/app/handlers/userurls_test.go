@@ -30,6 +30,7 @@ func TestUserURLs(t *testing.T) {
 		).Return(map[string]string{"short0": "long0", "short1": "long1"}, nil)
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		request :=
@@ -62,4 +63,36 @@ func TestUserURLs(t *testing.T) {
 			Original: "long1",
 		})
 	})
+}
+
+func BenchmarkUserURLs(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+
+		ctrl := gomock.NewController(b)
+		stor := mocks.NewMockAbstractStorage(ctrl)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "userId")
+
+		stor.EXPECT().GetByUserID(
+			ctx,
+			"userId",
+		).Return(map[string]string{"short0": "long0", "short1": "long1"}, nil)
+
+		c := config.MakeConfig()
+		c.InitConfig()
+		h := MakeShortanerHandler(c, stor)
+
+		request :=
+			httptest.NewRequest(
+				http.MethodGet,
+				"/api/user/urls",
+				nil,
+			).WithContext(ctx)
+
+		w := httptest.NewRecorder()
+		b.StartTimer()
+		h.UserURLs(w, request)
+	}
 }

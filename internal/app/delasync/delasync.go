@@ -1,3 +1,4 @@
+// Модуль delasync отвечает за асинхронное удаление данных из базы.
 package delasync
 
 import (
@@ -5,11 +6,13 @@ import (
 	"time"
 )
 
+// Содержит информацию о том, что нужно удалить: сама сущность и кому пренадлежит.
 type DelPair struct {
 	UserID string
 	Item   string
 }
 
+// Функция запускает горутины, которые будут принимать информацию об удаляемых объектах.
 func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) error) {
 	go func(in <-chan DelPair) {
 		var buf []DelPair // сюда будем складывать накопленные

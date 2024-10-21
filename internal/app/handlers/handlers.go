@@ -6,6 +6,7 @@ import (
 	"mishin-shortener/internal/app/delasync"
 )
 
+// Интерфейс, описывающий работу с базой.
 type AbstractStorage interface {
 	Push(context.Context, string, string, string) error          // short, original, userID
 	PushBatch(context.Context, *map[string]string, string) error // collection, userID
@@ -16,12 +17,14 @@ type AbstractStorage interface {
 	Ping(context.Context) error
 }
 
+// Структура обработчика, связывающая базу и конфигурацию.
 type ShortanerHandler struct {
 	DB      AbstractStorage
 	Options config.MainConfig
 	DelChan chan delasync.DelPair // [0] - для user_id и [1] для short
 }
 
+// Создание структуры обработчика.
 func MakeShortanerHandler(c config.MainConfig, db AbstractStorage) ShortanerHandler {
 	return ShortanerHandler{
 		DB:      db,
