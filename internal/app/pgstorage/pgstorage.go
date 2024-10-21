@@ -12,10 +12,12 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// Структура хранилища
 type Driver struct {
 	driver *sql.DB
 }
 
+// Функция создания хранилища
 func Make(c config.MainConfig) *Driver {
 	driver, err := sql.Open("postgres", c.DatabaseDSN)
 
