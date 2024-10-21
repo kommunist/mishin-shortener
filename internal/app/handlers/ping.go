@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// Обработчик для проверки и восстановления подключения к базе.
 func (h *ShortanerHandler) PingHandler(w http.ResponseWriter, r *http.Request) {
 
 	if h.Options.DatabaseDSN == "" {

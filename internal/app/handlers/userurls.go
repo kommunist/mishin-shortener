@@ -7,11 +7,13 @@ import (
 	"net/http"
 )
 
+// Структура ответа обработчика, возвращающего сокращенные урлы пользователя.
 type UserURLsItem struct {
 	Short    string `json:"short_url"`
 	Original string `json:"original_url"`
 }
 
+// Обработчик, возвращающий все сокращенные урлы пользователя.
 func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
 	u := r.Context().Value(secure.UserIDKey)
 	slog.Info("User id in context", "user_id", u)

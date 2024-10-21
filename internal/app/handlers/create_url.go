@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Обработчик простого запроса на сокращение.
 func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()

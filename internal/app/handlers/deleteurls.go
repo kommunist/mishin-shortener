@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Обработчик запроса на удаление сокращенного URL.
 func (h *ShortanerHandler) DeleteURLs(w http.ResponseWriter, r *http.Request) {
 	u := r.Context().Value(secure.UserIDKey)
 	slog.Info("User id in context", "user_id", u)

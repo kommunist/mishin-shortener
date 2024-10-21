@@ -8,11 +8,13 @@ import (
 	"github.com/google/uuid"
 )
 
+// Основная структура хранилища
 type Storage struct {
 	cache mapstorage.Storage
 	file  *os.File
 }
 
+// Функция создания хранилища
 func Make(filePath string) *Storage {
 	cache := *mapstorage.Make()
 

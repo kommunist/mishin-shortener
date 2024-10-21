@@ -8,16 +8,19 @@ import (
 	"net/http"
 )
 
+// Структура входящего запроса на сокращение в формате JSON батчами.
 type RequestBatchItem struct {
 	CorrelationID string `json:"correlation_id"`
 	OriginalURL   string `json:"original_url"`
 }
 
+// Структура ответа на сокращение в формате JSON батчами.
 type ResponseBatchItem struct {
 	CorrelationID string `json:"correlation_id"`
 	ShortURL      string `json:"short_url"`
 }
 
+// Обработчик запроса на сокращение в формате JSON батчами.
 func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
