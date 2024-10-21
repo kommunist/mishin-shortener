@@ -1,8 +1,9 @@
 package hasher
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetMD5Hash(t *testing.T) {
@@ -23,4 +24,11 @@ func TestGetMD5Hash(t *testing.T) {
 			assert.Equal(t, GetMD5Hash(test.input), test.result)
 		})
 	}
+}
+
+func Example() {
+	GetMD5Hash([]byte("simple test"))
+
+	// Output
+	// 2c42e5cf1cdbafea04ed267018ef1511
 }
