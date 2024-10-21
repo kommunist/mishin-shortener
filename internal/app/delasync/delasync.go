@@ -1,3 +1,4 @@
+// Модуль delasync отвечает за асинхронное удаление данных из базы.
 package delasync
 
 import (

@@ -1,3 +1,4 @@
+// Модуль pgstorage предоставляет необходимые приложению методы работы с postgres.
 package pgstorage
 
 import (

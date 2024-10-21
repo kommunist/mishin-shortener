@@ -1,3 +1,4 @@
+// Модуль mapstorage предоставляет хранение данных в MAP структуре.
 package mapstorage
 
 import (
