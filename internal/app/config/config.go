@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// Хранит настройки приложения.
 type MainConfig struct {
 	BaseServerURL   string
 	BaseRedirectURL string
@@ -14,6 +15,7 @@ type MainConfig struct {
 	DatabaseDSN     string
 }
 
+// Создает структуру харнения с дефолтными значениями.
 func MakeConfig() MainConfig {
 	config := MainConfig{
 		BaseServerURL:   "localhost:8080",
@@ -25,12 +27,13 @@ func MakeConfig() MainConfig {
 	return config
 }
 
+// Запускает процесс парсинга флагов и ENV переменных.
 func (c *MainConfig) InitConfig() {
-	c.InitFlags()
-	c.Parse()
+	c.initFlags()
+	c.parse()
 }
 
-func (c *MainConfig) InitFlags() {
+func (c *MainConfig) initFlags() {
 	if flag.Lookup("a") == nil {
 		flag.StringVar(&c.BaseServerURL, "a", "localhost:8080", "default host for server")
 		flag.StringVar(&c.BaseRedirectURL, "b", "http://localhost:8080", "default host for server")
@@ -42,7 +45,7 @@ func (c *MainConfig) InitFlags() {
 	}
 }
 
-func (c *MainConfig) Parse() {
+func (c *MainConfig) parse() {
 	flag.Parse()
 
 	if e := os.Getenv("SERVER_ADDRESS"); e != "" {
