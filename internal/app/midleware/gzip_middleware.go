@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// Структура компрессора ответа.
 type compressWriter struct {
 	w  http.ResponseWriter
 	zw *gzip.Writer
@@ -19,14 +20,17 @@ func newCompressWriter(w http.ResponseWriter) *compressWriter {
 	}
 }
 
+// Получение хедеров.
 func (c *compressWriter) Header() http.Header {
 	return c.w.Header()
 }
 
+// Запись результата.
 func (c *compressWriter) Write(p []byte) (int, error) {
 	return c.zw.Write(p)
 }
 
+// Запись хедеров.
 func (c *compressWriter) WriteHeader(statusCode int) {
 	if statusCode < 300 {
 		c.w.Header().Set("Content-Encoding", "gzip")
@@ -34,10 +38,12 @@ func (c *compressWriter) WriteHeader(statusCode int) {
 	c.w.WriteHeader(statusCode)
 }
 
+// Закрытие записи.
 func (c *compressWriter) Close() error {
 	return c.zw.Close()
 }
 
+// Структура компрессора запроса.
 type compressReader struct {
 	r  io.ReadCloser
 	zr *gzip.Reader
@@ -55,10 +61,12 @@ func newCompressReader(r io.ReadCloser) (*compressReader, error) {
 	}, nil
 }
 
+// Чтение запроса.
 func (c compressReader) Read(p []byte) (n int, err error) {
 	return c.zr.Read(p)
 }
 
+// Закрытие чтения.
 func (c *compressReader) Close() error {
 	if err := c.r.Close(); err != nil {
 		return err
@@ -66,6 +74,7 @@ func (c *compressReader) Close() error {
 	return c.zr.Close()
 }
 
+// Мидлварь компрессии/декомпрессии запроса и ответа
 func GzipMiddleware(h http.Handler) http.Handler {
 	compressFn := func(w http.ResponseWriter, r *http.Request) {
 		ow := w // сохранил оригинальный writer

@@ -8,8 +8,10 @@ import (
 	"mishin-shortener/internal/app/delasync"
 )
 
+// Структура хранения данных.
 type Storage map[string]string
 
+// Создает структуру хранения данных.
 func Make() *Storage {
 	return &Storage{}
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Мидлварь, который "создает" аутентификацию для noname пользователя
 func AuthSet(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		var userID string

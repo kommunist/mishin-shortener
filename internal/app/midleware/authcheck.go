@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// Мидлварь, который проверяет аутентификацию текущего пользователя
 func AuthCheck(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		var authCookieValue string
