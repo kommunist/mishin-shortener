@@ -7,11 +7,13 @@ import (
 	"mishin-shortener/internal/app/delasync"
 )
 
+// Получение полного URL по сокращенному
 func (fs *Storage) Get(ctx context.Context, shortURL string) (string, error) {
 
 	return fs.cache.Get(ctx, shortURL)
 }
 
+// Сохранение в базу новой пары сокращенный/полный
 func (fs *Storage) Push(ctx context.Context, short string, original string, userID string) error {
 	err := fs.cache.Push(ctx, short, original, userID)
 	if err != nil {
@@ -38,6 +40,7 @@ func (fs *Storage) Push(ctx context.Context, short string, original string, user
 	return nil
 }
 
+// Сохранение в базу списка пар сокращенный/полный
 func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string, userID string) error {
 	for k, v := range *list {
 		err := fs.Push(ctx, k, v, userID)
@@ -50,18 +53,22 @@ func (fs *Storage) PushBatch(ctx context.Context, list *map[string]string, userI
 	return nil
 }
 
+// Получение из базы списка сокращенных ссылок для пользователя(не реализовано)
 func (fs *Storage) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
 	return nil, nil
 }
 
+// Удаление из базы базы сокращенного URL для пользователя(не реализовано)
 func (fs *Storage) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	return nil
 }
 
+// Восстановление коннектов к базе(не реализовано)
 func (fs *Storage) Ping(ctx context.Context) error {
 	return nil
 }
 
+// Завершение работы с хранилищем
 func (fs *Storage) Finish() error {
 	err := fs.file.Close()
 

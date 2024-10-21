@@ -14,12 +14,14 @@ func Make() *Storage {
 	return &Storage{}
 }
 
+// Сохранение в базу новой пары сокращенный/полный
 func (db *Storage) Push(ctx context.Context, short string, original string, userID string) error {
 	(*db)[short] = original
 
 	return nil
 }
 
+// Сохранение в базу списка пар сокращенный/полный
 func (db *Storage) PushBatch(ctx context.Context, list *map[string]string, userID string) error {
 	for k, v := range *list {
 		err := db.Push(ctx, k, v, userID)
@@ -32,6 +34,7 @@ func (db *Storage) PushBatch(ctx context.Context, list *map[string]string, userI
 	return nil
 }
 
+// Получение полного URL по сокращенному
 func (db *Storage) Get(ctx context.Context, short string) (string, error) {
 	value, ok := (*db)[short]
 	if ok {
@@ -41,18 +44,22 @@ func (db *Storage) Get(ctx context.Context, short string) (string, error) {
 	return "", errors.New("not found")
 }
 
+// Получение из базы списка сокращенных ссылок для пользователя(не реализовано)
 func (db *Storage) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
 	return nil, nil
 }
 
+// Удаление из базы базы сокращенного URL для пользователя(не реализовано)
 func (db *Storage) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	return nil
 }
 
+// Восстановление коннектов к базе(не реализовано)
 func (db *Storage) Ping(ctx context.Context) error {
 	return nil
 }
 
+// Завершение работы с хранилищем
 func (db *Storage) Finish() error {
 	return nil
 }
