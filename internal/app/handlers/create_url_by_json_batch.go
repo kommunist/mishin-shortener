@@ -61,7 +61,7 @@ func (h *ShortanerHandler) CreateURLByJSONBatch(w http.ResponseWriter, r *http.R
 		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
 
-	userID = "some_user" // хак для perf теста
+	// userID = "some_user" // хак для perf теста
 
 	err = h.DB.PushBatch(r.Context(), &prepareToSave, userID)
 
