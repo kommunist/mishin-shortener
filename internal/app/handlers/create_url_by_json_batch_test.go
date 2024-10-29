@@ -65,6 +65,61 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		v, _ = db.Get(context.Background(), "2cce0ec300cfe8dd3024939db0448893")
 		assert.Equal(t, "boba", v)
 	})
+
+	t.Run("Start_POST_to_create_record_in_storage_without_user_in_context", func(t *testing.T) {
+		db := mapstorage.Make()
+		c := config.MakeConfig()
+		c.InitConfig()
+		h := MakeShortanerHandler(c, db)
+
+		inputData := []RequestBatchItem{
+			{CorrelationID: "123", OriginalURL: "biba"},
+			{CorrelationID: "456", OriginalURL: "boba"},
+		}
+		inputJSON, _ := json.Marshal(inputData)
+
+		ctx := context.Background()
+
+		request :=
+			httptest.NewRequest(
+				http.MethodPost,
+				"/api/shorten/batch",
+				bytes.NewReader(inputJSON),
+			).WithContext(ctx)
+
+		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
+		w := httptest.NewRecorder()
+		h.CreateURLByJSONBatch(w, request)
+		res := w.Result()
+
+		// проверим статус ответа
+		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
+	})
+
+	t.Run("Start_POST_to_create_record_in_storage_when_input_data_broken", func(t *testing.T) {
+		db := mapstorage.Make()
+		c := config.MakeConfig()
+		c.InitConfig()
+		h := MakeShortanerHandler(c, db)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
+
+		request :=
+			httptest.NewRequest(
+				http.MethodPost,
+				"/api/shorten/batch",
+				bytes.NewReader([]byte("abracadabra")),
+			).WithContext(ctx)
+
+		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
+		w := httptest.NewRecorder()
+		h.CreateURLByJSONBatch(w, request)
+		res := w.Result()
+
+		// проверим статус ответа
+		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
+	})
 }
 
 func BenchmarkCreateURLByJSONBatch(b *testing.B) {

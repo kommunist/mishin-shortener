@@ -43,6 +43,7 @@ func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Reques
 	var userID string
 	if r.Context().Value(secure.UserIDKey) == nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	} else {
 		userID = r.Context().Value(secure.UserIDKey).(string)
 	}

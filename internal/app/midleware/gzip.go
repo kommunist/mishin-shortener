@@ -75,7 +75,7 @@ func (c *compressReader) Close() error {
 }
 
 // Мидлварь компрессии/декомпрессии запроса и ответа
-func GzipMiddleware(h http.Handler) http.Handler {
+func Gzip(h http.Handler) http.Handler {
 	compressFn := func(w http.ResponseWriter, r *http.Request) {
 		ow := w // сохранил оригинальный writer
 

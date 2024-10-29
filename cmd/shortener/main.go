@@ -55,7 +55,7 @@ func main() {
 
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
 	r.Use(middleware.WithLogRequest)
-	r.Use(middleware.GzipMiddleware)
+	r.Use(middleware.Gzip)
 
 	r.Route("/api", func(r chi.Router) {
 		r.With(middleware.AuthSet).Route("/shorten", func(r chi.Router) {
