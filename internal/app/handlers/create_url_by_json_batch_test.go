@@ -42,6 +42,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.CreateURLByJSONBatch(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		// проверим статус ответа
 		assert.Equal(t, http.StatusCreated, res.StatusCode)
@@ -91,6 +92,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.CreateURLByJSONBatch(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		// проверим статус ответа
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
@@ -116,6 +118,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.CreateURLByJSONBatch(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		// проверим статус ответа
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)

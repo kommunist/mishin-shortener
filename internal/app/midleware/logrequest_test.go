@@ -25,6 +25,7 @@ func TestWithLogRequestResponse(t *testing.T) {
 	handlerToTest.ServeHTTP(w, request)
 
 	res := w.Result()
+	defer res.Body.Close()
 
 	assert.Equal(t, http.StatusTeapot, res.StatusCode, "response status must be 200 with auth")
 }

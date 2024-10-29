@@ -46,9 +46,9 @@ func TestCreateURL(t *testing.T) {
 		h.CreateURL(w, request)
 
 		res := w.Result()
+		defer res.Body.Close()
 		assert.Equal(t, http.StatusCreated, res.StatusCode)
 
-		defer res.Body.Close()
 		resBody, err := io.ReadAll(res.Body)
 		require.NoError(t, err)
 
@@ -81,9 +81,10 @@ func TestCreateURL(t *testing.T) {
 		h.CreateURL(w, request)
 
 		res := w.Result()
+		defer res.Body.Close()
+
 		assert.Equal(t, http.StatusConflict, res.StatusCode)
 
-		defer res.Body.Close()
 		resBody, err := io.ReadAll(res.Body)
 		require.NoError(t, err)
 
@@ -116,6 +117,7 @@ func TestCreateURL(t *testing.T) {
 		h.CreateURL(w, request)
 
 		res := w.Result()
+		defer res.Body.Close()
 
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
 	})
@@ -139,6 +141,7 @@ func TestCreateURL(t *testing.T) {
 		h.CreateURL(w, request)
 
 		res := w.Result()
+		defer res.Body.Close()
 
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
 	})

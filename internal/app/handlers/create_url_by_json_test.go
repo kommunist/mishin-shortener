@@ -93,6 +93,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.CreateURLByJSON(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		// проверим статус ответа
 		assert.Equal(t, http.StatusConflict, res.StatusCode)
@@ -101,7 +102,6 @@ func TestCreateURLByJSON(t *testing.T) {
 		outputData := ResponseData{}
 		resBody, _ := io.ReadAll(res.Body)
 		json.Unmarshal(resBody, &outputData)
-		defer res.Body.Close()
 
 		assert.Equal(t, "http://localhost:8080/931691969b142b3a0f11a03e36fcc3b7", outputData.Result)
 	})
@@ -138,6 +138,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.CreateURLByJSON(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		// проверим статус ответа
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
@@ -173,6 +174,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.CreateURLByJSON(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		// проверим статус ответа
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
@@ -208,6 +210,7 @@ func TestCreateURLByJSON(t *testing.T) {
 		w := httptest.NewRecorder()
 		h.CreateURLByJSON(w, request)
 		res := w.Result()
+		defer res.Body.Close()
 
 		// проверим статус ответа
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
