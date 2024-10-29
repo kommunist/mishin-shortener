@@ -19,6 +19,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 	t.Run("Start_POST_to_create_record_in_storage", func(t *testing.T) {
 		db := mapstorage.Make()
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, db)
 
 		inputData := []RequestBatchItem{
@@ -64,4 +65,36 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		v, _ = db.Get(context.Background(), "2cce0ec300cfe8dd3024939db0448893")
 		assert.Equal(t, "boba", v)
 	})
+}
+
+func BenchmarkCreateURLByJSONBatch(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		db := mapstorage.Make()
+		c := config.MakeConfig()
+		c.InitConfig()
+		h := MakeShortanerHandler(c, db)
+
+		inputData := []RequestBatchItem{
+			{CorrelationID: "123", OriginalURL: "biba"},
+			{CorrelationID: "456", OriginalURL: "boba"},
+		}
+		inputJSON, _ := json.Marshal(inputData)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
+
+		request :=
+			httptest.NewRequest(
+				http.MethodPost,
+				"/api/shorten/batch",
+				bytes.NewReader(inputJSON),
+			).WithContext(ctx)
+
+		// Создаем рекорер, вызываем хендлер и сразу снимаем результат
+		w := httptest.NewRecorder()
+		b.StartTimer()
+		h.CreateURLByJSONBatch(w, request)
+	}
+
 }

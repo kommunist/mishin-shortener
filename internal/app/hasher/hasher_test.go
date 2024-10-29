@@ -1,8 +1,9 @@
 package hasher
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetMD5Hash(t *testing.T) {

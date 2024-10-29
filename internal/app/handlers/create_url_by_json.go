@@ -10,14 +10,17 @@ import (
 	"net/http"
 )
 
+// Структура входящего запроса на сокращение в формате JSON.
 type RequestData struct {
 	URL string `json:"url"`
 }
 
+// Структура ответа на сокращение в формате JSON.
 type ResponseData struct {
 	Result string `json:"result"`
 }
 
+// Обработчик запроса на сокращение в формате JSON.
 func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()

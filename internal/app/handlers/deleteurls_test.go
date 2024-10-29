@@ -30,6 +30,7 @@ func TestDeleteURLs(t *testing.T) {
 		// )
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		inputJSON, _ := json.Marshal([]string{"first", "second"})
@@ -63,6 +64,7 @@ func TestDeleteURLs(t *testing.T) {
 		// ).Times(0)
 
 		c := config.MakeConfig()
+		c.InitConfig()
 		h := MakeShortanerHandler(c, stor)
 
 		inputJSON, _ := json.Marshal([]string{"first", "second"})
@@ -83,4 +85,33 @@ func TestDeleteURLs(t *testing.T) {
 		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
 	})
 
+}
+
+func BenchmarkDeleteUrls(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+
+		ctrl := gomock.NewController(b)
+		stor := mocks.NewMockAbstractStorage(ctrl)
+
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, secure.UserIDKey, "userId")
+
+		c := config.MakeConfig()
+		c.InitConfig()
+		h := MakeShortanerHandler(c, stor)
+
+		inputJSON, _ := json.Marshal([]string{"first", "second"})
+
+		request :=
+			httptest.NewRequest(
+				http.MethodDelete,
+				"/api/user/urls",
+				bytes.NewReader(inputJSON),
+			).WithContext(ctx)
+
+		w := httptest.NewRecorder()
+		b.StartTimer()
+		h.DeleteURLs(w, request)
+	}
 }

@@ -15,6 +15,7 @@ import (
 	"github.com/lib/pq"
 )
 
+// Сохранение в базу новой пары сокращенный/полный
 func (d *Driver) Push(ctx context.Context, short string, original string, userID string) error {
 	err := insert(ctx, short, original, userID, false, d.driver)
 	if err != nil {
@@ -29,6 +30,7 @@ func (d *Driver) Push(ctx context.Context, short string, original string, userID
 	return nil
 }
 
+// Сохранение в базу списка пар сокращенный/полный
 func (d *Driver) PushBatch(ctx context.Context, list *map[string]string, userID string) error {
 	tx, err := d.driver.Begin()
 	if err != nil {
@@ -49,8 +51,6 @@ func (d *Driver) PushBatch(ctx context.Context, list *map[string]string, userID 
 	return nil
 }
 
-// вот тут правильнее было бы использовать какой-то библиотечый интерфейс в качестве аргумента,
-// но я такой не нашел
 func insert(ctx context.Context, short string, original string, userID string, force bool, d interface {
 	ExecContext(context.Context, string, ...any) (sql.Result, error)
 }) error {
@@ -67,6 +67,7 @@ func insert(ctx context.Context, short string, original string, userID string, f
 	return nil
 }
 
+// Получение полного URL по сокращенному
 func (d *Driver) Get(ctx context.Context, short string) (string, error) {
 	var result string
 	var dR bool
@@ -88,9 +89,9 @@ func (d *Driver) Get(ctx context.Context, short string) (string, error) {
 	}
 
 	return result, nil
-
 }
 
+// Получение из базы списка сокращенных ссылок для пользователя
 func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
 	rows, err := d.driver.QueryContext(ctx, "SELECT short, original FROM short_urls where user_id = $1", userID)
 	if err != nil {
@@ -121,6 +122,7 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 	return result, nil
 }
 
+// Удаление из базы базы сокращенного URL для пользователя
 func (d *Driver) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	start := "UPDATE short_urls set deleted = true where "
 	var cond []string
@@ -155,12 +157,12 @@ func (d *Driver) DeleteByUserID(ctx context.Context, list []delasync.DelPair) er
 	return nil
 }
 
-// для проверки, что живо соединение
+// Восстановление коннектов к базе
 func (d *Driver) Ping(ctx context.Context) error {
 	return d.driver.PingContext(ctx)
 }
 
-// заглушка для поддержки интерфейса
+// Завершение работы с хранилищем
 func (d *Driver) Finish() error {
 	return nil
 }

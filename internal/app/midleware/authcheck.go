@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// Мидлварь, который проверяет аутентификацию текущего пользователя
 func AuthCheck(h http.Handler) http.Handler {
 	authFn := func(w http.ResponseWriter, r *http.Request) {
 		var authCookieValue string
@@ -27,6 +28,7 @@ func AuthCheck(h http.Handler) http.Handler {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
 
+		// ctx := context.WithValue(r.Context(), secure.UserIDKey, "some_user") // хак для perf
 		h.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(authFn)

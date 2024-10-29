@@ -1,15 +1,17 @@
+// Модуль deleted содержит ошибку об уже удаленных данных.
 package deleted
 
-// ошибка о том, что запись удалена.
-// Так как использую в нескольких пакетах, то вытащил в отдельный
+// Основная структура ошибки.
 type DeletedError struct {
 	Err error
 }
 
+// Вывод ошибки
 func (e *DeletedError) Error() string {
 	return e.Err.Error()
 }
 
+// Инициализация ошибки
 func NewDeletedError(err error) error {
 	return &DeletedError{Err: err}
 }

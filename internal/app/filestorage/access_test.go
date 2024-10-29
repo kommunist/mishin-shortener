@@ -18,6 +18,7 @@ func TestGet(t *testing.T) {
 		db.Push(context.Background(), "short", "original", "userID")
 
 		fs := Storage{cache: *db, file: nil}
+		defer fs.Finish()
 
 		value, err := fs.Get(context.Background(), "short")
 		assert.Equal(t, value, "original")
@@ -35,6 +36,7 @@ func TestPush(t *testing.T) {
 		defer os.Remove(testFile.Name())
 
 		fs := Make(testFile.Name()) // создаем fs
+		defer fs.Finish()
 		fs.Push(context.Background(), "short", "original", "userID")
 
 		reader := bufio.NewReader(testFile)
@@ -61,6 +63,7 @@ func TestPushBatch(t *testing.T) {
 		testData["biba"] = "boba"
 
 		fs := Make(testFile.Name()) // создаем fs
+		defer fs.Finish()
 		fs.PushBatch(context.Background(), &testData, "userID")
 
 		reader := bufio.NewReader(testFile)
