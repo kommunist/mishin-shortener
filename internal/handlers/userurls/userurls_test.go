@@ -62,6 +62,15 @@ func TestCall(t *testing.T) {
 			status:     http.StatusInternalServerError,
 			respItems:  nil,
 		},
+		{
+			name:       "post_to_create_record_in_db_when_empty_result_from_db",
+			withUserID: true,
+			storTimes:  1,
+			storResult: map[string]string{},
+			storError:  nil,
+			status:     http.StatusNoContent,
+			respItems:  nil,
+		},
 	}
 
 	for _, ex := range exList {
