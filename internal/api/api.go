@@ -6,6 +6,7 @@ import (
 	"mishin-shortener/internal/app/delasync"
 	"mishin-shortener/internal/app/handlers"
 	middleware "mishin-shortener/internal/app/midleware"
+	"mishin-shortener/internal/handlers/userurls"
 	"net/http"
 	"os"
 	"time"
@@ -19,11 +20,18 @@ import (
 type ShortanerAPI struct {
 	setting config.MainConfig
 	storage handlers.AbstractStorage // пока используем общий интерфейс. Потом сделаем композицию
+
+	userUrls userurls.Handler
 }
 
 // Конструктор структуры пакета API
 func Make(setting config.MainConfig, storage handlers.AbstractStorage) ShortanerAPI {
-	return ShortanerAPI{setting: setting, storage: storage}
+	return ShortanerAPI{
+		setting: setting,
+		storage: storage,
+
+		userUrls: userurls.Make(setting, storage),
+	}
 }
 
 // Основной метод пакета API
@@ -45,7 +53,7 @@ func (a *ShortanerAPI) Call() {
 		})
 
 		r.With(middleware.AuthCheck).Route("/user", func(r chi.Router) {
-			r.Get("/urls", h.UserURLs)
+			r.Get("/urls", a.userUrls.Call)
 			r.Delete("/urls", h.DeleteURLs)
 		})
 

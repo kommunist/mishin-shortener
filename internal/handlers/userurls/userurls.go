@@ -1,4 +1,4 @@
-package handlers
+package userurls
 
 import (
 	"encoding/json"
@@ -6,27 +6,26 @@ import (
 	"net/http"
 )
 
-// Структура ответа обработчика, возвращающего сокращенные урлы пользователя.
-type UserURLsItem struct {
+type responseItem struct {
 	Short    string `json:"short_url"`
 	Original string `json:"original_url"`
 }
 
 // Обработчик, возвращающий все сокращенные урлы пользователя.
-func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 	u := r.Context().Value(secure.UserIDKey)
-	// slog.Info("User id in context", "user_id", u)
 	if u == nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 	userID := u.(string)
 
-	data, err := h.DB.GetByUserID(r.Context(), userID)
+	data, err := h.storage.GetByUserID(r.Context(), userID)
 	if err != nil {
 		http.Error(w, "Error when get data from db", http.StatusInternalServerError)
 		return
 	}
-	result := make([]UserURLsItem, 0)
+	result := make([]responseItem, 0)
 
 	if len(data) == 0 {
 		w.WriteHeader(http.StatusNoContent)
@@ -36,7 +35,7 @@ func (h *ShortanerHandler) UserURLs(w http.ResponseWriter, r *http.Request) {
 	for k, v := range data {
 		result = append(
 			result,
-			UserURLsItem{Short: h.Options.BaseRedirectURL + "/" + k, Original: v},
+			responseItem{Short: h.setting.BaseRedirectURL + "/" + k, Original: v},
 		)
 	}
 
