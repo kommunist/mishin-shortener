@@ -115,6 +115,12 @@ func BenchmarkUserURLs(b *testing.B) {
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, secure.UserIDKey, "userId")
 
+		// используется не для проверки, а для мака базы
+		stor.EXPECT().GetByUserID(
+			ctx,
+			"userId",
+		).Return(map[string]string{"short0": "long0", "short1": "long1"}, nil)
+
 		c := config.MakeConfig()
 		c.InitConfig()
 		h := Make(c, stor)
