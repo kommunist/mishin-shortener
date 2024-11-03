@@ -15,16 +15,19 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type ShortanerApi struct {
+// Основная структуруа пакета API
+type ShortanerAPI struct {
 	setting config.MainConfig
 	storage handlers.AbstractStorage // пока используем общий интерфейс. Потом сделаем композицию
 }
 
-func Make(setting config.MainConfig, storage handlers.AbstractStorage) ShortanerApi {
-	return ShortanerApi{setting: setting, storage: storage}
+// Конструктор структуры пакета API
+func Make(setting config.MainConfig, storage handlers.AbstractStorage) ShortanerAPI {
+	return ShortanerAPI{setting: setting, storage: storage}
 }
 
-func (a *ShortanerApi) Call() {
+// Основной метод пакета API
+func (a *ShortanerAPI) Call() {
 	h := handlers.MakeShortanerHandler(a.setting, a.storage)
 
 	delasync.InitWorker(h.DelChan, h.DB.DeleteByUserID) // не дело из api запускать асинхрон. Но пока так
