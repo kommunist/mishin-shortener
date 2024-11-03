@@ -3,6 +3,7 @@ package main
 
 import (
 	"log"
+	"log/slog"
 
 	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/app/config"
@@ -16,6 +17,10 @@ import (
 	_ "net/http/pprof"
 )
 
+var buildVersion string = "N/A"
+var buildDate string = "N/A"
+var buildCommit string = "N/A"
+
 func initStorage(c config.MainConfig) handlers.AbstractStorage {
 	if c.DatabaseDSN != "" {
 		return pgstorage.Make(c)
@@ -28,6 +33,9 @@ func initStorage(c config.MainConfig) handlers.AbstractStorage {
 }
 
 func main() {
+	slog.Info("Build info", "version", buildVersion)
+	slog.Info("Build info", "date", buildDate)
+	slog.Info("Build info", "commit", buildCommit)
 
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
