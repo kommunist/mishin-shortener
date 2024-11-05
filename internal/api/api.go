@@ -6,6 +6,7 @@ import (
 	"mishin-shortener/internal/app/delasync"
 	"mishin-shortener/internal/app/handlers"
 	middleware "mishin-shortener/internal/app/midleware"
+	"mishin-shortener/internal/handlers/simplecreate"
 	"mishin-shortener/internal/handlers/userurls"
 	"net/http"
 	"os"
@@ -21,7 +22,8 @@ type ShortanerAPI struct {
 	setting config.MainConfig
 	storage handlers.AbstractStorage // пока используем общий интерфейс. Потом сделаем композицию
 
-	userUrls userurls.Handler
+	userUrls     userurls.Handler
+	simpleCreate simplecreate.Handler
 }
 
 // Конструктор структуры пакета API
@@ -30,7 +32,8 @@ func Make(setting config.MainConfig, storage handlers.AbstractStorage) Shortaner
 		setting: setting,
 		storage: storage,
 
-		userUrls: userurls.Make(setting, storage),
+		userUrls:     userurls.Make(setting, storage),
+		simpleCreate: simplecreate.Make(setting, storage),
 	}
 }
 
@@ -58,7 +61,7 @@ func (a *ShortanerAPI) Call() {
 		})
 
 	})
-	r.With(middleware.AuthSet).Post("/", h.CreateURL)
+	r.With(middleware.AuthSet).Post("/", a.simpleCreate.Call)
 	r.Get("/{shortened}", h.RedirectHandler)
 	r.Get("/ping", h.PingHandler)
 
