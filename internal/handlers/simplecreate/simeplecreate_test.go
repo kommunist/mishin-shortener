@@ -115,8 +115,15 @@ func BenchmarkCall(b *testing.B) {
 		ctx := context.Background()
 		ctx = context.WithValue(ctx, secure.UserIDKey, "qq")
 
+		stor.EXPECT().Push(
+			ctx,
+			"931691969b142b3a0f11a03e36fcc3b7",
+			"biba",
+			"qq",
+		).Times(1).Return(nil)
+
 		request :=
-			httptest.NewRequest(http.MethodPost, "/", strings.NewReader("ya.ru")).WithContext(ctx)
+			httptest.NewRequest(http.MethodPost, "/", strings.NewReader("biba")).WithContext(ctx)
 		w := httptest.NewRecorder()
 		b.StartTimer()
 		h.Call(w, request)
