@@ -1,4 +1,4 @@
-package handlers
+package simplecreate
 
 import (
 	"io"
@@ -10,7 +10,7 @@ import (
 )
 
 // Обработчик простого запроса на сокращение.
-func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -31,7 +31,7 @@ func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
 
-	err = h.DB.Push(r.Context(), hashed, string(body), userID)
+	err = h.storage.Push(r.Context(), hashed, string(body), userID)
 	if err != nil {
 		if _, ok := err.(*exsist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
 			status = http.StatusConflict
@@ -45,4 +45,8 @@ func (h *ShortanerHandler) CreateURL(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(status)
 	w.Write(h.resultURL(hashed))
+}
+
+func (h *Handler) resultURL(hashed string) []byte {
+	return []byte(h.setting.BaseRedirectURL + "/" + hashed)
 }
