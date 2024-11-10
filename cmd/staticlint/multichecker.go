@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
+	"time"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/multichecker"
@@ -42,10 +43,11 @@ func main() {
 }
 
 func ciLintStart() {
-	cmd := exec.CommandContext(
-		context.Background(),
-		"golangci-lint", "run", "./...",
-	) // пока просто пусть будет Background, но надо сделать с Deadline, наверное
+
+	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "golangci-lint", "run", "./...")
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
@@ -53,18 +55,28 @@ func ciLintStart() {
 		fmt.Printf("Вывод линтера: %s \n", string(out))
 		return
 	}
+
+	if ctx.Err() == context.DeadlineExceeded {
+		fmt.Println("timeout on ciLint")
+		return
+	}
 }
 
 func cleanArch() {
-	cmd := exec.CommandContext(
-		context.Background(),
-		"go-cleanarch",
-	) // пока просто пусть будет Background, но надо сделать с Deadline, наверное
+	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "go-cleanarch")
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
 		fmt.Printf("Ошибка выполнения: %s \n", err)
 		fmt.Printf("Вывод линтера: %s \n", string(out))
+		return
+	}
+
+	if ctx.Err() == context.DeadlineExceeded {
+		fmt.Println("timeout on cleanArch")
 		return
 	}
 }
