@@ -4,6 +4,7 @@ package main
 import (
 	"log"
 	"log/slog"
+	"os"
 
 	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/app/config"
@@ -54,5 +55,9 @@ func main() {
 	}()
 
 	a := api.Make(c, storage)
-	a.Call()
+	err := a.Call()
+	if err != nil {
+		slog.Error("Error from api component", "err", err)
+		os.Exit(1)
+	}
 }

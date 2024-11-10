@@ -9,7 +9,6 @@ import (
 	"mishin-shortener/internal/handlers/simplecreate"
 	"mishin-shortener/internal/handlers/userurls"
 	"net/http"
-	"os"
 	"time"
 
 	chiMiddleware "github.com/go-chi/chi/v5/middleware"
@@ -38,7 +37,7 @@ func Make(setting config.MainConfig, storage handlers.AbstractStorage) Shortaner
 }
 
 // Основной метод пакета API
-func (a *ShortanerAPI) Call() {
+func (a *ShortanerAPI) Call() error {
 	h := handlers.MakeShortanerHandler(a.setting, a.storage)
 
 	delasync.InitWorker(h.DelChan, h.DB.DeleteByUserID) // не дело из api запускать асинхрон. Но пока так
@@ -70,7 +69,9 @@ func (a *ShortanerAPI) Call() {
 	err := http.ListenAndServe(a.setting.BaseServerURL, r)
 	if err != nil {
 		slog.Error("Server failed to start", "err", err)
-		os.Exit(1)
+		return err
 	}
+
+	return nil
 
 }
