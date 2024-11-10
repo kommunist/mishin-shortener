@@ -23,11 +23,11 @@ jobs:
       
       - name: Build linter
         run: |
-          go build -buildvcs=false -o exitanalyzer cmd/staticlint/*.go 
+          go build -o exitanalyzer cmd/staticlint/*.go 
       
       - name: Run linter
         run: |
-          ./exitanalyzer ./...
+          go vet -vettool=$(./exitanalyzer ./...)
 
           
 
