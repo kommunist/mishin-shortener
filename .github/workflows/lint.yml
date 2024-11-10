@@ -27,4 +27,4 @@ jobs:
       
       - name: Run linter
         run: |
-          go vet -vettool=$(./exitanalyzer ./...)
+          ./exitanalyzer ./...
