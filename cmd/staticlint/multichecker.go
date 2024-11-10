@@ -51,8 +51,8 @@ func ciLintStart() {
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
-		fmt.Printf("Ошибка выполнения: %s \n", err)
-		fmt.Printf("Вывод линтера: %s \n", string(out))
+		fmt.Printf("Ошибка выполнения golangci-lint: %s \n", err)
+		fmt.Printf("Вывод линтера golangci-lint: %s \n", string(out))
 		return
 	}
 
@@ -70,8 +70,8 @@ func cleanArch() {
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
-		fmt.Printf("Ошибка выполнения: %s \n", err)
-		fmt.Printf("Вывод линтера: %s \n", string(out))
+		fmt.Printf("Ошибка выполнения go-cleanarch: %s \n", err)
+		fmt.Printf("Вывод линтера go-cleanarch: %s \n", string(out))
 		return
 	}
 
