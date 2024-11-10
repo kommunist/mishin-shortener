@@ -21,9 +21,13 @@ jobs:
           go install github.com/roblaszczak/go-cleanarch@latest
           go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
       
+      - name: Build linter
+        run: |
+          go build cmd/staticlint/*.go
+      
       - name: Run linter
         run: |
-          go run cmd/staticlint/*.go ./... 
+          ./exitanalyzer ./...
 
           
 
