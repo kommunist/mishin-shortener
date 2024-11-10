@@ -2,6 +2,7 @@ package main
 
 import (
 	"go/ast"
+	"strings"
 
 	"golang.org/x/tools/go/analysis"
 )
@@ -14,6 +15,13 @@ var exitAnalyzerStruct = &analysis.Analyzer{
 
 func exitAnalyzer(pass *analysis.Pass) (any, error) {
 	for _, file := range pass.Files {
+
+		// скипнем кеши
+		filename := pass.Fset.Position(file.Pos()).Filename
+		if strings.Contains(filename, ".cache") {
+			continue
+		}
+
 		if file.Name.Name != "main" { // если пакет не main, то бежим дальше
 			continue
 		}

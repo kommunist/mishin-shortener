@@ -106,10 +106,10 @@ func (d *Driver) GetByUserID(ctx context.Context, userID string) (map[string]str
 		var short string
 		var original string
 
-		err := rows.Scan(&short, &original)
-		if err != nil {
-			slog.Error("When scan data from select", "err", err)
-			return nil, err
+		errScan := rows.Scan(&short, &original)
+		if errScan != nil {
+			slog.Error("When scan data from select", "err", errScan)
+			return nil, errScan
 		}
 		result[short] = original
 	}
