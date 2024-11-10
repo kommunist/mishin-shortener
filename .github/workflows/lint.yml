@@ -23,7 +23,7 @@ jobs:
       
       - name: Build linter
         run: |
-          go build cmd/staticlint/*.go
+          go build -buildvcs=false -o exitanalyzer cmd/staticlint/*.go 
       
       - name: Run linter
         run: |
