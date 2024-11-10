@@ -2,6 +2,7 @@ package userurls
 
 import (
 	"encoding/json"
+	"log/slog"
 	"mishin-shortener/internal/app/secure"
 	"net/http"
 )
@@ -48,5 +49,10 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write(out)
+	_, err = w.Write(out)
+	if err != nil {
+		slog.Error("error when write response", "err", err)
+		http.Error(w, "Write response error", http.StatusInternalServerError)
+		return
+	}
 }

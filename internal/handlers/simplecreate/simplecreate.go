@@ -44,7 +44,12 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(status)
-	w.Write(h.resultURL(hashed))
+	_, err = w.Write(h.resultURL(hashed))
+	if err != nil {
+		slog.Error("error when write response", "err", err)
+		http.Error(w, "Write response error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *Handler) resultURL(hashed string) []byte {

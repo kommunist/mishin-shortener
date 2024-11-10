@@ -3,6 +3,7 @@ package delasync
 
 import (
 	"context"
+	"log/slog"
 	"time"
 )
 
@@ -31,12 +32,20 @@ func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) erro
 			if found {
 				buf = append(buf, val)
 				if len(buf) > 2 {
-					delFunc(context.Background(), buf)
+					err := delFunc(context.Background(), buf)
+					if err != nil {
+						slog.Error("Error when execute remove function", "err", err)
+					}
+
 					buf = nil
 				}
 			} else {
 				if len(buf) > 0 {
-					delFunc(context.Background(), buf)
+					err := delFunc(context.Background(), buf)
+					if err != nil {
+						slog.Error("Error when execute remove function", "err", err)
+					}
+
 					buf = nil
 				}
 			}

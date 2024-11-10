@@ -1,6 +1,10 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"os/exec"
+
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/multichecker"
 	"honnef.co/go/tools/staticcheck"
@@ -18,6 +22,9 @@ import (
 // двух или более любых публичных анализаторов на ваш выбор.
 
 func main() {
+	ciLintStart()
+	cleanArch()
+
 	var myChecks []*analysis.Analyzer // коллекция анализаторов
 
 	// стандартных статических анализаторов пакета golang.org/x/tools/go/analysis/passes
@@ -32,4 +39,32 @@ func main() {
 	myChecks = append(myChecks, exitAnalyzerStruct)
 
 	multichecker.Main(myChecks...)
+}
+
+func ciLintStart() {
+	cmd := exec.CommandContext(
+		context.Background(),
+		"golangci-lint", "run", "./...",
+	) // пока просто пусть будет Background, но надо сделать с Deadline, наверное
+	out, err := cmd.CombinedOutput()
+
+	if err != nil {
+		fmt.Printf("Ошибка выполнения: %s \n", err)
+		fmt.Printf("Вывод линтера: %s \n", string(out))
+		return
+	}
+}
+
+func cleanArch() {
+	cmd := exec.CommandContext(
+		context.Background(),
+		"go-cleanarch",
+	) // пока просто пусть будет Background, но надо сделать с Deadline, наверное
+	out, err := cmd.CombinedOutput()
+
+	if err != nil {
+		fmt.Printf("Ошибка выполнения: %s \n", err)
+		fmt.Printf("Вывод линтера: %s \n", string(out))
+		return
+	}
 }

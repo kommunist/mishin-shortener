@@ -45,7 +45,13 @@ func main() {
 	c.InitConfig()
 
 	storage := initStorage(c)
-	defer storage.Finish()
+
+	defer func() {
+		err := storage.Finish()
+		if err != nil {
+			slog.Error("Error when finish with storage", "err", err)
+		}
+	}()
 
 	a := api.Make(c, storage)
 	a.Call()

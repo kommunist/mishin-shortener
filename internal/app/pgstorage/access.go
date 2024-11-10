@@ -39,15 +39,22 @@ func (d *Driver) PushBatch(ctx context.Context, list *map[string]string, userID 
 	}
 
 	for k, v := range *list {
-		err := insert(ctx, k, v, userID, true, tx) // в случае инстерта батчами будем с форсом
-		if err != nil {
-			slog.Error("When batch insert error", "err", err)
-			tx.Rollback()
+		errIns := insert(ctx, k, v, userID, true, tx) // в случае инстерта батчами будем с форсом
+		if errIns != nil {
+			slog.Error("When batch insert error", "err", errIns)
+			errTx := tx.Rollback()
+			if errTx != nil {
+				slog.Error("Error when rollback transaction", "err", errTx)
+			}
 			return err
 		}
 
 	}
-	tx.Commit()
+	err = tx.Commit()
+	if err != nil {
+		slog.Error("Error when commit transaction", "err", err)
+		return err
+	}
 	return nil
 }
 
