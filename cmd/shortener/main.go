@@ -4,6 +4,7 @@ package main
 import (
 	"log"
 	"log/slog"
+	"os"
 
 	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/app/config"
@@ -57,6 +58,7 @@ func main() {
 	err := a.Call()
 	if err != nil {
 		slog.Error("Error from api component", "err", err)
+		os.Exit(1)
 		panic(err)
 	}
 }
