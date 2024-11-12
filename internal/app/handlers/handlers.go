@@ -8,7 +8,7 @@ import (
 
 // Интерфейс, описывающий работу с базой.
 type AbstractStorage interface {
-	Push(context.Context, string, string, string) error          // short, original, userID
+	Push(context.Context, string, string, string) error          // убрать и перегенерировать моки. Пока оставлено ради тестов
 	PushBatch(context.Context, *map[string]string, string) error // collection, userID
 	Get(context.Context, string) (string, error)
 	GetByUserID(context.Context, string) (map[string]string, error) // userID

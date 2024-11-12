@@ -4,25 +4,22 @@ package main
 import (
 	"log"
 	"log/slog"
-	"os"
-	"time"
 
+	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/app/config"
-	"mishin-shortener/internal/app/delasync"
 	"mishin-shortener/internal/app/filestorage"
 	"mishin-shortener/internal/app/handlers"
 	"mishin-shortener/internal/app/mapstorage"
-	middleware "mishin-shortener/internal/app/midleware"
 	"mishin-shortener/internal/app/pgstorage"
-
-	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 
 	"net/http"
 
 	_ "net/http/pprof"
-
-	"github.com/go-chi/chi/v5"
 )
+
+var buildVersion string = "N/A"
+var buildDate string = "N/A"
+var buildCommit string = "N/A"
 
 func initStorage(c config.MainConfig) handlers.AbstractStorage {
 	if c.DatabaseDSN != "" {
@@ -36,6 +33,9 @@ func initStorage(c config.MainConfig) handlers.AbstractStorage {
 }
 
 func main() {
+	slog.Info("Build info", "version", buildVersion)
+	slog.Info("Build info", "date", buildDate)
+	slog.Info("Build info", "commit", buildCommit)
 
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
@@ -45,39 +45,18 @@ func main() {
 	c.InitConfig()
 
 	storage := initStorage(c)
-	defer storage.Finish()
 
-	h := handlers.MakeShortanerHandler(c, storage)
+	defer func() {
+		err := storage.Finish()
+		if err != nil {
+			slog.Error("Error when finish with storage", "err", err)
+		}
+	}()
 
-	delasync.InitWorker(h.DelChan, h.DB.DeleteByUserID)
-
-	r := chi.NewRouter()
-
-	r.Use(chiMiddleware.Timeout(60 * time.Second))
-	r.Use(middleware.WithLogRequest)
-	r.Use(middleware.GzipMiddleware)
-
-	r.Route("/api", func(r chi.Router) {
-		r.With(middleware.AuthSet).Route("/shorten", func(r chi.Router) {
-			r.Post("/", h.CreateURLByJSON)
-			r.Post("/batch", h.CreateURLByJSONBatch)
-		})
-
-		r.With(middleware.AuthCheck).Route("/user", func(r chi.Router) {
-			r.Get("/urls", h.UserURLs)
-			r.Delete("/urls", h.DeleteURLs)
-		})
-
-	})
-	r.With(middleware.AuthSet).Post("/", h.CreateURL)
-	r.Get("/{shortened}", h.RedirectHandler)
-	r.Get("/ping", h.PingHandler)
-
-	slog.Info("server started", "URL", c.BaseServerURL)
-
-	err := http.ListenAndServe(c.BaseServerURL, r)
+	a := api.Make(c, storage)
+	err := a.Call()
 	if err != nil {
-		slog.Error("Server failed to start", "err", err)
-		os.Exit(1)
+		slog.Error("Error from api component", "err", err)
+		panic(err)
 	}
 }

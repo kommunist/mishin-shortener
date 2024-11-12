@@ -1,0 +1,36 @@
+name: lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  shortenertest:
+    runs-on: ubuntu-latest
+    container: golang:1.22
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup linters
+        run: |
+          go install github.com/roblaszczak/go-cleanarch@latest
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
+      
+      # хак сделан потому что при запуске линтера ругается на vcs. 
+      # Как лечить по-другому не нашел
+      - name: Remove git 
+        run: |
+          rm -rf .git
+      
+      - name: Build linter
+        run: |
+          go build -o exitanalyzer cmd/staticlint/*.go 
+      
+      - name: Run linter
+        run: |
+          ./exitanalyzer ./...
