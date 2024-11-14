@@ -66,12 +66,19 @@ func (a *ShortanerAPI) Call() error {
 
 	slog.Info("server started", "URL", a.setting.BaseServerURL)
 
-	err := http.ListenAndServe(a.setting.BaseServerURL, r)
-	if err != nil {
-		slog.Error("Server failed to start", "err", err)
-		return err
+	if a.setting.EnableHTTPS {
+		err := http.ListenAndServeTLS(a.setting.BaseServerURL, "certs/MyCertificate.crt", "certs/MyKey.key", r)
+		if err != nil {
+			slog.Error("Server failed to start", "err", err)
+			return err
+		}
+	} else {
+		err := http.ListenAndServe(a.setting.BaseServerURL, r)
+		if err != nil {
+			slog.Error("Server failed to start with tls", "err", err)
+			return err
+		}
 	}
 
 	return nil
-
 }

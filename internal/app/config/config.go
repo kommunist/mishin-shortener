@@ -13,6 +13,7 @@ type MainConfig struct {
 	BaseRedirectURL string
 	FileStoragePath string
 	DatabaseDSN     string
+	EnableHTTPS     bool
 }
 
 // Создает структуру харнения с дефолтными значениями.
@@ -22,6 +23,7 @@ func MakeConfig() MainConfig {
 		BaseRedirectURL: "http://localhost:8080",
 		FileStoragePath: "",
 		DatabaseDSN:     "",
+		EnableHTTPS:     false,
 	}
 
 	return config
@@ -39,6 +41,7 @@ func (c *MainConfig) initFlags() {
 		flag.StringVar(&c.BaseRedirectURL, "b", "http://localhost:8080", "default host for server")
 		flag.StringVar(&c.FileStoragePath, "f", "", "file path for file storage")
 		flag.StringVar(&c.DatabaseDSN, "d", "", "database DSN")
+		flag.BoolVar(&c.EnableHTTPS, "s", false, "database DSN")
 		slog.Info("flags inited")
 	}
 }
@@ -57,5 +60,10 @@ func (c *MainConfig) parse() {
 	}
 	if e := os.Getenv("DATABASE_DSN"); e != "" {
 		c.DatabaseDSN = e
+	}
+	if e := os.Getenv("ENABLE_HTTPS"); e != "" {
+		if e == "true" || e == "TRUE" {
+			c.EnableHTTPS = true
+		}
 	}
 }
