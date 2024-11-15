@@ -10,8 +10,8 @@ import (
 
 // Хранит настройки приложения.
 type MainConfig struct {
-	BaseServerURL   string `json:"base_server_url"`
-	BaseRedirectURL string `json:"base_redirect_url"`
+	BaseServerURL   string `json:"server_address"`
+	BaseRedirectURL string `json:"base_url"`
 	FileStoragePath string `json:"file_storage_path"`
 	DatabaseDSN     string `json:"database_dsn"`
 	EnableHTTPS     bool   `json:"enable_https"`
