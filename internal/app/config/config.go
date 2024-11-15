@@ -46,7 +46,7 @@ func (c *MainConfig) getConfigFromJson() error {
 	var jsonConfigPath string
 	var data []byte
 
-	flag.StringVar(&jsonConfigPath, "s", "", "json config path")
+	flag.StringVar(&jsonConfigPath, "c", "", "json config path")
 
 	// так как у основных настроек ENV выше приоритетом, чем командная строка, то здесь так же
 	if e := os.Getenv("CONFIG"); e != "" {
