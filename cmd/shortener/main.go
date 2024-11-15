@@ -42,7 +42,11 @@ func main() {
 	}()
 
 	c := config.MakeConfig()
-	c.InitConfig()
+	err := c.InitConfig()
+	if err != nil {
+		slog.Error("Error from InitConfig")
+		panic(err)
+	}
 
 	storage := initStorage(c)
 
@@ -54,7 +58,7 @@ func main() {
 	}()
 
 	a := api.Make(c, storage)
-	err := a.Call()
+	err = a.Call()
 	if err != nil {
 		slog.Error("Error from api component", "err", err)
 		panic(err)
