@@ -53,6 +53,10 @@ func (c *MainConfig) getConfigFromJson() error {
 		jsonConfigPath = e
 	}
 
+	if jsonConfigPath == "" {
+		return nil
+	}
+
 	// открываем файл на чтение
 	file, err := os.Open(jsonConfigPath)
 	if err != nil {
