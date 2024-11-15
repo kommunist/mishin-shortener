@@ -51,9 +51,9 @@ func main() {
 	storage := initStorage(c)
 
 	defer func() {
-		err := storage.Finish()
-		if err != nil {
-			slog.Error("Error when finish with storage", "err", err)
+		defErr := storage.Finish()
+		if defErr != nil {
+			slog.Error("Error when finish with storage", "err", defErr)
 		}
 	}()
 

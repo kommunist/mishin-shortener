@@ -32,7 +32,7 @@ func MakeConfig() MainConfig {
 
 // Запускает процесс парсинга флагов и ENV переменных.
 func (c *MainConfig) InitConfig() error {
-	err := c.getConfigFromJson()
+	err := c.getConfigFromJSON()
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (c *MainConfig) InitConfig() error {
 	return nil
 }
 
-func (c *MainConfig) getConfigFromJson() error {
+func (c *MainConfig) getConfigFromJSON() error {
 	var jsonConfigPath string
 	var data []byte
 
