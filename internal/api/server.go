@@ -13,9 +13,9 @@ func (a *ShortanerAPI) Call() error {
 	slog.Info("server started", "URL", a.setting.BaseServerURL)
 
 	if a.setting.EnableHTTPS {
-		return a.start()
-	} else {
 		return a.startWithTLS()
+	} else {
+		return a.start()
 	}
 }
 
