@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"syscall"
 
 	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/app/config"
@@ -57,7 +58,7 @@ func main() {
 
 	// регистрируем канал для прерываний и перенаправляем туда внешние прерывания
 	sigint := make(chan os.Signal, 1)
-	signal.Notify(sigint, os.Interrupt)
+	signal.Notify(sigint, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 
 	a := api.Make(c, storage, sigint)
 	err = a.Call()
