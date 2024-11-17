@@ -2,8 +2,9 @@
 package main
 
 import (
-	"log"
 	"log/slog"
+	"os"
+	"os/signal"
 
 	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/app/config"
@@ -11,8 +12,6 @@ import (
 	"mishin-shortener/internal/app/handlers"
 	"mishin-shortener/internal/app/mapstorage"
 	"mishin-shortener/internal/app/pgstorage"
-
-	"net/http"
 
 	_ "net/http/pprof"
 )
@@ -37,9 +36,9 @@ func main() {
 	slog.Info("Build info", "date", buildDate)
 	slog.Info("Build info", "commit", buildCommit)
 
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
+	// go func() { // сервер для профилирования
+	// 	log.Println(http.ListenAndServe("localhost:6060", nil))
+	// }()
 
 	c := config.MakeConfig()
 	err := c.InitConfig()
@@ -47,7 +46,6 @@ func main() {
 		slog.Error("Error from InitConfig")
 		panic(err)
 	}
-
 	storage := initStorage(c)
 
 	defer func() {
@@ -57,7 +55,11 @@ func main() {
 		}
 	}()
 
-	a := api.Make(c, storage)
+	// регистрируем канал для прерываний и перенаправляем туда внешние прерывания
+	sigint := make(chan os.Signal, 1)
+	signal.Notify(sigint, os.Interrupt)
+
+	a := api.Make(c, storage, sigint)
 	err = a.Call()
 	if err != nil {
 		slog.Error("Error from api component", "err", err)

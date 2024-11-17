@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"mishin-shortener/internal/app/deleted"
+	"mishin-shortener/internal/errors/deleted"
 	"net/http"
 	"strings"
 )

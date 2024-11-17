@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"log/slog"
 	"mishin-shortener/internal/app/delasync"
-	"mishin-shortener/internal/app/deleted"
-	"mishin-shortener/internal/app/exsist"
+	"mishin-shortener/internal/errors/deleted"
+	"mishin-shortener/internal/errors/exsist"
 	"strings"
 
 	"github.com/jackc/pgerrcode"

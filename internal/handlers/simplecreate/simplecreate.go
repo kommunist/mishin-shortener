@@ -3,9 +3,9 @@ package simplecreate
 import (
 	"io"
 	"log/slog"
-	"mishin-shortener/internal/app/exsist"
 	"mishin-shortener/internal/app/hasher"
 	"mishin-shortener/internal/app/secure"
+	"mishin-shortener/internal/errors/exsist"
 	"net/http"
 )
 
