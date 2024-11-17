@@ -38,6 +38,7 @@ func (a *ShortanerAPI) startWithTLS() error {
 	return nil
 }
 
+// Функция, останавливающая сервер
 func (a *ShortanerAPI) Stop() {
 	err := a.Server.Shutdown(context.Background())
 	if err != nil {
