@@ -6,7 +6,6 @@ import (
 	"mishin-shortener/internal/handlers/simplecreate"
 	"mishin-shortener/internal/handlers/userurls"
 	"net/http"
-	"os"
 )
 
 // Основная структуруа пакета API
@@ -17,25 +16,23 @@ type ShortanerAPI struct {
 	userUrls     userurls.Handler
 	simpleCreate simplecreate.Handler
 
-	server  http.Server
-	intChan chan os.Signal
+	Server http.Server
 }
 
 // Конструктор структуры пакета API
-func Make(setting config.MainConfig, storage handlers.AbstractStorage, c chan os.Signal) ShortanerAPI {
+func Make(setting config.MainConfig, storage handlers.AbstractStorage) ShortanerAPI {
 	return ShortanerAPI{
 		setting: setting,
 		storage: storage,
 
 		userUrls:     userurls.Make(setting, storage),
 		simpleCreate: simplecreate.Make(setting, storage),
-		intChan:      c,
 	}
 }
 
 func (a *ShortanerAPI) initServ() {
 	router := a.initRouter()
-	a.server = http.Server{
+	a.Server = http.Server{
 		Addr:    a.setting.BaseServerURL,
 		Handler: router,
 	}

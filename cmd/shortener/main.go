@@ -57,13 +57,23 @@ func main() {
 	}()
 
 	// регистрируем канал для прерываний и перенаправляем туда внешние прерывания
-	sigint := make(chan os.Signal, 1)
+	sigint := make(chan os.Signal, 3)
 	signal.Notify(sigint, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 
-	a := api.Make(c, storage, sigint)
+	a := api.Make(c, storage)
+
+	go waitInterrupt(sigint, &a)
+
 	err = a.Call()
 	if err != nil {
 		slog.Error("Error from api component", "err", err)
 		panic(err)
 	}
+}
+
+func waitInterrupt(sigint chan os.Signal, api *api.ShortanerAPI) {
+	<-sigint // ждем сигнал прeрывания
+
+	api.Stop()
+	close(sigint)
 }
