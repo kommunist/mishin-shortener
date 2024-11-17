@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"log/slog"
+	"net/http"
 )
 
 // Основной метод пакета API
@@ -20,7 +21,7 @@ func (a *ShortanerAPI) Call() error {
 
 func (a *ShortanerAPI) start() error {
 	err := a.Server.ListenAndServe()
-	if err != nil {
+	if err != nil && err != http.ErrServerClosed {
 		slog.Error("Server failed to start", "err", err)
 		return err
 	}
@@ -30,7 +31,7 @@ func (a *ShortanerAPI) start() error {
 func (a *ShortanerAPI) startWithTLS() error {
 
 	err := a.Server.ListenAndServeTLS("certs/MyCertificate.crt", "certs/MyKey.key")
-	if err != nil {
+	if err != nil && err != http.ErrServerClosed {
 		slog.Error("Server failed to start with tls", "err", err)
 		return err
 	}
