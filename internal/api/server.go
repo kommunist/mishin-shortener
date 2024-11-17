@@ -8,7 +8,7 @@ import (
 // Основной метод пакета API
 func (a *ShortanerAPI) Call() error {
 	a.initServ()
-	a.waitInterrupt()
+	go a.waitInterrupt()
 
 	slog.Info("server started", "URL", a.setting.BaseServerURL)
 
