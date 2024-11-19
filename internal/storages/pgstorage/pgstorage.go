@@ -61,7 +61,7 @@ func (d *Driver) initSchema(ctx context.Context) {
 	}
 	_, err = d.driver.ExecContext(ctx, initIndexQuery)
 	if err != nil {
-		slog.Error("Eror when create table", "err", err)
+		slog.Error("Eror when create index", "err", err)
 		os.Exit(1)
 	}
 }
