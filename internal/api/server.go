@@ -45,8 +45,10 @@ func (a *ShortanerAPI) Stop() {
 		slog.Error("Error when shutdown server", "err", err)
 	}
 
+	close(a.delChan)
+
 	err = a.storage.Finish()
-	if err != nil { // будем счиать, что отвественность api закрыть базу при выключении
+	if err != nil { // пока будем счиать, что отвественность api закрыть базу при выключении
 		slog.Error("Error when close connection to storage", "err", err)
 	}
 }

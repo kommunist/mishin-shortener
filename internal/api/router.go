@@ -13,7 +13,7 @@ import (
 func (a *ShortanerAPI) initRouter() *chi.Mux {
 	h := handlers.MakeShortanerHandler(a.setting, a.storage)
 
-	delasync.InitWorker(h.DelChan, h.DB.DeleteByUserID) // не дело из api запускать асинхрон. Но пока так
+	delasync.InitWorker(a.delChan, h.DB.DeleteByUserID) // не дело из api запускать асинхрон. Но пока так
 
 	r := chi.NewRouter()
 
@@ -29,7 +29,7 @@ func (a *ShortanerAPI) initRouter() *chi.Mux {
 
 		r.With(middleware.AuthCheck).Route("/user", func(r chi.Router) {
 			r.Get("/urls", a.userUrls.Call)
-			r.Delete("/urls", h.DeleteURLs)
+			r.Delete("/urls", a.deleteURLs.Call)
 		})
 
 	})

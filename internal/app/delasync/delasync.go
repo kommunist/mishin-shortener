@@ -18,17 +18,17 @@ func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) erro
 	go func(in <-chan DelPair) {
 		var buf []DelPair // сюда будем складывать накопленные
 
-		rf := func(in <-chan DelPair) (DelPair, bool) {
+		rf := func(in <-chan DelPair) (DelPair, bool, bool) {
 			select {
-			case val := <-in:
-				return val, true
+			case val, opened := <-in:
+				return val, true, opened
 			case <-time.After(5 * time.Second):
-				return DelPair{}, false
+				return DelPair{}, false, true
 			}
 		}
 
 		for {
-			val, found := rf(in)
+			val, found, opened := rf(in)
 			if found {
 				buf = append(buf, val)
 				if len(buf) > 2 {
@@ -48,6 +48,9 @@ func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) erro
 
 					buf = nil
 				}
+			}
+			if !opened {
+				break
 			}
 		}
 	}(ch)

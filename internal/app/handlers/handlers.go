@@ -21,7 +21,6 @@ type AbstractStorage interface {
 type ShortanerHandler struct {
 	DB      AbstractStorage
 	Options config.MainConfig
-	DelChan chan delasync.DelPair // [0] - для user_id и [1] для short
 }
 
 // Создание структуры обработчика.
@@ -29,7 +28,6 @@ func MakeShortanerHandler(c config.MainConfig, db AbstractStorage) ShortanerHand
 	return ShortanerHandler{
 		DB:      db,
 		Options: c,
-		DelChan: make(chan delasync.DelPair, 5),
 	}
 }
 
