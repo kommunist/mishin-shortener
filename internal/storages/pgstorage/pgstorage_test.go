@@ -16,7 +16,8 @@ func TestInitSchema(t *testing.T) {
 		defer db.Close()
 		stor := Driver{driver: db}
 
-		mock.ExpectExec(initSchemaQuery).WillReturnResult(sqlmock.NewResult(0, 0))
+		mock.ExpectExec(initTableQuery).WillReturnResult(sqlmock.NewResult(0, 0))
+		mock.ExpectExec(initIndexQuery).WillReturnResult(sqlmock.NewResult(0, 0))
 
 		stor.initSchema(context.Background())
 

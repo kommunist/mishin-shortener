@@ -12,7 +12,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const initSchemaQuery = `
+const initTableQuery = `
 	CREATE TABLE IF NOT EXISTS short_urls (
 		id SERIAL PRIMARY KEY,
 		short     TEXT,
@@ -20,6 +20,10 @@ const initSchemaQuery = `
 		user_id   TEXT,
 		deleted   BOOLEAN DEFAULT false
 	);
+	"CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);"
+`
+
+const initIndexQuery = `
 	"CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);"
 `
 
@@ -51,7 +55,12 @@ func (d *Driver) initSchema(ctx context.Context) {
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
 	defer cancel()
 
-	_, err := d.driver.ExecContext(ctx, initSchemaQuery)
+	_, err := d.driver.ExecContext(ctx, initTableQuery)
+	if err != nil {
+		slog.Error("Eror when create table", "err", err)
+		os.Exit(1)
+	}
+	_, err = d.driver.ExecContext(ctx, initIndexQuery)
 	if err != nil {
 		slog.Error("Eror when create table", "err", err)
 		os.Exit(1)
