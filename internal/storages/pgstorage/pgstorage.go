@@ -20,11 +20,10 @@ const initTableQuery = `
 		user_id   TEXT,
 		deleted   BOOLEAN DEFAULT false
 	);
-	"CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);"
 `
 
 const initIndexQuery = `
-	"CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);"
+  CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);
 `
 
 // Структура хранилища
