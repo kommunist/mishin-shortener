@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// Интерфейс кешера для оперативной работы с хранилищем
 type Cacher interface {
 	Get(context.Context, string) (string, error)        // context, short
 	Push(context.Context, string, string, string) error // context, short, original, userID
