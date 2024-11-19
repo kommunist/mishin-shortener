@@ -1,6 +1,7 @@
 package head
 
 import (
+	"fmt"
 	"log/slog"
 	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/app/config"
@@ -38,6 +39,7 @@ func Make() item {
 		panic(err)
 	}
 	storage := initStorage(c)
+	fmt.Println("qq")
 	a := api.Make(c, storage)
 
 	return item{API: &a}
