@@ -13,8 +13,8 @@ import (
 	"syscall"
 )
 
-type Item struct {
-	Api *api.ShortanerAPI
+type item struct {
+	API *api.ShortanerAPI
 }
 
 func initStorage(c config.MainConfig) handlers.AbstractStorage {
@@ -28,7 +28,8 @@ func initStorage(c config.MainConfig) handlers.AbstractStorage {
 	return mapstorage.Make()
 }
 
-func Make() Item {
+// Конструктор объекта item
+func Make() item {
 	c := config.MakeConfig()
 
 	err := c.InitConfig()
@@ -39,30 +40,31 @@ func Make() Item {
 	storage := initStorage(c)
 	a := api.Make(c, storage)
 
-	return Item{Api: &a}
+	return item{API: &a}
 }
 
-func (i *Item) Call() {
-	defer i.Api.Stop()
+// Основной метод объекта item
+func (i *item) Call() {
+	defer i.API.Stop()
 	i.listenInterrupt()
 
-	err := i.Api.Call()
+	err := i.API.Call()
 	if err != nil {
 		slog.Error("Error from api component", "err", err)
 		panic(err)
 	}
 }
 
-func (i *Item) listenInterrupt() { // регистрируем канал для прерываний и перенаправляем туда внешние прерывания
+func (i *item) listenInterrupt() { // регистрируем канал для прерываний и перенаправляем туда внешние прерывания
 	sigint := make(chan os.Signal, 3)
 	signal.Notify(sigint, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	go i.waitInterrupt(sigint)
 }
 
-func (i *Item) waitInterrupt(sigint chan os.Signal) {
+func (i *item) waitInterrupt(sigint chan os.Signal) {
 	<-sigint // ждем сигнал прeрывания
 
-	i.Api.Stop()
+	i.API.Stop()
 
 	close(sigint)
 }
