@@ -47,7 +47,6 @@ func Make() item {
 
 // Основной метод объекта item
 func (i *item) Call() {
-	defer i.API.Stop()
 	i.listenInterrupt()
 
 	err := i.API.Call()
