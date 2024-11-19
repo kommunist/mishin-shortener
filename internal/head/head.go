@@ -1,0 +1,68 @@
+package head
+
+import (
+	"log/slog"
+	"mishin-shortener/internal/api"
+	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/app/handlers"
+	"mishin-shortener/internal/storages/filestorage"
+	"mishin-shortener/internal/storages/mapstorage"
+	"mishin-shortener/internal/storages/pgstorage"
+	"os"
+	"os/signal"
+	"syscall"
+)
+
+type Item struct {
+	Api *api.ShortanerAPI
+}
+
+func initStorage(c config.MainConfig) handlers.AbstractStorage {
+	if c.DatabaseDSN != "" {
+		return pgstorage.Make(c)
+	}
+	if c.FileStoragePath != "" {
+		return filestorage.Make(c.FileStoragePath)
+	}
+
+	return mapstorage.Make()
+}
+
+func Make() Item {
+	c := config.MakeConfig()
+
+	err := c.InitConfig()
+	if err != nil {
+		slog.Error("Error from InitConfig")
+		panic(err)
+	}
+	storage := initStorage(c)
+	a := api.Make(c, storage)
+
+	return Item{Api: &a}
+}
+
+func (i *Item) Call() {
+	defer i.Api.Stop()
+	i.listenInterrupt()
+
+	err := i.Api.Call()
+	if err != nil {
+		slog.Error("Error from api component", "err", err)
+		panic(err)
+	}
+}
+
+func (i *Item) listenInterrupt() { // регистрируем канал для прерываний и перенаправляем туда внешние прерывания
+	sigint := make(chan os.Signal, 3)
+	signal.Notify(sigint, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
+	go i.waitInterrupt(sigint)
+}
+
+func (i *Item) waitInterrupt(sigint chan os.Signal) {
+	<-sigint // ждем сигнал прeрывания
+
+	i.Api.Stop()
+
+	close(sigint)
+}

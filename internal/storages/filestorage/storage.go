@@ -1,16 +1,20 @@
 package filestorage
 
 import (
+	"context"
 	"log/slog"
-	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/internal/storages/mapstorage"
 	"os"
-
-	"github.com/google/uuid"
 )
+
+type Cacher interface {
+	Get(context.Context, string) (string, error)        // context, short
+	Push(context.Context, string, string, string) error // context, short, original, userID
+}
 
 // Основная структура хранилища
 type Storage struct {
-	cache mapstorage.Storage
+	cache Cacher
 	file  *os.File
 }
 
@@ -34,19 +38,5 @@ func Make(filePath string) *Storage {
 	}
 	slog.Info("readed n items", "n", len(cache))
 
-	return &Storage{cache: cache, file: file}
-}
-
-type storageItem struct {
-	UUID        string `json:"uuid"`
-	ShortURL    string `json:"short_url"`
-	OriginalURL string `json:"original_url"`
-}
-
-func makeStorageItem(short string, original string) storageItem {
-	return storageItem{
-		ShortURL:    short,
-		OriginalURL: original,
-		UUID:        uuid.New().String(),
-	}
+	return &Storage{cache: &cache, file: file}
 }

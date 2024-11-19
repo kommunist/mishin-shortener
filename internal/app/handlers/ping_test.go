@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"mishin-shortener/internal/app/config"
-	"mishin-shortener/internal/app/mapstorage"
+	"mishin-shortener/internal/storages/mapstorage"
 	"net/http"
 	"net/http/httptest"
 	"testing"
