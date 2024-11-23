@@ -7,15 +7,18 @@ import (
 	"time"
 )
 
+// Интерфейс метода для удаления объектов
 type Remover interface {
 	DeleteByUserID(context.Context, []DelPair) error // слайс пар userID, list
 }
 
+// Основная структура
 type Handler struct {
 	DelChan chan DelPair
 	storage Remover
 }
 
+// Конструктор основной структуры
 func Make(storage Remover) Handler {
 	return Handler{
 		storage: storage,
@@ -72,6 +75,7 @@ func (h *Handler) InitWorker() {
 	}(h.DelChan)
 }
 
+// Метод для остановки
 func (h *Handler) Stop() {
 	close(h.DelChan)
 }

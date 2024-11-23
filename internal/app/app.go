@@ -13,23 +13,23 @@ import (
 	"syscall"
 )
 
-type Finisher interface {
+type finisher interface {
 	Finish() error
 }
 
 type item struct {
-	storage Finisher
+	storage finisher
 	API     *api.ShortanerAPI
 	deleter delasync.Handler
 }
 
-type CommonStorage interface {
+type commonStorage interface {
 	api.CommonStorage // методы для api
 	delasync.Remover  // методы для worker
-	Finisher          // методы для закрытия
+	finisher          // методы для закрытия
 }
 
-func initStorage(c config.MainConfig) CommonStorage {
+func initStorage(c config.MainConfig) commonStorage {
 	if c.DatabaseDSN != "" {
 		return pgstorage.Make(c)
 	}
