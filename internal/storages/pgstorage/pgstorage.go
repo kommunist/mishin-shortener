@@ -5,7 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"log/slog"
-	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/config"
 	"os"
 	"time"
 

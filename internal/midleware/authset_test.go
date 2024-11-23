@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"mishin-shortener/internal/app/secure"
+	"mishin-shortener/internal/secure"
 	"net/http"
 	"net/http/httptest"
 	"testing"

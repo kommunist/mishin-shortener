@@ -1,4 +1,4 @@
-package userurls
+package createjson
 
 import (
 	"context"
@@ -6,17 +6,21 @@ import (
 )
 
 // Интерфейс доступа к базе
-type ByUserIDGetter interface {
-	GetByUserID(context.Context, string) (map[string]string, error)
+type Pusher interface {
+	Push(context.Context, string, string, string) error
 }
 
 // Структура хендлера
 type Handler struct {
-	storage ByUserIDGetter
 	setting config.MainConfig
+	storage Pusher
 }
 
 // Конструктор хендлера
-func Make(setting config.MainConfig, storage ByUserIDGetter) Handler {
+func Make(setting config.MainConfig, storage Pusher) Handler {
 	return Handler{storage: storage, setting: setting}
+}
+
+func (h *Handler) resultURL(hashed string) []byte {
+	return []byte(h.setting.BaseRedirectURL + "/" + hashed)
 }

@@ -1,4 +1,4 @@
-package handlers
+package redirect
 
 import (
 	"mishin-shortener/internal/errors/deleted"
@@ -7,8 +7,8 @@ import (
 )
 
 // Обработчик, осуществляющий переброску(редирект) по сокращенному урлу.
-func (h *ShortanerHandler) RedirectHandler(w http.ResponseWriter, r *http.Request) {
-	toLocation, err := h.DB.Get(r.Context(), strings.Trim(r.RequestURI, "/"))
+func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
+	toLocation, err := h.storage.Get(r.Context(), strings.Trim(r.RequestURI, "/"))
 
 	if _, ok := err.(*deleted.DeletedError); ok { // если удаленнный
 		w.WriteHeader(http.StatusGone)

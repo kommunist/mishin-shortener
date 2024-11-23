@@ -3,7 +3,7 @@ package main
 
 import (
 	"log/slog"
-	"mishin-shortener/internal/head"
+	"mishin-shortener/internal/app"
 
 	_ "net/http/pprof"
 )
@@ -21,7 +21,11 @@ func main() {
 	// 	log.Println(http.ListenAndServe("localhost:6060", nil))
 	// }()
 
-	h := head.Make()
-	h.Call()
+	h := app.Make()
+	err := h.Call()
+	if err != nil {
+		slog.Error("Error in head package", "err", err)
+		panic(err)
+	}
 
 }

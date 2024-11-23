@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log/slog"
-	"mishin-shortener/internal/app/delasync"
+	"mishin-shortener/internal/delasync"
 )
 
 // Получение полного URL по сокращенному

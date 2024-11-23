@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"context"
-	"mishin-shortener/internal/app/secure"
+	"mishin-shortener/internal/secure"
 	"net/http"
 
 	"github.com/google/uuid"

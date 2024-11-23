@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"mishin-shortener/internal/app/delasync"
+	"mishin-shortener/internal/delasync"
 	"mishin-shortener/internal/errors/deleted"
-	"mishin-shortener/internal/errors/exsist"
+	"mishin-shortener/internal/errors/exist"
 	"strings"
 
 	"github.com/jackc/pgerrcode"
@@ -22,7 +22,7 @@ func (d *Driver) Push(ctx context.Context, short string, original string, userID
 		slog.Error("When push to db error", "err", err)
 
 		if errStruct, ok := err.(*pq.Error); ok && errStruct.Code == pgerrcode.UniqueViolation {
-			return exsist.NewExistError(err) // если уже существует такая запись, то возвращаем ошибку
+			return exist.NewExistError(err) // если уже существует такая запись, то возвращаем ошибку
 		}
 
 		return err

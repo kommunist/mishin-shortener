@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
-	"mishin-shortener/internal/app/delasync"
-	"mishin-shortener/internal/app/secure"
+	"mishin-shortener/internal/delasync"
+	"mishin-shortener/internal/secure"
 	"net/http"
 )
 

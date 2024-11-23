@@ -1,5 +1,5 @@
 // Модуль exist содержит ошибку об уже существующих данных.
-package exsist
+package exist
 
 // Основная структура ошибки.
 type ExistError struct {

@@ -3,7 +3,7 @@ package filestorage
 import (
 	"context"
 	"fmt"
-	"mishin-shortener/internal/app/delasync"
+	"mishin-shortener/internal/delasync"
 	"os"
 )
 

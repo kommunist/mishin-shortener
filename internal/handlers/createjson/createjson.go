@@ -1,27 +1,27 @@
-package handlers
+package createjson
 
 import (
 	"encoding/json"
 	"io"
 	"log/slog"
-	"mishin-shortener/internal/app/hasher"
-	"mishin-shortener/internal/app/secure"
-	"mishin-shortener/internal/errors/exsist"
+	"mishin-shortener/internal/errors/exist"
+	"mishin-shortener/internal/hasher"
+	"mishin-shortener/internal/secure"
 	"net/http"
 )
 
 // Структура входящего запроса на сокращение в формате JSON.
-type RequestData struct {
+type RequestItem struct {
 	URL string `json:"url"`
 }
 
 // Структура ответа на сокращение в формате JSON.
-type ResponseData struct {
+type ResponseItem struct {
 	Result string `json:"result"`
 }
 
 // Обработчик запроса на сокращение в формате JSON.
-func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -31,8 +31,8 @@ func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	input := RequestData{}
-	output := ResponseData{}
+	input := RequestItem{}
+	output := ResponseItem{}
 
 	if err = json.Unmarshal(body, &input); err != nil {
 		slog.Error("Parsing Error", "err", err)
@@ -49,12 +49,12 @@ func (h *ShortanerHandler) CreateURLByJSON(w http.ResponseWriter, r *http.Reques
 	}
 
 	hashed := hasher.GetMD5Hash([]byte(input.URL))
-	err = h.DB.Push(r.Context(), hashed, string(input.URL), userID)
+	err = h.storage.Push(r.Context(), hashed, string(input.URL), userID)
 
 	status := http.StatusCreated
 
 	if err != nil {
-		if _, ok := err.(*exsist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
+		if _, ok := err.(*exist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
 			status = http.StatusConflict
 		} else {
 			slog.Error("push to storage error", "err", err)

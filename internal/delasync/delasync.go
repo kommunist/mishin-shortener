@@ -7,6 +7,22 @@ import (
 	"time"
 )
 
+type Remover interface {
+	DeleteByUserID(context.Context, []DelPair) error // слайс пар userID, list
+}
+
+type Handler struct {
+	DelChan chan DelPair
+	storage Remover
+}
+
+func Make(storage Remover) Handler {
+	return Handler{
+		storage: storage,
+		DelChan: make(chan DelPair, 5),
+	}
+}
+
 // Содержит информацию о том, что нужно удалить: сама сущность и кому пренадлежит.
 type DelPair struct {
 	UserID string
@@ -14,7 +30,7 @@ type DelPair struct {
 }
 
 // Функция запускает горутины, которые будут принимать информацию об удаляемых объектах.
-func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) error) {
+func (h *Handler) InitWorker() {
 	go func(in <-chan DelPair) {
 		var buf []DelPair // сюда будем складывать накопленные
 
@@ -32,7 +48,7 @@ func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) erro
 			if found {
 				buf = append(buf, val)
 				if len(buf) > 2 {
-					err := delFunc(context.Background(), buf)
+					err := h.storage.DeleteByUserID(context.Background(), buf)
 					if err != nil {
 						slog.Error("Error when execute remove function", "err", err)
 					}
@@ -41,7 +57,7 @@ func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) erro
 				}
 			} else {
 				if len(buf) > 0 {
-					err := delFunc(context.Background(), buf)
+					err := h.storage.DeleteByUserID(context.Background(), buf)
 					if err != nil {
 						slog.Error("Error when execute remove function", "err", err)
 					}
@@ -53,5 +69,9 @@ func InitWorker(ch <-chan DelPair, delFunc func(context.Context, []DelPair) erro
 				break
 			}
 		}
-	}(ch)
+	}(h.DelChan)
+}
+
+func (h *Handler) Stop() {
+	close(h.DelChan)
 }

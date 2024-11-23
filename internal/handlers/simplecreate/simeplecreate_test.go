@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"io"
-	"mishin-shortener/internal/app/config"
-	"mishin-shortener/internal/app/secure"
-	"mishin-shortener/internal/errors/exsist"
+	"mishin-shortener/internal/config"
+	"mishin-shortener/internal/errors/exist"
+	"mishin-shortener/internal/secure"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -45,7 +45,7 @@ func TestCall(t *testing.T) {
 			name:        "post_simple_create_when_record_exist_in_db",
 			withContext: true,
 			storTimes:   1,
-			storErr:     exsist.NewExistError(nil),
+			storErr:     exist.NewExistError(nil),
 			status:      http.StatusConflict,
 			respBody:    "http://localhost:8080/931691969b142b3a0f11a03e36fcc3b7",
 		},

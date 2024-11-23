@@ -8,8 +8,6 @@ import (
 
 // Основной метод пакета API
 func (a *ShortanerAPI) Call() error {
-	a.initServ()
-
 	slog.Info("server started", "URL", a.setting.BaseServerURL)
 
 	if a.setting.EnableHTTPS {
@@ -43,12 +41,5 @@ func (a *ShortanerAPI) Stop() {
 	err := a.Server.Shutdown(context.Background())
 	if err != nil {
 		slog.Error("Error when shutdown server", "err", err)
-	}
-
-	close(a.delChan)
-
-	err = a.storage.Finish()
-	if err != nil { // пока будем счиать, что отвественность api закрыть базу при выключении
-		slog.Error("Error when close connection to storage", "err", err)
 	}
 }

@@ -3,7 +3,7 @@ package mapstorage
 import (
 	"context"
 	"fmt"
-	"mishin-shortener/internal/app/delasync"
+	"mishin-shortener/internal/delasync"
 )
 
 func ExampleStorage_Push() {

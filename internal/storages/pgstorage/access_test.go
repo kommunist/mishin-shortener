@@ -2,7 +2,7 @@ package pgstorage
 
 import (
 	"context"
-	"mishin-shortener/internal/app/delasync"
+	"mishin-shortener/internal/delasync"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"

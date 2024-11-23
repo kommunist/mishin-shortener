@@ -1,7 +1,7 @@
 package deleteurls
 
 import (
-	"mishin-shortener/internal/app/delasync"
+	"mishin-shortener/internal/delasync"
 )
 
 // Структура хендлера

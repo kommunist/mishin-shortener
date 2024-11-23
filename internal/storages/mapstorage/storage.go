@@ -5,7 +5,7 @@ import (
 	"context"
 	"errors"
 	"log/slog"
-	"mishin-shortener/internal/app/delasync"
+	"mishin-shortener/internal/delasync"
 )
 
 // Структура хранения данных.

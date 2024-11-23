@@ -3,7 +3,7 @@ package userurls
 import (
 	"encoding/json"
 	"log/slog"
-	"mishin-shortener/internal/app/secure"
+	"mishin-shortener/internal/secure"
 	"net/http"
 )
 
