@@ -15,6 +15,7 @@ type MainConfig struct {
 	FileStoragePath string `json:"file_storage_path"`
 	DatabaseDSN     string `json:"database_dsn"`
 	EnableHTTPS     bool   `json:"enable_https"`
+	EnableProfile   bool
 }
 
 // Создает структуру харнения с дефолтными значениями.
@@ -25,6 +26,7 @@ func MakeConfig() MainConfig {
 		FileStoragePath: "",
 		DatabaseDSN:     "",
 		EnableHTTPS:     false,
+		EnableProfile:   false,
 	}
 
 	return config
@@ -89,6 +91,7 @@ func (c *MainConfig) initFlags() {
 		flag.StringVar(&c.FileStoragePath, "f", c.FileStoragePath, "file path for file storage")
 		flag.StringVar(&c.DatabaseDSN, "d", c.DatabaseDSN, "database DSN")
 		flag.BoolVar(&c.EnableHTTPS, "s", c.EnableHTTPS, "database DSN")
+		flag.BoolVar(&c.EnableProfile, "prof", c.EnableProfile, "start profile server on localhost:6060")
 		slog.Info("flags inited")
 	}
 }
@@ -111,6 +114,11 @@ func (c *MainConfig) parse() {
 	if e := os.Getenv("ENABLE_HTTPS"); e != "" {
 		if e == "true" || e == "TRUE" {
 			c.EnableHTTPS = true
+		}
+	}
+	if e := os.Getenv("ENABLE_PROFILE"); e != "" {
+		if e == "true" || e == "TRUE" {
+			c.EnableProfile = true
 		}
 	}
 }

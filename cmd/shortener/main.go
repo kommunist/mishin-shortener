@@ -17,15 +17,14 @@ func main() {
 	slog.Info("Build info", "date", buildDate)
 	slog.Info("Build info", "commit", buildCommit)
 
-	// go func() { // сервер для профилирования
-	// 	log.Println(http.ListenAndServe("localhost:6060", nil))
-	// }()
-
-	h := app.Make()
-	err := h.Call()
+	h, err := app.Make()
 	if err != nil {
-		slog.Error("Error in head package", "err", err)
+		slog.Error("Error in make app package", "err", err)
 		panic(err)
 	}
-
+	err = h.Call()
+	if err != nil {
+		slog.Error("Error in call app package", "err", err)
+		panic(err)
+	}
 }

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"log"
 	"log/slog"
 	"mishin-shortener/internal/api"
 	"mishin-shortener/internal/config"
@@ -8,6 +9,7 @@ import (
 	"mishin-shortener/internal/storages/filestorage"
 	"mishin-shortener/internal/storages/mapstorage"
 	"mishin-shortener/internal/storages/pgstorage"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -19,6 +21,7 @@ type finisher interface {
 
 type item struct {
 	storage finisher
+	setting config.MainConfig
 	API     *api.ShortanerAPI
 	deleter delasync.Handler
 }
@@ -41,12 +44,12 @@ func initStorage(c config.MainConfig) commonStorage {
 }
 
 // Конструктор объекта item
-func Make() item {
+func Make() (item, error) {
 	c := config.MakeConfig()
 	err := c.InitConfig()
 	if err != nil {
 		slog.Error("Error from InitConfig")
-		panic(err)
+		return item{}, err
 	}
 
 	storage := initStorage(c)     // создали хранилище
@@ -54,13 +57,17 @@ func Make() item {
 
 	a := api.Make(c, storage, del.DelChan)
 
-	return item{API: a, deleter: del, storage: storage}
+	return item{API: a, deleter: del, storage: storage, setting: c}, nil
 }
 
 // Основной метод объекта item
 func (i *item) Call() error {
-	i.listenInterrupt()
 
+	if i.setting.EnableProfile {
+		i.startProfileServer()
+	}
+
+	i.listenInterrupt()
 	i.deleter.InitWorker()
 
 	err := i.API.Call()
@@ -89,4 +96,10 @@ func (i *item) waitInterrupt(sigint chan os.Signal) {
 	}
 
 	close(sigint)
+}
+
+func (i *item) startProfileServer() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
 }
