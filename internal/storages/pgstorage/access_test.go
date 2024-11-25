@@ -101,7 +101,7 @@ func TestGetByUserID(t *testing.T) {
 }
 
 func TestDeleteByUserID(t *testing.T) {
-	t.Run("it_correct_push_data", func(t *testing.T) {
+	t.Run("it_correct_delete_data", func(t *testing.T) {
 		db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 		if err != nil {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -118,6 +118,32 @@ func TestDeleteByUserID(t *testing.T) {
 		mock.ExpectCommit()
 
 		stor.DeleteByUserID(context.Background(), []delasync.DelPair{{UserID: "userID", Item: "short"}})
+
+		if err := mock.ExpectationsWereMet(); err != nil {
+			t.Errorf("there were unfulfilled expectations: %s", err)
+		}
+	})
+}
+
+func TestGetStats(t *testing.T) {
+	t.Run("it_correct_get_stats_from_db", func(t *testing.T) {
+		db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+
+		stor := Driver{driver: db}
+
+		mock.ExpectQuery(
+			"SELECT count(*) from users;",
+		).WithoutArgs().WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(1))
+
+		mock.ExpectQuery(
+			"SELECT count(*) from short_urls;",
+		).WithoutArgs().WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(1))
+
+		stor.GetStats(context.Background())
 
 		if err := mock.ExpectationsWereMet(); err != nil {
 			t.Errorf("there were unfulfilled expectations: %s", err)

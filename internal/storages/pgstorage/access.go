@@ -164,6 +164,23 @@ func (d *Driver) DeleteByUserID(ctx context.Context, list []delasync.DelPair) er
 	return nil
 }
 
+func (d *Driver) GetStats(ctx context.Context) (int, int, error) {
+	var users int
+	var urls int
+	err := d.driver.QueryRowContext(ctx, "SELECT count(*) from users;").Scan(&users)
+	if err != nil {
+		slog.Error("Error when get count of users", "err", err)
+		return 0, 0, err
+	}
+
+	err = d.driver.QueryRowContext(ctx, "SELECT count(*) from short_urls;").Scan(&urls)
+	if err != nil {
+		slog.Error("Error when get count of short_urls", "err", err)
+		return 0, 0, err
+	}
+	return users, urls, nil
+}
+
 // Восстановление коннектов к базе
 func (d *Driver) Ping(ctx context.Context) error {
 	return d.driver.PingContext(ctx)
