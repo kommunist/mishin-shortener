@@ -3,9 +3,9 @@ package simplecreate
 import (
 	"io"
 	"log/slog"
-	"mishin-shortener/internal/app/exsist"
-	"mishin-shortener/internal/app/hasher"
-	"mishin-shortener/internal/app/secure"
+	"mishin-shortener/internal/errors/exist"
+	"mishin-shortener/internal/hasher"
+	"mishin-shortener/internal/secure"
 	"net/http"
 )
 
@@ -33,7 +33,7 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 
 	err = h.storage.Push(r.Context(), hashed, string(body), userID)
 	if err != nil {
-		if _, ok := err.(*exsist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
+		if _, ok := err.(*exist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
 			status = http.StatusConflict
 		} else {
 			slog.Error("push to storage error", "err", err)

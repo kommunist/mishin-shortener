@@ -2,7 +2,7 @@ package simplecreate
 
 import (
 	"context"
-	"mishin-shortener/internal/app/config"
+	"mishin-shortener/internal/config"
 )
 
 // Интерфейс доступа к базе

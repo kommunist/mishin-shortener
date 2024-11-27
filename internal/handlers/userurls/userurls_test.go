@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"mishin-shortener/internal/app/config"
-	"mishin-shortener/internal/app/secure"
+	"mishin-shortener/internal/config"
+	"mishin-shortener/internal/secure"
 
 	"net/http"
 	"net/http/httptest"
