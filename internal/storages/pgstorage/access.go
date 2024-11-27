@@ -164,6 +164,7 @@ func (d *Driver) DeleteByUserID(ctx context.Context, list []delasync.DelPair) er
 	return nil
 }
 
+// Получение статистики о кол-ве пользователей и урлов в базе
 func (d *Driver) GetStats(ctx context.Context) (int, int, error) {
 	var users int
 	var urls int

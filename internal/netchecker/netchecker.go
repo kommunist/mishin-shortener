@@ -5,10 +5,12 @@ import (
 	"net"
 )
 
+// Основная структура чекера
 type Handler struct {
 	subNet *net.IPNet
 }
 
+// кКонструктор чекера
 func Make(inp string) (Handler, error) {
 	_, subNet, err := net.ParseCIDR(inp)
 
@@ -20,6 +22,7 @@ func Make(inp string) (Handler, error) {
 	return Handler{subNet: subNet}, nil
 }
 
+// Метод проверки
 func (h *Handler) Contains(ipAddr string) bool {
 	parsed := net.ParseIP(ipAddr)
 	return h.subNet.Contains(parsed)

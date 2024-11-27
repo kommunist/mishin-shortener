@@ -6,11 +6,12 @@ import (
 	"net/http"
 )
 
-type ResponseItem struct {
+type responseItem struct {
 	Users int `json:"users"`
 	Urls  int `json:"urls"`
 }
 
+// Обработчик запроса на статистику
 func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 	realIP := r.Header.Get("X-Real-IP")
 	if !h.netChecker.Contains(realIP) {
@@ -25,7 +26,7 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item := ResponseItem{Users: users, Urls: urls}
+	item := responseItem{Users: users, Urls: urls}
 
 	data, err := json.Marshal(item)
 	if err != nil {

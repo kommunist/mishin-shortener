@@ -10,28 +10,28 @@ func TestContains(t *testing.T) {
 	exList := []struct {
 		name    string
 		subnet  string
-		inpIp   string
+		inpIP   string
 		result  bool
 		withErr bool
 	}{
 		{
 			name:    "happy_path_contains",
 			subnet:  "192.168.1.1/16",
-			inpIp:   "192.168.1.2",
+			inpIP:   "192.168.1.2",
 			result:  true,
 			withErr: false,
 		},
 		{
 			name:    "when_not_contains",
 			subnet:  "192.168.1.1/16",
-			inpIp:   "5.5.5.5",
+			inpIP:   "5.5.5.5",
 			result:  false,
 			withErr: false,
 		},
 		{
 			name:    "when_empty_subnet",
 			subnet:  "",
-			inpIp:   "5.5.5.5",
+			inpIP:   "5.5.5.5",
 			result:  false,
 			withErr: true,
 		},
@@ -43,7 +43,7 @@ func TestContains(t *testing.T) {
 				assert.NotEqual(t, nil, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, ex.result, h.Contains(ex.inpIp))
+				assert.Equal(t, ex.result, h.Contains(ex.inpIP))
 			}
 
 		})

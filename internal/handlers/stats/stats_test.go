@@ -91,7 +91,7 @@ func TestCall(t *testing.T) {
 			if ex.checkBody {
 				respBody, _ := io.ReadAll(res.Body)
 
-				item := ResponseItem{}
+				item := responseItem{}
 				json.Unmarshal(respBody, &item)
 				assert.Equal(t, ex.storUrls, item.Urls)
 				assert.Equal(t, ex.storUsers, item.Users)
