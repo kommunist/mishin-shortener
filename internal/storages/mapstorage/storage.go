@@ -56,6 +56,11 @@ func (db *Storage) DeleteByUserID(ctx context.Context, list []delasync.DelPair) 
 	return nil
 }
 
+// Получение статистики о кол-ве пользователей и урлов в базе
+func (db *Storage) GetStats(ctx context.Context) (int, int, error) {
+	return 0, 0, nil
+}
+
 // Восстановление коннектов к базе(не реализовано)
 func (db *Storage) Ping(ctx context.Context) error {
 	return nil
