@@ -29,7 +29,7 @@ func MakeConfig() MainConfig {
 		DatabaseDSN:     "",
 		EnableHTTPS:     false,
 		EnableProfile:   false,
-		TrustedSubnet:   "",
+		TrustedSubnet:   "0.0.0.0/32",
 	}
 
 	return config

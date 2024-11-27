@@ -23,6 +23,8 @@ func TestCall(t *testing.T) {
 		storUrls  int
 		status    int
 		checkBody bool
+		realIP    string
+		subnet    string
 	}{
 		{
 			name:      "simple_happy_path",
@@ -32,6 +34,8 @@ func TestCall(t *testing.T) {
 			storUrls:  1,
 			status:    http.StatusOK,
 			checkBody: true,
+			realIP:    "192.168.1.1",
+			subnet:    "192.168.1.0/24",
 		},
 		{
 			name:      "when_error_from_db",
@@ -41,6 +45,19 @@ func TestCall(t *testing.T) {
 			storUrls:  0,
 			status:    http.StatusInternalServerError,
 			checkBody: false,
+			realIP:    "192.168.1.1",
+			subnet:    "192.168.1.0/24",
+		},
+		{
+			name:      "when_ip_not_in_subnet",
+			storTimes: 0,
+			storErr:   errors.New("Ququ"),
+			storUsers: 0,
+			storUrls:  0,
+			status:    http.StatusForbidden,
+			checkBody: false,
+			realIP:    "192.168.2.1",
+			subnet:    "192.168.1.0/24",
 		},
 	}
 	for _, ex := range exList {
@@ -51,6 +68,7 @@ func TestCall(t *testing.T) {
 
 			c := config.MakeConfig()
 			c.InitConfig()
+			c.TrustedSubnet = ex.subnet
 
 			h, err := Make(c, stor)
 			assert.NoError(t, err)
@@ -60,6 +78,8 @@ func TestCall(t *testing.T) {
 			stor.EXPECT().GetStats(ctx).Times(ex.storTimes).Return(ex.storUsers, ex.storUrls, ex.storErr)
 
 			request := httptest.NewRequest(http.MethodGet, "/", nil).WithContext(ctx)
+			request.Header.Set("X-Real-IP", ex.realIP)
+
 			w := httptest.NewRecorder()
 
 			h.Call(w, request)
