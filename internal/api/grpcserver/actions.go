@@ -11,7 +11,7 @@ import (
 func (h *GRPCHandler) GetStats(ctx context.Context, in *pb.GetStatsRequest) (*pb.GetStatsResponse, error) {
 	resp, err := h.stats.CallGRPC(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.Unknown, "Error when call service", err)
+		return nil, status.Error(codes.Unknown, "Error when call service")
 	}
 	return resp, nil
 }
