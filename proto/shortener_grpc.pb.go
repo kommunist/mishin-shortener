@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Shortener_GetStats_FullMethodName = "/grpc_shortener.Shortener/GetStats"
+	Shortener_Ping_FullMethodName     = "/grpc_shortener.Shortener/Ping"
 )
 
 // ShortenerClient is the client API for Shortener service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ShortenerClient interface {
 	GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
+	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 }
 
 type shortenerClient struct {
@@ -47,11 +49,22 @@ func (c *shortenerClient) GetStats(ctx context.Context, in *GetStatsRequest, opt
 	return out, nil
 }
 
+func (c *shortenerClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, Shortener_Ping_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ShortenerServer is the server API for Shortener service.
 // All implementations must embed UnimplementedShortenerServer
 // for forward compatibility.
 type ShortenerServer interface {
 	GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error)
+	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	mustEmbedUnimplementedShortenerServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedShortenerServer struct{}
 
 func (UnimplementedShortenerServer) GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
+}
+func (UnimplementedShortenerServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 func (UnimplementedShortenerServer) mustEmbedUnimplementedShortenerServer() {}
 func (UnimplementedShortenerServer) testEmbeddedByValue()                   {}
@@ -104,6 +120,24 @@ func _Shortener_GetStats_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Shortener_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShortenerServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Shortener_Ping_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShortenerServer).Ping(ctx, req.(*PingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Shortener_ServiceDesc is the grpc.ServiceDesc for Shortener service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var Shortener_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStats",
 			Handler:    _Shortener_GetStats_Handler,
+		},
+		{
+			MethodName: "Ping",
+			Handler:    _Shortener_Ping_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

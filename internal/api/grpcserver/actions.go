@@ -15,3 +15,11 @@ func (h *GRPCHandler) GetStats(ctx context.Context, in *pb.GetStatsRequest) (*pb
 	}
 	return resp, nil
 }
+
+func (h *GRPCHandler) Ping(ctx context.Context, in *pb.PingRequest) (*pb.PingResponse, error) {
+	resp, err := h.ping.CallGRPC(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Unknown, "Error when call service")
+	}
+	return resp, nil
+}
