@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCall(t *testing.T) {
+func TestCallHTTP(t *testing.T) {
 	exList := []struct {
 		name      string
 		storTimes int
@@ -82,7 +82,7 @@ func TestCall(t *testing.T) {
 
 			w := httptest.NewRecorder()
 
-			h.Call(w, request)
+			h.CallHTPP(w, request)
 
 			res := w.Result()
 			defer res.Body.Close()

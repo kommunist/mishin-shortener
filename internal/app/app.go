@@ -3,7 +3,8 @@ package app
 import (
 	"log"
 	"log/slog"
-	"mishin-shortener/internal/api"
+	"mishin-shortener/internal/api/grpcserver"
+	"mishin-shortener/internal/api/httpserver"
 	"mishin-shortener/internal/config"
 	"mishin-shortener/internal/delasync"
 	"mishin-shortener/internal/storages/filestorage"
@@ -22,14 +23,16 @@ type finisher interface {
 type item struct {
 	storage finisher
 	setting config.MainConfig
-	API     *api.ShortanerAPI
+	HTTPAPI *httpserver.HTTPHandler
+	GRPCAPI *grpcserver.GRPCHandler
+
 	deleter delasync.Handler
 }
 
 type commonStorage interface {
-	api.CommonStorage // методы для api
-	delasync.Remover  // методы для worker
-	finisher          // методы для закрытия
+	httpserver.CommonStorage // методы для httpApi
+	delasync.Remover         // методы для worker
+	finisher                 // методы для закрытия
 }
 
 func initStorage(c config.MainConfig) commonStorage {
@@ -55,9 +58,10 @@ func Make() (item, error) {
 	storage := initStorage(c)     // создали хранилище
 	del := delasync.Make(storage) // создали асинхронный обработчик удалений
 
-	a := api.Make(c, storage, del.DelChan)
+	h := httpserver.Make(c, storage, del.DelChan)
+	g := grpcserver.Make(c, storage, del.DelChan)
 
-	return item{API: a, deleter: del, storage: storage, setting: c}, nil
+	return item{HTTPAPI: h, GRPCAPI: g, deleter: del, storage: storage, setting: c}, nil
 }
 
 // Основной метод объекта item
@@ -70,11 +74,16 @@ func (i *item) Call() error {
 	i.listenInterrupt()
 	i.deleter.InitWorker()
 
-	err := i.API.Call()
+	go func() {
+		i.GRPCAPI.Start()
+	}()
+
+	err := i.HTTPAPI.Call()
 	if err != nil {
 		slog.Error("Error from api component", "err", err)
 		return err
 	}
+
 	return nil
 }
 
@@ -88,7 +97,8 @@ func (i *item) waitInterrupt(sigint chan os.Signal) {
 	<-sigint // ждем сигнал прeрывания
 
 	i.deleter.Stop()
-	i.API.Stop()
+	i.HTTPAPI.Stop()
+	i.GRPCAPI.Stop()
 
 	err := i.storage.Finish()
 	if err != nil {

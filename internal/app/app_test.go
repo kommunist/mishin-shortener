@@ -16,7 +16,7 @@ func TestCall(t *testing.T) {
 		assert.NoError(t, err)
 		go func() {
 			time.Sleep(2 * time.Second)
-			h.API.Stop()
+			h.HTTPAPI.Stop()
 		}()
 		err = h.Call()
 		assert.NoError(t, err)

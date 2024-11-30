@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package grpc_shortener;
+
+option go_package = "internal/grpcShortener";
+
+service Shortener {
+    rpc GetStats(GetStatsRequest) returns(GetStatsResponse);
+};
+
+
+message GetStatsRequest {}
+message GetStatsResponse {
+    uint32 count_urls = 1;
+    uint32 count_users = 2;
+}
+

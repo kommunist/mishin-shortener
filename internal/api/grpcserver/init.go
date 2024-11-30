@@ -1,6 +1,7 @@
-package api
+package grpcserver
 
 import (
+	"log/slog"
 	"mishin-shortener/internal/config"
 	"mishin-shortener/internal/delasync"
 	"mishin-shortener/internal/handlers/createjson"
@@ -9,8 +10,13 @@ import (
 	"mishin-shortener/internal/handlers/ping"
 	"mishin-shortener/internal/handlers/redirect"
 	"mishin-shortener/internal/handlers/simplecreate"
+	"mishin-shortener/internal/handlers/stats"
 	"mishin-shortener/internal/handlers/userurls"
-	"net/http"
+	"net"
+
+	pb "mishin-shortener/proto"
+
+	"google.golang.org/grpc"
 )
 
 // Композиция интерфейсов для доступа в базу
@@ -21,10 +27,11 @@ type CommonStorage interface {
 	ping.Pinger
 	createjson.Pusher
 	createjsonbatch.Pusher
+	stats.StatsGetter
 }
 
 // Основная структуруа пакета API
-type ShortanerAPI struct {
+type GRPCHandler struct {
 	setting config.MainConfig
 
 	userUrls        userurls.Handler
@@ -34,13 +41,17 @@ type ShortanerAPI struct {
 	ping            ping.Handler
 	createJSON      createjson.Handler
 	createJSONBatch createjsonbatch.Handler
+	stats           stats.Handler
 
-	Server http.Server
+	listener net.Listener
+	server   *grpc.Server
+
+	pb.UnimplementedShortenerServer // добавим сюда же работу grpc
 }
 
-// Конструктор структуры пакета API
-func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelPair) *ShortanerAPI {
-	api := ShortanerAPI{
+// Конструктор структуры пакета GRPC
+func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelPair) *GRPCHandler {
+	h := GRPCHandler{
 		setting:         setting,
 		userUrls:        userurls.Make(setting, storage),
 		simpleCreate:    simplecreate.Make(setting, storage),
@@ -51,10 +62,22 @@ func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelP
 		createJSONBatch: createjsonbatch.Make(setting, storage),
 	}
 
-	api.Server = http.Server{
-		Addr:    setting.BaseServerURL,
-		Handler: api.initRouter(),
+	stats, err := stats.Make(setting, storage)
+	if err != nil {
+		slog.Error("Error when make stats handler", "err", err)
+		panic(err) // сделать вынос ошибки
 	}
+	h.stats = stats
 
-	return &api
+	listener, err := net.Listen("tcp", ":3200")
+	if err != nil {
+		slog.Error("Error when listen net", "err", err) // сделать возврат err
+	}
+	h.listener = listener
+
+	h.server = grpc.NewServer()
+
+	pb.RegisterShortenerServer(h.server, &h)
+
+	return &h
 }
