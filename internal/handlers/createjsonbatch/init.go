@@ -20,3 +20,13 @@ type Handler struct {
 func Make(settings config.MainConfig, storage Pusher) Handler {
 	return Handler{storage: storage, settings: settings}
 }
+
+type requestBatchItem struct {
+	CorrelationID string `json:"correlation_id"`
+	OriginalURL   string `json:"original_url"`
+}
+
+type responseBatchItem struct {
+	CorrelationID string `json:"correlation_id"`
+	ShortURL      string `json:"short_url"`
+}

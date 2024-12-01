@@ -28,3 +28,21 @@ message CreateRequest{
 message CreateResponse{
     string short = 1;
 }
+
+//CreateBatch
+
+message CreateBatchRequest{
+    repeated CreateBatchRequestItem list = 1;
+}
+message CreateBatchRequestItem {
+    string correlation_id = 1;
+    string original_url = 2;
+}
+
+message CreateBatchResponse{
+    repeated CreateBatchResponseItem list = 1;
+}
+message CreateBatchResponseItem {
+    string correlation_id = 1;
+    string short_url = 2;
+}

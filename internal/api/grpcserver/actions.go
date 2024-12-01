@@ -19,3 +19,8 @@ func (h *GRPCHandler) Create(ctx context.Context, in *pb.CreateRequest) (*pb.Cre
 	resp, err := h.simpleCreate.CallGRPC(ctx, in)
 	return resp, err
 }
+
+func (h *GRPCHandler) CreateBatch(ctx context.Context, in *pb.CreateBatchRequest) (*pb.CreateBatchResponse, error) {
+	resp, err := h.createJSONBatch.CallGRPC(ctx, in)
+	return resp, err
+}
