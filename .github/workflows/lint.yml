@@ -27,9 +27,9 @@ jobs:
         run: |
           rm -rf .git
       
-      - name: Build linter
-        run: |
-          go build -o exitanalyzer cmd/staticlint/*.go 
+      # - name: Build linter
+      #   run: |
+      #     go build -o exitanalyzer cmd/staticlint/*.go 
       
       - name: Run linter
         run: |
