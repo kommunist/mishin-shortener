@@ -8,6 +8,8 @@ service Shortener {
     rpc GetStats(GetStatsRequest) returns(GetStatsResponse);
     rpc Ping(PingRequest) returns(PingResponse);
     rpc Create(CreateRequest) returns(CreateResponse);
+    rpc CreateBatch(CreateBatchRequest) returns(CreateBatchResponse);
+    rpc Get(GetRequest) returns(GetResponse);
 };
 
 // GetStats
@@ -45,4 +47,23 @@ message CreateBatchResponse{
 message CreateBatchResponseItem {
     string correlation_id = 1;
     string short_url = 2;
+}
+
+// Get
+message GetRequest {
+    string short = 1;
+}
+message GetResponse {
+    string original = 1;
+}
+
+
+//UserUrls
+message UserUrlsRequest{}
+message UserUrlsResponseItem{
+    string short = 1;
+    string original = 2;
+}
+message UserUrlsResponse {
+    repeated UserUrlsResponseItem list = 1;
 }

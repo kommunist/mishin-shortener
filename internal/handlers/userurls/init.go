@@ -16,6 +16,11 @@ type Handler struct {
 	setting config.MainConfig
 }
 
+type responseItem struct {
+	Short    string `json:"short_url"`
+	Original string `json:"original_url"`
+}
+
 // Конструктор хендлера
 func Make(setting config.MainConfig, storage ByUserIDGetter) Handler {
 	return Handler{storage: storage, setting: setting}

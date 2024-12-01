@@ -19,9 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Shortener_GetStats_FullMethodName = "/grpc_shortener.Shortener/GetStats"
-	Shortener_Ping_FullMethodName     = "/grpc_shortener.Shortener/Ping"
-	Shortener_Create_FullMethodName   = "/grpc_shortener.Shortener/Create"
+	Shortener_GetStats_FullMethodName    = "/grpc_shortener.Shortener/GetStats"
+	Shortener_Ping_FullMethodName        = "/grpc_shortener.Shortener/Ping"
+	Shortener_Create_FullMethodName      = "/grpc_shortener.Shortener/Create"
+	Shortener_CreateBatch_FullMethodName = "/grpc_shortener.Shortener/CreateBatch"
+	Shortener_Get_FullMethodName         = "/grpc_shortener.Shortener/Get"
 )
 
 // ShortenerClient is the client API for Shortener service.
@@ -31,6 +33,8 @@ type ShortenerClient interface {
 	GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
 	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	CreateBatch(ctx context.Context, in *CreateBatchRequest, opts ...grpc.CallOption) (*CreateBatchResponse, error)
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 }
 
 type shortenerClient struct {
@@ -71,6 +75,26 @@ func (c *shortenerClient) Create(ctx context.Context, in *CreateRequest, opts ..
 	return out, nil
 }
 
+func (c *shortenerClient) CreateBatch(ctx context.Context, in *CreateBatchRequest, opts ...grpc.CallOption) (*CreateBatchResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateBatchResponse)
+	err := c.cc.Invoke(ctx, Shortener_CreateBatch_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *shortenerClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetResponse)
+	err := c.cc.Invoke(ctx, Shortener_Get_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ShortenerServer is the server API for Shortener service.
 // All implementations must embed UnimplementedShortenerServer
 // for forward compatibility.
@@ -78,6 +102,8 @@ type ShortenerServer interface {
 	GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error)
 	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	CreateBatch(context.Context, *CreateBatchRequest) (*CreateBatchResponse, error)
+	Get(context.Context, *GetRequest) (*GetResponse, error)
 	mustEmbedUnimplementedShortenerServer()
 }
 
@@ -96,6 +122,12 @@ func (UnimplementedShortenerServer) Ping(context.Context, *PingRequest) (*PingRe
 }
 func (UnimplementedShortenerServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedShortenerServer) CreateBatch(context.Context, *CreateBatchRequest) (*CreateBatchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBatch not implemented")
+}
+func (UnimplementedShortenerServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedShortenerServer) mustEmbedUnimplementedShortenerServer() {}
 func (UnimplementedShortenerServer) testEmbeddedByValue()                   {}
@@ -172,6 +204,42 @@ func _Shortener_Create_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Shortener_CreateBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBatchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShortenerServer).CreateBatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Shortener_CreateBatch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShortenerServer).CreateBatch(ctx, req.(*CreateBatchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Shortener_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShortenerServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Shortener_Get_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShortenerServer).Get(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Shortener_ServiceDesc is the grpc.ServiceDesc for Shortener service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +258,14 @@ var Shortener_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _Shortener_Create_Handler,
+		},
+		{
+			MethodName: "CreateBatch",
+			Handler:    _Shortener_CreateBatch_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _Shortener_Get_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
