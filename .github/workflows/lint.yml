@@ -33,5 +33,4 @@ jobs:
       
       - name: Run linter
         run: |
-          ls -lah
-          # ./exitanalyzer ./...
+          ./exitanalyzer ./cmd/... ./internal/...
