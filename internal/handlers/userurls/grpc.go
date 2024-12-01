@@ -19,7 +19,7 @@ func (h *Handler) CallGRPC(ctx context.Context, in *pb.UserUrlsRequest) (*pb.Use
 	}
 
 	if len(data) == 0 {
-		status.Error(codes.NotFound, "No data")
+		return nil, status.Error(codes.NotFound, "No data")
 	}
 
 	list := make([]*pb.UserUrlsResponseItem, 0, len(data))

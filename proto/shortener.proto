@@ -10,6 +10,8 @@ service Shortener {
     rpc Create(CreateRequest) returns(CreateResponse);
     rpc CreateBatch(CreateBatchRequest) returns(CreateBatchResponse);
     rpc Get(GetRequest) returns(GetResponse);
+    rpc UserUrls(UserUrlsRequest) returns(UserUrlsResponse);
+    rpc DeleteUrls(DeleteUrlsRequest) returns(DeleteUrlsResponse);
 };
 
 // GetStats
@@ -67,3 +69,12 @@ message UserUrlsResponseItem{
 message UserUrlsResponse {
     repeated UserUrlsResponseItem list = 1;
 }
+
+//DeleteUrls
+message DeleteUrlsRequestItem {
+    string short = 1;
+}
+message DeleteUrlsRequest {
+    repeated DeleteUrlsRequestItem list = 1;
+}
+message DeleteUrlsResponse {}

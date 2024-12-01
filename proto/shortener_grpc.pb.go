@@ -24,6 +24,8 @@ const (
 	Shortener_Create_FullMethodName      = "/grpc_shortener.Shortener/Create"
 	Shortener_CreateBatch_FullMethodName = "/grpc_shortener.Shortener/CreateBatch"
 	Shortener_Get_FullMethodName         = "/grpc_shortener.Shortener/Get"
+	Shortener_UserUrls_FullMethodName    = "/grpc_shortener.Shortener/UserUrls"
+	Shortener_DeleteUrls_FullMethodName  = "/grpc_shortener.Shortener/DeleteUrls"
 )
 
 // ShortenerClient is the client API for Shortener service.
@@ -35,6 +37,8 @@ type ShortenerClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	CreateBatch(ctx context.Context, in *CreateBatchRequest, opts ...grpc.CallOption) (*CreateBatchResponse, error)
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	UserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error)
+	DeleteUrls(ctx context.Context, in *DeleteUrlsRequest, opts ...grpc.CallOption) (*DeleteUrlsResponse, error)
 }
 
 type shortenerClient struct {
@@ -95,6 +99,26 @@ func (c *shortenerClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.
 	return out, nil
 }
 
+func (c *shortenerClient) UserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserUrlsResponse)
+	err := c.cc.Invoke(ctx, Shortener_UserUrls_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *shortenerClient) DeleteUrls(ctx context.Context, in *DeleteUrlsRequest, opts ...grpc.CallOption) (*DeleteUrlsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUrlsResponse)
+	err := c.cc.Invoke(ctx, Shortener_DeleteUrls_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ShortenerServer is the server API for Shortener service.
 // All implementations must embed UnimplementedShortenerServer
 // for forward compatibility.
@@ -104,6 +128,8 @@ type ShortenerServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	CreateBatch(context.Context, *CreateBatchRequest) (*CreateBatchResponse, error)
 	Get(context.Context, *GetRequest) (*GetResponse, error)
+	UserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error)
+	DeleteUrls(context.Context, *DeleteUrlsRequest) (*DeleteUrlsResponse, error)
 	mustEmbedUnimplementedShortenerServer()
 }
 
@@ -128,6 +154,12 @@ func (UnimplementedShortenerServer) CreateBatch(context.Context, *CreateBatchReq
 }
 func (UnimplementedShortenerServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedShortenerServer) UserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserUrls not implemented")
+}
+func (UnimplementedShortenerServer) DeleteUrls(context.Context, *DeleteUrlsRequest) (*DeleteUrlsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUrls not implemented")
 }
 func (UnimplementedShortenerServer) mustEmbedUnimplementedShortenerServer() {}
 func (UnimplementedShortenerServer) testEmbeddedByValue()                   {}
@@ -240,6 +272,42 @@ func _Shortener_Get_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Shortener_UserUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserUrlsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShortenerServer).UserUrls(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Shortener_UserUrls_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShortenerServer).UserUrls(ctx, req.(*UserUrlsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Shortener_DeleteUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUrlsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShortenerServer).DeleteUrls(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Shortener_DeleteUrls_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShortenerServer).DeleteUrls(ctx, req.(*DeleteUrlsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Shortener_ServiceDesc is the grpc.ServiceDesc for Shortener service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +334,14 @@ var Shortener_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Get",
 			Handler:    _Shortener_Get_Handler,
+		},
+		{
+			MethodName: "UserUrls",
+			Handler:    _Shortener_UserUrls_Handler,
+		},
+		{
+			MethodName: "DeleteUrls",
+			Handler:    _Shortener_DeleteUrls_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

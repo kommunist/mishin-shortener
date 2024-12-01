@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const defaultUserID = "default_user_id" // grpc default user id
+const defaultUserID = "ququ"
 
 func (h *Handler) CallGRPC(ctx context.Context, in *pb.CreateBatchRequest) (*pb.CreateBatchResponse, error) {
 	input := make([]requestBatchItem, 0, len(in.List))

@@ -36,3 +36,8 @@ func (h *GRPCHandler) UserUrls(ctx context.Context, in *pb.UserUrlsRequest) (*pb
 	resp, err := h.userUrls.CallGRPC(ctx, in)
 	return resp, err
 }
+
+func (h *GRPCHandler) DeleteUrls(ctx context.Context, in *pb.DeleteUrlsRequest) (*pb.DeleteUrlsResponse, error) {
+	resp, err := h.deleteURLs.CallGRPC(ctx, in)
+	return resp, err
+}

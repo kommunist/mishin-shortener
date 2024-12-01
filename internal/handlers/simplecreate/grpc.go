@@ -10,9 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// Здесь, наверное, надо добавить мульку
-
-const defaultUserID = "default_user_id" // grpc default user id
+const defaultUserID = "ququ"
 
 func (h *Handler) CallGRPC(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
 	short, err := h.Perform(ctx, []byte(req.Original), defaultUserID)
