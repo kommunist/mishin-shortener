@@ -30,7 +30,7 @@ type CommonStorage interface {
 	stats.StatsGetter
 }
 
-// Основная структуруа пакета API
+// Основная структуруа пакета GRPCServer
 type GRPCHandler struct {
 	setting config.MainConfig
 

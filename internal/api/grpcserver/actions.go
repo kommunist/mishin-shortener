@@ -3,23 +3,19 @@ package grpcserver
 import (
 	"context"
 	pb "mishin-shortener/proto"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (h *GRPCHandler) GetStats(ctx context.Context, in *pb.GetStatsRequest) (*pb.GetStatsResponse, error) {
 	resp, err := h.stats.CallGRPC(ctx)
-	if err != nil {
-		return nil, status.Error(codes.Unknown, "Error when call service")
-	}
-	return resp, nil
+	return resp, err
 }
 
 func (h *GRPCHandler) Ping(ctx context.Context, in *pb.PingRequest) (*pb.PingResponse, error) {
 	resp, err := h.ping.CallGRPC(ctx)
-	if err != nil {
-		return nil, status.Error(codes.Unknown, "Error when call service")
-	}
-	return resp, nil
+	return resp, err
+}
+
+func (h *GRPCHandler) Create(ctx context.Context, in *pb.CreateRequest) (*pb.CreateResponse, error) {
+	resp, err := h.simpleCreate.CallGRPC(ctx, in)
+	return resp, err
 }

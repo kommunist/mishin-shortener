@@ -7,6 +7,7 @@ option go_package = "internal/grpcShortener";
 service Shortener {
     rpc GetStats(GetStatsRequest) returns(GetStatsResponse);
     rpc Ping(PingRequest) returns(PingResponse);
+    rpc Create(CreateRequest) returns(CreateResponse);
 };
 
 // GetStats
@@ -20,3 +21,10 @@ message GetStatsResponse {
 message PingRequest {}
 message PingResponse {}
 
+//Create
+message CreateRequest{
+    string original = 1;
+}
+message CreateResponse{
+    string short = 1;
+}
