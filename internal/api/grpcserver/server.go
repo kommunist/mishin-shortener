@@ -3,7 +3,6 @@ package grpcserver
 import (
 	"fmt"
 	"log"
-	"log/slog"
 )
 
 func (h *GRPCHandler) Start() {
@@ -15,6 +14,5 @@ func (h *GRPCHandler) Start() {
 }
 
 func (h *GRPCHandler) Stop() {
-	err := h.listener.Close()
-	slog.Error("Error when close listner", "err", err)
+	h.server.Stop()
 }

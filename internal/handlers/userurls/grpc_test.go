@@ -93,6 +93,17 @@ func TestUserUrls(t *testing.T) {
 			if ex.respError == nil {
 				assert.NoError(t, err)
 				assert.Equal(t, ex.resp, resp)
+
+				if ex.resp != nil {
+
+					for _, exItem := range ex.resp.List {
+
+						assert.Contains(t, resp.List, exItem, "response contain correct result")
+
+					}
+
+				}
+
 			} else {
 				assert.EqualError(t, err, ex.respError.Error())
 			}

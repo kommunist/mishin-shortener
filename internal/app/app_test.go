@@ -15,8 +15,8 @@ func TestCall(t *testing.T) {
 		h, err := Make()
 		assert.NoError(t, err)
 		go func() {
-			time.Sleep(2 * time.Second)
-			h.HTTPAPI.Stop()
+			time.Sleep(5 * time.Second)
+			h.stop()
 		}()
 		err = h.Call()
 		assert.NoError(t, err)

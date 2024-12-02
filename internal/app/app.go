@@ -96,6 +96,13 @@ func (i *item) listenInterrupt() { // регистрируем канал для
 func (i *item) waitInterrupt(sigint chan os.Signal) {
 	<-sigint // ждем сигнал прeрывания
 
+	i.stop()
+
+	close(sigint)
+
+}
+
+func (i *item) stop() {
 	i.deleter.Stop()
 	i.HTTPAPI.Stop()
 	i.GRPCAPI.Stop()
@@ -104,8 +111,6 @@ func (i *item) waitInterrupt(sigint chan os.Signal) {
 	if err != nil {
 		slog.Error("Error when winish storage", "err", err)
 	}
-
-	close(sigint)
 }
 
 func (i *item) startProfileServer() {
