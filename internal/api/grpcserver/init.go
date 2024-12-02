@@ -73,7 +73,7 @@ func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelP
 	}
 	h.listener = listener
 
-	h.server = grpc.NewServer()
+	h.server = grpc.NewServer(grpc.UnaryInterceptor(logInterceptor))
 
 	pb.RegisterPingServer(h.server, &h.ping)
 	pb.RegisterCreateServer(h.server, &h.simpleCreate)
