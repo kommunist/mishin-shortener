@@ -48,7 +48,7 @@ func (db *Storage) Get(ctx context.Context, short string) (string, error) {
 
 // Получение из базы списка сокращенных ссылок для пользователя(не реализовано)
 func (db *Storage) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
-	return nil, nil
+	return map[string]string{}, nil
 }
 
 // Удаление из базы базы сокращенного URL для пользователя(не реализовано)
