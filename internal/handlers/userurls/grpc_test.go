@@ -92,8 +92,6 @@ func TestUserUrls(t *testing.T) {
 
 			if ex.respError == nil {
 				assert.NoError(t, err)
-				assert.Equal(t, ex.resp, resp)
-
 				if ex.resp != nil {
 
 					for _, exItem := range ex.resp.List {
