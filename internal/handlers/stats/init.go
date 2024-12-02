@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"mishin-shortener/internal/config"
 	"mishin-shortener/internal/netchecker"
+	pb "mishin-shortener/proto"
 )
 
 // Интерфейс доступа к базе
@@ -16,6 +17,8 @@ type StatsGetter interface {
 type Handler struct {
 	storage    StatsGetter
 	netChecker netchecker.Handler
+
+	pb.UnimplementedStatsServer
 }
 
 // Конструктор хендлера

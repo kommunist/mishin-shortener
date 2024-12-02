@@ -19,329 +19,713 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Shortener_GetStats_FullMethodName    = "/grpc_shortener.Shortener/GetStats"
-	Shortener_Ping_FullMethodName        = "/grpc_shortener.Shortener/Ping"
-	Shortener_Create_FullMethodName      = "/grpc_shortener.Shortener/Create"
-	Shortener_CreateBatch_FullMethodName = "/grpc_shortener.Shortener/CreateBatch"
-	Shortener_Get_FullMethodName         = "/grpc_shortener.Shortener/Get"
-	Shortener_UserUrls_FullMethodName    = "/grpc_shortener.Shortener/UserUrls"
-	Shortener_DeleteUrls_FullMethodName  = "/grpc_shortener.Shortener/DeleteUrls"
+	Ping_Ping_FullMethodName = "/grpc_shortener.Ping/Ping"
 )
 
-// ShortenerClient is the client API for Shortener service.
+// PingClient is the client API for Ping service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ShortenerClient interface {
-	GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
+type PingClient interface {
 	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
-	CreateBatch(ctx context.Context, in *CreateBatchRequest, opts ...grpc.CallOption) (*CreateBatchResponse, error)
-	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
-	UserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error)
-	DeleteUrls(ctx context.Context, in *DeleteUrlsRequest, opts ...grpc.CallOption) (*DeleteUrlsResponse, error)
 }
 
-type shortenerClient struct {
+type pingClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewShortenerClient(cc grpc.ClientConnInterface) ShortenerClient {
-	return &shortenerClient{cc}
+func NewPingClient(cc grpc.ClientConnInterface) PingClient {
+	return &pingClient{cc}
 }
 
-func (c *shortenerClient) GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetStatsResponse)
-	err := c.cc.Invoke(ctx, Shortener_GetStats_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *shortenerClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
+func (c *pingClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PingResponse)
-	err := c.cc.Invoke(ctx, Shortener_Ping_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Ping_Ping_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *shortenerClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, Shortener_Create_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *shortenerClient) CreateBatch(ctx context.Context, in *CreateBatchRequest, opts ...grpc.CallOption) (*CreateBatchResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateBatchResponse)
-	err := c.cc.Invoke(ctx, Shortener_CreateBatch_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *shortenerClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetResponse)
-	err := c.cc.Invoke(ctx, Shortener_Get_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *shortenerClient) UserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserUrlsResponse)
-	err := c.cc.Invoke(ctx, Shortener_UserUrls_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *shortenerClient) DeleteUrls(ctx context.Context, in *DeleteUrlsRequest, opts ...grpc.CallOption) (*DeleteUrlsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteUrlsResponse)
-	err := c.cc.Invoke(ctx, Shortener_DeleteUrls_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ShortenerServer is the server API for Shortener service.
-// All implementations must embed UnimplementedShortenerServer
+// PingServer is the server API for Ping service.
+// All implementations must embed UnimplementedPingServer
 // for forward compatibility.
-type ShortenerServer interface {
-	GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error)
+type PingServer interface {
 	Ping(context.Context, *PingRequest) (*PingResponse, error)
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
-	CreateBatch(context.Context, *CreateBatchRequest) (*CreateBatchResponse, error)
-	Get(context.Context, *GetRequest) (*GetResponse, error)
-	UserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error)
-	DeleteUrls(context.Context, *DeleteUrlsRequest) (*DeleteUrlsResponse, error)
-	mustEmbedUnimplementedShortenerServer()
+	mustEmbedUnimplementedPingServer()
 }
 
-// UnimplementedShortenerServer must be embedded to have
+// UnimplementedPingServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedShortenerServer struct{}
+type UnimplementedPingServer struct{}
 
-func (UnimplementedShortenerServer) GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
-}
-func (UnimplementedShortenerServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
+func (UnimplementedPingServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
-func (UnimplementedShortenerServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
-}
-func (UnimplementedShortenerServer) CreateBatch(context.Context, *CreateBatchRequest) (*CreateBatchResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateBatch not implemented")
-}
-func (UnimplementedShortenerServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
-}
-func (UnimplementedShortenerServer) UserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserUrls not implemented")
-}
-func (UnimplementedShortenerServer) DeleteUrls(context.Context, *DeleteUrlsRequest) (*DeleteUrlsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUrls not implemented")
-}
-func (UnimplementedShortenerServer) mustEmbedUnimplementedShortenerServer() {}
-func (UnimplementedShortenerServer) testEmbeddedByValue()                   {}
+func (UnimplementedPingServer) mustEmbedUnimplementedPingServer() {}
+func (UnimplementedPingServer) testEmbeddedByValue()              {}
 
-// UnsafeShortenerServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ShortenerServer will
+// UnsafePingServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PingServer will
 // result in compilation errors.
-type UnsafeShortenerServer interface {
-	mustEmbedUnimplementedShortenerServer()
+type UnsafePingServer interface {
+	mustEmbedUnimplementedPingServer()
 }
 
-func RegisterShortenerServer(s grpc.ServiceRegistrar, srv ShortenerServer) {
-	// If the following call pancis, it indicates UnimplementedShortenerServer was
+func RegisterPingServer(s grpc.ServiceRegistrar, srv PingServer) {
+	// If the following call pancis, it indicates UnimplementedPingServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&Shortener_ServiceDesc, srv)
+	s.RegisterService(&Ping_ServiceDesc, srv)
 }
 
-func _Shortener_GetStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetStatsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ShortenerServer).GetStats(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Shortener_GetStats_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).GetStats(ctx, req.(*GetStatsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Shortener_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Ping_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PingRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServer).Ping(ctx, in)
+		return srv.(PingServer).Ping(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shortener_Ping_FullMethodName,
+		FullMethod: Ping_Ping_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).Ping(ctx, req.(*PingRequest))
+		return srv.(PingServer).Ping(ctx, req.(*PingRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Shortener_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+// Ping_ServiceDesc is the grpc.ServiceDesc for Ping service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Ping_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc_shortener.Ping",
+	HandlerType: (*PingServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Ping",
+			Handler:    _Ping_Ping_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/shortener.proto",
+}
+
+const (
+	Create_Create_FullMethodName = "/grpc_shortener.Create/Create"
+)
+
+// CreateClient is the client API for Create service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type CreateClient interface {
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+}
+
+type createClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewCreateClient(cc grpc.ClientConnInterface) CreateClient {
+	return &createClient{cc}
+}
+
+func (c *createClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateResponse)
+	err := c.cc.Invoke(ctx, Create_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// CreateServer is the server API for Create service.
+// All implementations must embed UnimplementedCreateServer
+// for forward compatibility.
+type CreateServer interface {
+	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	mustEmbedUnimplementedCreateServer()
+}
+
+// UnimplementedCreateServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedCreateServer struct{}
+
+func (UnimplementedCreateServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedCreateServer) mustEmbedUnimplementedCreateServer() {}
+func (UnimplementedCreateServer) testEmbeddedByValue()                {}
+
+// UnsafeCreateServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CreateServer will
+// result in compilation errors.
+type UnsafeCreateServer interface {
+	mustEmbedUnimplementedCreateServer()
+}
+
+func RegisterCreateServer(s grpc.ServiceRegistrar, srv CreateServer) {
+	// If the following call pancis, it indicates UnimplementedCreateServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&Create_ServiceDesc, srv)
+}
+
+func _Create_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServer).Create(ctx, in)
+		return srv.(CreateServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shortener_Create_FullMethodName,
+		FullMethod: Create_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).Create(ctx, req.(*CreateRequest))
+		return srv.(CreateServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Shortener_CreateBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+// Create_ServiceDesc is the grpc.ServiceDesc for Create service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Create_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc_shortener.Create",
+	HandlerType: (*CreateServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _Create_Create_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/shortener.proto",
+}
+
+const (
+	Stats_GetStats_FullMethodName = "/grpc_shortener.Stats/GetStats"
+)
+
+// StatsClient is the client API for Stats service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type StatsClient interface {
+	GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
+}
+
+type statsClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewStatsClient(cc grpc.ClientConnInterface) StatsClient {
+	return &statsClient{cc}
+}
+
+func (c *statsClient) GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetStatsResponse)
+	err := c.cc.Invoke(ctx, Stats_GetStats_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// StatsServer is the server API for Stats service.
+// All implementations must embed UnimplementedStatsServer
+// for forward compatibility.
+type StatsServer interface {
+	GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error)
+	mustEmbedUnimplementedStatsServer()
+}
+
+// UnimplementedStatsServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedStatsServer struct{}
+
+func (UnimplementedStatsServer) GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
+}
+func (UnimplementedStatsServer) mustEmbedUnimplementedStatsServer() {}
+func (UnimplementedStatsServer) testEmbeddedByValue()               {}
+
+// UnsafeStatsServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StatsServer will
+// result in compilation errors.
+type UnsafeStatsServer interface {
+	mustEmbedUnimplementedStatsServer()
+}
+
+func RegisterStatsServer(s grpc.ServiceRegistrar, srv StatsServer) {
+	// If the following call pancis, it indicates UnimplementedStatsServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&Stats_ServiceDesc, srv)
+}
+
+func _Stats_GetStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StatsServer).GetStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Stats_GetStats_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StatsServer).GetStats(ctx, req.(*GetStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Stats_ServiceDesc is the grpc.ServiceDesc for Stats service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Stats_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc_shortener.Stats",
+	HandlerType: (*StatsServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetStats",
+			Handler:    _Stats_GetStats_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/shortener.proto",
+}
+
+const (
+	CreateBatch_CreateBatch_FullMethodName = "/grpc_shortener.CreateBatch/CreateBatch"
+)
+
+// CreateBatchClient is the client API for CreateBatch service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type CreateBatchClient interface {
+	CreateBatch(ctx context.Context, in *CreateBatchRequest, opts ...grpc.CallOption) (*CreateBatchResponse, error)
+}
+
+type createBatchClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewCreateBatchClient(cc grpc.ClientConnInterface) CreateBatchClient {
+	return &createBatchClient{cc}
+}
+
+func (c *createBatchClient) CreateBatch(ctx context.Context, in *CreateBatchRequest, opts ...grpc.CallOption) (*CreateBatchResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateBatchResponse)
+	err := c.cc.Invoke(ctx, CreateBatch_CreateBatch_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// CreateBatchServer is the server API for CreateBatch service.
+// All implementations must embed UnimplementedCreateBatchServer
+// for forward compatibility.
+type CreateBatchServer interface {
+	CreateBatch(context.Context, *CreateBatchRequest) (*CreateBatchResponse, error)
+	mustEmbedUnimplementedCreateBatchServer()
+}
+
+// UnimplementedCreateBatchServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedCreateBatchServer struct{}
+
+func (UnimplementedCreateBatchServer) CreateBatch(context.Context, *CreateBatchRequest) (*CreateBatchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBatch not implemented")
+}
+func (UnimplementedCreateBatchServer) mustEmbedUnimplementedCreateBatchServer() {}
+func (UnimplementedCreateBatchServer) testEmbeddedByValue()                     {}
+
+// UnsafeCreateBatchServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CreateBatchServer will
+// result in compilation errors.
+type UnsafeCreateBatchServer interface {
+	mustEmbedUnimplementedCreateBatchServer()
+}
+
+func RegisterCreateBatchServer(s grpc.ServiceRegistrar, srv CreateBatchServer) {
+	// If the following call pancis, it indicates UnimplementedCreateBatchServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&CreateBatch_ServiceDesc, srv)
+}
+
+func _CreateBatch_CreateBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateBatchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServer).CreateBatch(ctx, in)
+		return srv.(CreateBatchServer).CreateBatch(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shortener_CreateBatch_FullMethodName,
+		FullMethod: CreateBatch_CreateBatch_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).CreateBatch(ctx, req.(*CreateBatchRequest))
+		return srv.(CreateBatchServer).CreateBatch(ctx, req.(*CreateBatchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Shortener_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+// CreateBatch_ServiceDesc is the grpc.ServiceDesc for CreateBatch service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var CreateBatch_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc_shortener.CreateBatch",
+	HandlerType: (*CreateBatchServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateBatch",
+			Handler:    _CreateBatch_CreateBatch_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/shortener.proto",
+}
+
+const (
+	Get_Get_FullMethodName = "/grpc_shortener.Get/Get"
+)
+
+// GetClient is the client API for Get service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type GetClient interface {
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+}
+
+type getClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewGetClient(cc grpc.ClientConnInterface) GetClient {
+	return &getClient{cc}
+}
+
+func (c *getClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetResponse)
+	err := c.cc.Invoke(ctx, Get_Get_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// GetServer is the server API for Get service.
+// All implementations must embed UnimplementedGetServer
+// for forward compatibility.
+type GetServer interface {
+	Get(context.Context, *GetRequest) (*GetResponse, error)
+	mustEmbedUnimplementedGetServer()
+}
+
+// UnimplementedGetServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedGetServer struct{}
+
+func (UnimplementedGetServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedGetServer) mustEmbedUnimplementedGetServer() {}
+func (UnimplementedGetServer) testEmbeddedByValue()             {}
+
+// UnsafeGetServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GetServer will
+// result in compilation errors.
+type UnsafeGetServer interface {
+	mustEmbedUnimplementedGetServer()
+}
+
+func RegisterGetServer(s grpc.ServiceRegistrar, srv GetServer) {
+	// If the following call pancis, it indicates UnimplementedGetServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&Get_ServiceDesc, srv)
+}
+
+func _Get_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServer).Get(ctx, in)
+		return srv.(GetServer).Get(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shortener_Get_FullMethodName,
+		FullMethod: Get_Get_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).Get(ctx, req.(*GetRequest))
+		return srv.(GetServer).Get(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Shortener_UserUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+// Get_ServiceDesc is the grpc.ServiceDesc for Get service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Get_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc_shortener.Get",
+	HandlerType: (*GetServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Get",
+			Handler:    _Get_Get_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/shortener.proto",
+}
+
+const (
+	UserUrls_UserUrls_FullMethodName = "/grpc_shortener.UserUrls/UserUrls"
+)
+
+// UserUrlsClient is the client API for UserUrls service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type UserUrlsClient interface {
+	UserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error)
+}
+
+type userUrlsClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewUserUrlsClient(cc grpc.ClientConnInterface) UserUrlsClient {
+	return &userUrlsClient{cc}
+}
+
+func (c *userUrlsClient) UserUrls(ctx context.Context, in *UserUrlsRequest, opts ...grpc.CallOption) (*UserUrlsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserUrlsResponse)
+	err := c.cc.Invoke(ctx, UserUrls_UserUrls_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserUrlsServer is the server API for UserUrls service.
+// All implementations must embed UnimplementedUserUrlsServer
+// for forward compatibility.
+type UserUrlsServer interface {
+	UserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error)
+	mustEmbedUnimplementedUserUrlsServer()
+}
+
+// UnimplementedUserUrlsServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedUserUrlsServer struct{}
+
+func (UnimplementedUserUrlsServer) UserUrls(context.Context, *UserUrlsRequest) (*UserUrlsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserUrls not implemented")
+}
+func (UnimplementedUserUrlsServer) mustEmbedUnimplementedUserUrlsServer() {}
+func (UnimplementedUserUrlsServer) testEmbeddedByValue()                  {}
+
+// UnsafeUserUrlsServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserUrlsServer will
+// result in compilation errors.
+type UnsafeUserUrlsServer interface {
+	mustEmbedUnimplementedUserUrlsServer()
+}
+
+func RegisterUserUrlsServer(s grpc.ServiceRegistrar, srv UserUrlsServer) {
+	// If the following call pancis, it indicates UnimplementedUserUrlsServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&UserUrls_ServiceDesc, srv)
+}
+
+func _UserUrls_UserUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserUrlsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServer).UserUrls(ctx, in)
+		return srv.(UserUrlsServer).UserUrls(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shortener_UserUrls_FullMethodName,
+		FullMethod: UserUrls_UserUrls_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).UserUrls(ctx, req.(*UserUrlsRequest))
+		return srv.(UserUrlsServer).UserUrls(ctx, req.(*UserUrlsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Shortener_DeleteUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+// UserUrls_ServiceDesc is the grpc.ServiceDesc for UserUrls service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UserUrls_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc_shortener.UserUrls",
+	HandlerType: (*UserUrlsServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UserUrls",
+			Handler:    _UserUrls_UserUrls_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/shortener.proto",
+}
+
+const (
+	DeleteUrls_DeleteUrls_FullMethodName = "/grpc_shortener.DeleteUrls/DeleteUrls"
+)
+
+// DeleteUrlsClient is the client API for DeleteUrls service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type DeleteUrlsClient interface {
+	DeleteUrls(ctx context.Context, in *DeleteUrlsRequest, opts ...grpc.CallOption) (*DeleteUrlsResponse, error)
+}
+
+type deleteUrlsClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewDeleteUrlsClient(cc grpc.ClientConnInterface) DeleteUrlsClient {
+	return &deleteUrlsClient{cc}
+}
+
+func (c *deleteUrlsClient) DeleteUrls(ctx context.Context, in *DeleteUrlsRequest, opts ...grpc.CallOption) (*DeleteUrlsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUrlsResponse)
+	err := c.cc.Invoke(ctx, DeleteUrls_DeleteUrls_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DeleteUrlsServer is the server API for DeleteUrls service.
+// All implementations must embed UnimplementedDeleteUrlsServer
+// for forward compatibility.
+type DeleteUrlsServer interface {
+	DeleteUrls(context.Context, *DeleteUrlsRequest) (*DeleteUrlsResponse, error)
+	mustEmbedUnimplementedDeleteUrlsServer()
+}
+
+// UnimplementedDeleteUrlsServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedDeleteUrlsServer struct{}
+
+func (UnimplementedDeleteUrlsServer) DeleteUrls(context.Context, *DeleteUrlsRequest) (*DeleteUrlsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUrls not implemented")
+}
+func (UnimplementedDeleteUrlsServer) mustEmbedUnimplementedDeleteUrlsServer() {}
+func (UnimplementedDeleteUrlsServer) testEmbeddedByValue()                    {}
+
+// UnsafeDeleteUrlsServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DeleteUrlsServer will
+// result in compilation errors.
+type UnsafeDeleteUrlsServer interface {
+	mustEmbedUnimplementedDeleteUrlsServer()
+}
+
+func RegisterDeleteUrlsServer(s grpc.ServiceRegistrar, srv DeleteUrlsServer) {
+	// If the following call pancis, it indicates UnimplementedDeleteUrlsServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&DeleteUrls_ServiceDesc, srv)
+}
+
+func _DeleteUrls_DeleteUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteUrlsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ShortenerServer).DeleteUrls(ctx, in)
+		return srv.(DeleteUrlsServer).DeleteUrls(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Shortener_DeleteUrls_FullMethodName,
+		FullMethod: DeleteUrls_DeleteUrls_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ShortenerServer).DeleteUrls(ctx, req.(*DeleteUrlsRequest))
+		return srv.(DeleteUrlsServer).DeleteUrls(ctx, req.(*DeleteUrlsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Shortener_ServiceDesc is the grpc.ServiceDesc for Shortener service.
+// DeleteUrls_ServiceDesc is the grpc.ServiceDesc for DeleteUrls service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Shortener_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc_shortener.Shortener",
-	HandlerType: (*ShortenerServer)(nil),
+var DeleteUrls_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc_shortener.DeleteUrls",
+	HandlerType: (*DeleteUrlsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetStats",
-			Handler:    _Shortener_GetStats_Handler,
-		},
-		{
-			MethodName: "Ping",
-			Handler:    _Shortener_Ping_Handler,
-		},
-		{
-			MethodName: "Create",
-			Handler:    _Shortener_Create_Handler,
-		},
-		{
-			MethodName: "CreateBatch",
-			Handler:    _Shortener_CreateBatch_Handler,
-		},
-		{
-			MethodName: "Get",
-			Handler:    _Shortener_Get_Handler,
-		},
-		{
-			MethodName: "UserUrls",
-			Handler:    _Shortener_UserUrls_Handler,
-		},
-		{
 			MethodName: "DeleteUrls",
-			Handler:    _Shortener_DeleteUrls_Handler,
+			Handler:    _DeleteUrls_DeleteUrls_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

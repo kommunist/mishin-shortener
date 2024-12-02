@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (h *Handler) CallGRPC(ctx context.Context, in *pb.UserUrlsRequest) (*pb.UserUrlsResponse, error) {
+func (h *Handler) UserUrls(ctx context.Context, in *pb.UserUrlsRequest) (*pb.UserUrlsResponse, error) {
 	var userID string
 	if ctx.Value(secure.UserIDKey) == nil {
 		return nil, status.Error(codes.Unknown, "Error with auth")

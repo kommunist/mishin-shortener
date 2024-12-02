@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func TestGRPC(t *testing.T) {
+func TestUserUrls(t *testing.T) {
 	exList := []struct {
 		name       string
 		ctx        context.Context
@@ -88,7 +88,7 @@ func TestGRPC(t *testing.T) {
 			c.InitConfig()
 			h := Make(c, stor)
 
-			resp, err := h.CallGRPC(ex.ctx, &pb.UserUrlsRequest{})
+			resp, err := h.UserUrls(ex.ctx, &pb.UserUrlsRequest{})
 
 			if ex.respError == nil {
 				assert.NoError(t, err)

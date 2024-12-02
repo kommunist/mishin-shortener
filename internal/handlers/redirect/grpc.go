@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (h *Handler) CallGRPC(ctx context.Context, in *pb.GetRequest) (*pb.GetResponse, error) {
+func (h *Handler) Get(ctx context.Context, in *pb.GetRequest) (*pb.GetResponse, error) {
 	to, err := h.Perform(ctx, in.Short)
 
 	if err == nil {

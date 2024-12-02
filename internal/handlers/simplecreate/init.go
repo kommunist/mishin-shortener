@@ -3,6 +3,7 @@ package simplecreate
 import (
 	"context"
 	"mishin-shortener/internal/config"
+	pb "mishin-shortener/proto"
 )
 
 // Интерфейс доступа к базе
@@ -14,6 +15,8 @@ type Pusher interface {
 type Handler struct {
 	storage Pusher
 	setting config.MainConfig
+
+	pb.UnimplementedCreateServer
 }
 
 // Конструктор хендлера

@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func TestCallGRPC(t *testing.T) {
+func TestGet(t *testing.T) {
 	exList := []struct {
 		name          string
 		shorted       string
@@ -55,7 +55,7 @@ func TestCallGRPC(t *testing.T) {
 
 			stor.EXPECT().Get(ctx, ex.shorted).Return(ex.expected, ex.storError)
 
-			resp, err := h.CallGRPC(ctx, &pb.GetRequest{Short: ex.shorted})
+			resp, err := h.Get(ctx, &pb.GetRequest{Short: ex.shorted})
 
 			if ex.returnedError == nil {
 				assert.NoError(t, err)

@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func TestCallGRPC(t *testing.T) {
+func TestDeleteUrls(t *testing.T) {
 	exList := []struct {
 		name   string
 		ctx    context.Context
@@ -50,7 +50,7 @@ func TestCallGRPC(t *testing.T) {
 			c.InitConfig()
 			h := Make(make(chan delasync.DelPair, 5))
 
-			resp, err := h.CallGRPC(ex.ctx, ex.input)
+			resp, err := h.DeleteUrls(ex.ctx, ex.input)
 			if ex.err != nil {
 				assert.EqualError(t, err, ex.err.Error())
 			} else {

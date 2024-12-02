@@ -46,7 +46,7 @@ func TestCallGRPC(t *testing.T) {
 
 			stor.EXPECT().Ping(ctx).Return(ex.storReturned)
 
-			resp, err := h.CallGRPC(ctx)
+			resp, err := h.Ping(ctx, &pb.PingRequest{})
 			if ex.respError == nil {
 				assert.NoError(t, err)
 				assert.Equal(t, &pb.PingResponse{}, resp)

@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func TestCallGRPC(t *testing.T) {
+func TestCreate(t *testing.T) {
 	exList := []struct {
 		name      string
 		ctx       context.Context
@@ -77,7 +77,7 @@ func TestCallGRPC(t *testing.T) {
 				"qq",
 			).Times(ex.storTimes).Return(ex.storErr)
 
-			resp, err := h.CallGRPC(ex.ctx, &pb.CreateRequest{Original: "biba"})
+			resp, err := h.Create(ex.ctx, &pb.CreateRequest{Original: "biba"})
 
 			if ex.respErr == nil {
 				assert.NoError(t, err)

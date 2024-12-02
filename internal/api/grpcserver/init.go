@@ -45,8 +45,6 @@ type GRPCHandler struct {
 
 	listener net.Listener
 	server   *grpc.Server
-
-	pb.UnimplementedShortenerServer // добавим сюда же работу grpc
 }
 
 // Конструктор структуры пакета GRPC
@@ -77,7 +75,13 @@ func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelP
 
 	h.server = grpc.NewServer()
 
-	pb.RegisterShortenerServer(h.server, &h)
+	pb.RegisterPingServer(h.server, &h.ping)
+	pb.RegisterCreateServer(h.server, &h.simpleCreate)
+	pb.RegisterStatsServer(h.server, &h.stats)
+	pb.RegisterCreateBatchServer(h.server, &h.createJSONBatch) // в данном контексте json уже не значит ничего
+	pb.RegisterGetServer(h.server, &h.redirect)
+	pb.RegisterUserUrlsServer(h.server, &h.userUrls)
+	pb.RegisterDeleteUrlsServer(h.server, &h.deleteURLs)
 
 	return &h
 }

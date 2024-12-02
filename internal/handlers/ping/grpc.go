@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (h *Handler) CallGRPC(ctx context.Context) (*pb.PingResponse, error) {
+func (h *Handler) Ping(ctx context.Context, in *pb.PingRequest) (*pb.PingResponse, error) {
 	err := h.Perform(ctx)
 	if err != nil {
 		slog.Error("Error when get stats from db", "err", err)

@@ -4,15 +4,13 @@ package grpc_shortener;
 
 option go_package = "internal/grpcShortener";
 
-service Shortener {
-    rpc GetStats(GetStatsRequest) returns(GetStatsResponse);
-    rpc Ping(PingRequest) returns(PingResponse);
-    rpc Create(CreateRequest) returns(CreateResponse);
-    rpc CreateBatch(CreateBatchRequest) returns(CreateBatchResponse);
-    rpc Get(GetRequest) returns(GetResponse);
-    rpc UserUrls(UserUrlsRequest) returns(UserUrlsResponse);
-    rpc DeleteUrls(DeleteUrlsRequest) returns(DeleteUrlsResponse);
-};
+service Ping { rpc Ping(PingRequest) returns(PingResponse); }
+service Create { rpc Create(CreateRequest) returns(CreateResponse); }
+service Stats { rpc GetStats(GetStatsRequest) returns(GetStatsResponse); }
+service CreateBatch { rpc CreateBatch(CreateBatchRequest) returns(CreateBatchResponse); }
+service Get { rpc Get(GetRequest) returns(GetResponse); }
+service UserUrls{ rpc UserUrls(UserUrlsRequest) returns(UserUrlsResponse); }
+service DeleteUrls{ rpc DeleteUrls(DeleteUrlsRequest) returns(DeleteUrlsResponse); }
 
 // GetStats
 message GetStatsRequest {}

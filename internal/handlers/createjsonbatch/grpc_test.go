@@ -95,7 +95,7 @@ func TestCallGrpc(t *testing.T) {
 				ex.userID,
 			).Times(ex.storTimes).Return(ex.storErr)
 
-			resp, err := h.CallGRPC(ex.ctx, ex.input)
+			resp, err := h.CreateBatch(ex.ctx, ex.input)
 			if err != nil {
 				assert.EqualError(t, err, ex.err.Error())
 

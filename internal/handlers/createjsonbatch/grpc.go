@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (h *Handler) CallGRPC(ctx context.Context, in *pb.CreateBatchRequest) (*pb.CreateBatchResponse, error) {
+func (h *Handler) CreateBatch(ctx context.Context, in *pb.CreateBatchRequest) (*pb.CreateBatchResponse, error) {
 	var userID string
 	if ctx.Value(secure.UserIDKey) == nil {
 		return nil, status.Error(codes.Unknown, "Error with auth")

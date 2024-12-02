@@ -3,6 +3,7 @@ package createjsonbatch
 import (
 	"context"
 	"mishin-shortener/internal/config"
+	pb "mishin-shortener/proto"
 )
 
 // Интерфейс доступа к базе
@@ -14,6 +15,8 @@ type Pusher interface {
 type Handler struct {
 	storage  Pusher
 	settings config.MainConfig
+
+	pb.UnimplementedCreateBatchServer
 }
 
 // Конструктор хендлера

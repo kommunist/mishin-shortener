@@ -3,6 +3,7 @@ package userurls
 import (
 	"context"
 	"mishin-shortener/internal/config"
+	pb "mishin-shortener/proto"
 )
 
 // Интерфейс доступа к базе
@@ -14,6 +15,8 @@ type ByUserIDGetter interface {
 type Handler struct {
 	storage ByUserIDGetter
 	setting config.MainConfig
+
+	pb.UnimplementedUserUrlsServer
 }
 
 type responseItem struct {
