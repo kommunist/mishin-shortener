@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateURLByJSONBatch(t *testing.T) {
+func TestCall(t *testing.T) {
 	exList := []struct {
 		name          string
 		inputJSON     []byte

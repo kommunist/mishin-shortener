@@ -15,52 +15,53 @@ import (
 )
 
 func TestCall(t *testing.T) {
-	t.Run("Start_DELETE_to_delete_record_in_db", func(t *testing.T) {
-		ctx := context.Background()
-		ctx = context.WithValue(ctx, secure.UserIDKey, "userId")
+	exList := []struct {
+		name   string
+		ctx    context.Context
+		input  []byte
+		status int
+	}{
+		{
+			name: "Start_DELETE_to_delete_record_in_db",
+			ctx:  context.WithValue(context.Background(), secure.UserIDKey, "userId"),
+			input: func() []byte {
+				json, _ := json.Marshal([]string{"first", "second"})
+				return json
+			}(),
+			status: http.StatusAccepted,
+		},
+		{
+			name: "Start_DELETE_to_delete_record_in_db_without_user",
+			ctx:  context.Background(),
+			input: func() []byte {
+				json, _ := json.Marshal([]string{"first", "second"})
+				return json
+			}(),
+			status: http.StatusInternalServerError,
+		},
+	}
 
-		c := config.MakeConfig()
-		c.InitConfig()
-		h := Make(make(chan delasync.DelPair, 5))
+	for _, ex := range exList {
+		t.Run(ex.name, func(t *testing.T) {
 
-		inputJSON, _ := json.Marshal([]string{"first", "second"})
+			c := config.MakeConfig()
+			c.InitConfig()
+			h := Make(make(chan delasync.DelPair, 5))
 
-		request :=
-			httptest.NewRequest(
-				http.MethodDelete, "/api/user/urls", bytes.NewReader(inputJSON),
-			).WithContext(ctx)
+			request :=
+				httptest.NewRequest(
+					http.MethodDelete, "/api/user/urls", bytes.NewReader(ex.input),
+				).WithContext(ex.ctx)
 
-		w := httptest.NewRecorder()
-		h.Call(w, request)
-		res := w.Result()
+			w := httptest.NewRecorder()
+			h.Call(w, request)
+			res := w.Result()
 
-		defer res.Body.Close()
+			defer res.Body.Close()
 
-		assert.Equal(t, http.StatusAccepted, res.StatusCode)
-	})
-
-	t.Run("Start_DELETE_to_delete_record_in_db_without_user", func(t *testing.T) {
-		ctx := context.Background()
-		c := config.MakeConfig()
-		c.InitConfig()
-		h := Make(make(chan delasync.DelPair, 5))
-
-		inputJSON, _ := json.Marshal([]string{"first", "second"})
-
-		request :=
-			httptest.NewRequest(
-				http.MethodDelete, "/api/user/urls", bytes.NewReader(inputJSON),
-			).WithContext(ctx)
-
-		w := httptest.NewRecorder()
-		h.Call(w, request)
-		res := w.Result()
-
-		defer res.Body.Close()
-
-		assert.Equal(t, http.StatusInternalServerError, res.StatusCode)
-	})
-
+			assert.Equal(t, ex.status, res.StatusCode)
+		})
+	}
 }
 
 func BenchmarkDeleteUrls(b *testing.B) {

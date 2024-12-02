@@ -3,15 +3,21 @@ package createjsonbatch
 import (
 	"context"
 	"log/slog"
+	"mishin-shortener/internal/secure"
 	pb "mishin-shortener/proto"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-const defaultUserID = "ququ"
-
 func (h *Handler) CallGRPC(ctx context.Context, in *pb.CreateBatchRequest) (*pb.CreateBatchResponse, error) {
+	var userID string
+	if ctx.Value(secure.UserIDKey) == nil {
+		return nil, status.Error(codes.Unknown, "Error with auth")
+	} else {
+		userID = ctx.Value(secure.UserIDKey).(string)
+	}
+
 	input := make([]requestBatchItem, 0, len(in.List))
 	response := make([]*pb.CreateBatchResponseItem, 0, len(in.List))
 
@@ -21,7 +27,7 @@ func (h *Handler) CallGRPC(ctx context.Context, in *pb.CreateBatchRequest) (*pb.
 		)
 	}
 
-	output, err := h.Perform(ctx, input, defaultUserID)
+	output, err := h.Perform(ctx, input, userID)
 	if err != nil {
 		slog.Error("Error when get stats from db", "err", err)
 		return nil, status.Error(codes.Unknown, "Error when call service")
