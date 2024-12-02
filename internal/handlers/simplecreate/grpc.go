@@ -4,16 +4,22 @@ import (
 	"context"
 	"log/slog"
 	"mishin-shortener/internal/errors/exist"
+	"mishin-shortener/internal/secure"
 	pb "mishin-shortener/proto"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-const defaultUserID = "ququ"
-
 func (h *Handler) CallGRPC(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
-	short, err := h.Perform(ctx, []byte(req.Original), defaultUserID)
+	var userID string
+	if ctx.Value(secure.UserIDKey) == nil {
+		return nil, status.Error(codes.Unknown, "Error with auth")
+	} else {
+		userID = ctx.Value(secure.UserIDKey).(string)
+	}
+
+	short, err := h.Perform(ctx, []byte(req.Original), userID)
 
 	if err != nil {
 		if _, ok := err.(*exist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе

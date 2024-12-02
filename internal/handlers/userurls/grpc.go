@@ -2,6 +2,7 @@ package userurls
 
 import (
 	"log/slog"
+	"mishin-shortener/internal/secure"
 	pb "mishin-shortener/proto"
 
 	"golang.org/x/net/context"
@@ -9,10 +10,14 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const defaultUserID = "ququ" // пока не придумал, что делать с userID
-
 func (h *Handler) CallGRPC(ctx context.Context, in *pb.UserUrlsRequest) (*pb.UserUrlsResponse, error) {
-	data, err := h.Perform(ctx, defaultUserID)
+	var userID string
+	if ctx.Value(secure.UserIDKey) == nil {
+		return nil, status.Error(codes.Unknown, "Error with auth")
+	} else {
+		userID = ctx.Value(secure.UserIDKey).(string)
+	}
+	data, err := h.Perform(ctx, userID)
 	if err != nil {
 		slog.Error("Error when perform service")
 		return nil, status.Error(codes.Unknown, "Error when call service")
