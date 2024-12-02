@@ -22,9 +22,7 @@ const initTableQuery = `
 	);
 `
 
-const initIndexQuery = `
-  CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);
-`
+const initIndexQuery = `CREATE UNIQUE INDEX CONCURRENTLY IF NOT EXISTS idx_short_urls_short on short_urls (short);`
 
 // Структура хранилища
 type Driver struct {
@@ -32,7 +30,7 @@ type Driver struct {
 }
 
 // Функция создания хранилища
-func Make(c config.MainConfig) *Driver {
+func Make(c config.MainConfig) (*Driver, error) {
 	driver, err := sql.Open("postgres", c.DatabaseDSN)
 
 	if err != nil {
@@ -43,13 +41,17 @@ func Make(c config.MainConfig) *Driver {
 	slog.Info("Success connect to database")
 
 	result := Driver{driver: driver}
-	result.initSchema(context.Background())
+	err = result.initSchema(context.Background())
+	if err != nil {
+		slog.Error("Error when init schema", "err", err)
+		return nil, err
+	}
 
-	return &result
+	return &result, nil
 }
 
 // тут хорошо было бы, наверное, затащить какой-нибудь мигратор, но пока обойдемся IF NOT EXIST
-func (d *Driver) initSchema(ctx context.Context) {
+func (d *Driver) initSchema(ctx context.Context) error {
 	// здесь нет внешнего, поэтому нужен отдельный context
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
 	defer cancel()
@@ -57,11 +59,12 @@ func (d *Driver) initSchema(ctx context.Context) {
 	_, err := d.driver.ExecContext(ctx, initTableQuery)
 	if err != nil {
 		slog.Error("Eror when create table", "err", err)
-		os.Exit(1)
+		return err
 	}
 	_, err = d.driver.ExecContext(ctx, initIndexQuery)
 	if err != nil {
 		slog.Error("Eror when create index", "err", err)
-		os.Exit(1)
+		return err
 	}
+	return nil
 }

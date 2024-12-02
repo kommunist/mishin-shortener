@@ -12,8 +12,8 @@ import (
 type Storage map[string]string
 
 // Создает структуру хранения данных.
-func Make() *Storage {
-	return &Storage{}
+func Make() (*Storage, error) {
+	return &Storage{}, nil
 }
 
 // Сохранение в базу новой пары сокращенный/полный

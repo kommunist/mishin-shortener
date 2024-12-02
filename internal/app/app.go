@@ -37,13 +37,25 @@ type commonStorage interface {
 
 func initStorage(c config.MainConfig) commonStorage {
 	if c.DatabaseDSN != "" {
-		return pgstorage.Make(c)
+		stor, err := pgstorage.Make(c)
+		if err != nil {
+			os.Exit(1)
+		}
+		return stor
 	}
 	if c.FileStoragePath != "" {
-		return filestorage.Make(c.FileStoragePath)
+		stor, err := filestorage.Make(c.FileStoragePath)
+		if err != nil {
+			os.Exit(1)
+		}
+		return stor
 	}
 
-	return mapstorage.Make()
+	stor, err := mapstorage.Make()
+	if err != nil {
+		os.Exit(1)
+	}
+	return stor
 }
 
 // Конструктор объекта item
