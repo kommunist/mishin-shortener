@@ -12,6 +12,8 @@ func TestCall(t *testing.T) {
 	// что вся предварительная работа с роутерами, базой и конфигом проходит без проблем
 	// и сервер запускается
 	t.Run("happy_path_on_start_full", func(t *testing.T) {
+		t.Setenv("ENABLE_PROFILE", "true")
+
 		h, err := Make()
 		assert.NoError(t, err)
 		go func() {
@@ -24,6 +26,7 @@ func TestCall(t *testing.T) {
 
 	t.Run("happy_path_on_start_with_tls_full", func(t *testing.T) {
 		t.Setenv("ENABLE_HTTPS", "true")
+		t.Setenv("ENABLE_PROFILE", "true")
 
 		h, err := Make()
 		assert.NoError(t, err)

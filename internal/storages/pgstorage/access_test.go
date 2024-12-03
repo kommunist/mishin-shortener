@@ -165,26 +165,53 @@ func TestPushBatch(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	t.Run("it_correct_select_data", func(t *testing.T) {
-		db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
-		if err != nil {
-			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-		}
-		defer db.Close()
+	exList := []struct {
+		name    string
+		storErr error
+		rows    *sqlmock.Rows
+	}{
+		{
+			name:    "it_correct_select_data",
+			storErr: nil,
+			rows:    sqlmock.NewRows([]string{"original", "deleted"}).AddRow("original", false),
+		},
+		{
+			name:    "it_return_any_error",
+			storErr: errors.New("ququ"),
+		},
+	}
+	for _, ex := range exList {
+		t.Run(ex.name, func(t *testing.T) {
+			db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+			if err != nil {
+				t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+			}
+			defer db.Close()
 
-		stor := Driver{driver: db}
+			stor := Driver{driver: db}
 
-		result := sqlmock.NewRows([]string{"original", "deleted"}).AddRow("original", false)
-		mock.ExpectQuery(
-			"SELECT original, deleted FROM short_urls where short = $1 LIMIT 1",
-		).WithArgs("short").WillReturnRows(result)
+			if ex.storErr != nil {
+				mock.ExpectQuery(
+					"SELECT original, deleted FROM short_urls where short = $1 LIMIT 1",
+				).WithArgs("short").WillReturnError(ex.storErr)
+			} else {
+				mock.ExpectQuery(
+					"SELECT original, deleted FROM short_urls where short = $1 LIMIT 1",
+				).WithArgs("short").WillReturnRows(ex.rows)
+			}
 
-		stor.Get(context.Background(), "short")
+			_, err = stor.Get(context.Background(), "short")
+			if ex.storErr != nil {
+				assert.EqualError(t, err, ex.storErr.Error())
+			}
 
-		if err := mock.ExpectationsWereMet(); err != nil {
-			t.Errorf("there were unfulfilled expectations: %s", err)
-		}
-	})
+			if err := mock.ExpectationsWereMet(); err != nil {
+				t.Errorf("there were unfulfilled expectations: %s", err)
+			}
+		})
+
+	}
+
 }
 
 func TestGetByUserID(t *testing.T) {
