@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"bytes"
+	"compress/gzip"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,21 +11,59 @@ import (
 )
 
 func testGzipHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Response"))
 }
 
 func TestGzip(t *testing.T) {
+	exList := []struct {
+		name                string
+		withCorrectCompress bool
+	}{
+		{
+			name:                "when_all_succee",
+			withCorrectCompress: true,
+		},
+		{
+			name:                "when_with_error",
+			withCorrectCompress: false,
+		},
+	}
+	for _, ex := range exList {
+		t.Run(ex.name, func(t *testing.T) {
 
-	nextHandler := http.HandlerFunc(testGzipHandler)
-	handlerToTest := Gzip(nextHandler)
+			nextHandler := http.HandlerFunc(testGzipHandler)
+			handlerToTest := Gzip(nextHandler)
 
-	request :=
-		httptest.NewRequest(http.MethodGet, "/any", nil)
+			var buf bytes.Buffer
 
-	w := httptest.NewRecorder()
-	handlerToTest.ServeHTTP(w, request)
+			if ex.withCorrectCompress {
+				g := gzip.NewWriter(&buf)
+				g.Write([]byte("qqq"))
 
-	res := w.Result()
-	defer res.Body.Close()
+			} else {
+				buf.Write([]byte("qqq"))
+			}
 
-	assert.Equal(t, http.StatusOK, res.StatusCode, "response status must be 200 with auth")
+			request :=
+				httptest.NewRequest(http.MethodGet, "/any", &buf)
+
+			request.Header.Set("Accept-Encoding", "gzip")
+			request.Header.Set("Content-Encoding", "gzip")
+
+			w := httptest.NewRecorder()
+			handlerToTest.ServeHTTP(w, request)
+
+			res := w.Result()
+			defer res.Body.Close()
+
+			if ex.withCorrectCompress {
+				assert.Equal(t, http.StatusOK, res.StatusCode, "response status must be 200")
+			} else {
+				assert.Equal(t, http.StatusInternalServerError, res.StatusCode, "response status must be 500")
+			}
+
+		})
+
+	}
+
 }

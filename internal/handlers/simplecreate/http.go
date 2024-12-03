@@ -4,7 +4,6 @@ import (
 	"io"
 	"log/slog"
 	"mishin-shortener/internal/errors/exist"
-	"mishin-shortener/internal/hasher"
 	"mishin-shortener/internal/secure"
 	"net/http"
 )
@@ -21,7 +20,6 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 	}
 
 	status := http.StatusCreated
-	hashed := hasher.GetMD5Hash(body)
 
 	var userID string
 	if r.Context().Value(secure.UserIDKey) == nil {
@@ -31,7 +29,7 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
 
-	err = h.storage.Push(r.Context(), hashed, string(body), userID)
+	hashed, err := h.Perform(r.Context(), body, userID)
 	if err != nil {
 		if _, ok := err.(*exist.ExistError); ok { // обрабатываем проблему, когда уже есть в базе
 			status = http.StatusConflict

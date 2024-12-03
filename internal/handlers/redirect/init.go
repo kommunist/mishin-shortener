@@ -2,6 +2,7 @@ package redirect
 
 import (
 	"context"
+	pb "mishin-shortener/proto"
 )
 
 // Интерфейс доступа к базе
@@ -12,6 +13,8 @@ type Getter interface {
 // Структура хендлера
 type Handler struct {
 	storage Getter
+
+	pb.UnimplementedGetServer
 }
 
 // Конструктор хендлера

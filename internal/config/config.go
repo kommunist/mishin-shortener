@@ -15,7 +15,9 @@ type MainConfig struct {
 	FileStoragePath string `json:"file_storage_path"`
 	DatabaseDSN     string `json:"database_dsn"`
 	EnableHTTPS     bool   `json:"enable_https"`
-	EnableProfile   bool
+	TrustedSubnet   string `json:"trusted_subnet"`
+
+	EnableProfile bool
 }
 
 // Создает структуру харнения с дефолтными значениями.
@@ -27,6 +29,7 @@ func MakeConfig() MainConfig {
 		DatabaseDSN:     "",
 		EnableHTTPS:     false,
 		EnableProfile:   false,
+		TrustedSubnet:   "0.0.0.0/32",
 	}
 
 	return config
@@ -62,16 +65,9 @@ func (c *MainConfig) getConfigFromJSON() error {
 	}
 
 	// открываем файл на чтение
-	file, err := os.Open(jsonConfigPath)
+	data, err := os.ReadFile(jsonConfigPath)
 	if err != nil {
-		slog.Error("Error when open config from json")
-		return err
-	}
-	defer file.Close()
-
-	_, err = file.Read(data)
-	if err != nil {
-		slog.Error("Error when read json file")
+		slog.Error("Error when read json")
 		return err
 	}
 
@@ -91,6 +87,7 @@ func (c *MainConfig) initFlags() {
 		flag.StringVar(&c.FileStoragePath, "f", c.FileStoragePath, "file path for file storage")
 		flag.StringVar(&c.DatabaseDSN, "d", c.DatabaseDSN, "database DSN")
 		flag.BoolVar(&c.EnableHTTPS, "s", c.EnableHTTPS, "database DSN")
+		flag.StringVar(&c.TrustedSubnet, "t", c.TrustedSubnet, "set trusted subnet")
 		flag.BoolVar(&c.EnableProfile, "prof", c.EnableProfile, "start profile server on localhost:6060")
 		slog.Info("flags inited")
 	}
@@ -110,6 +107,9 @@ func (c *MainConfig) parse() {
 	}
 	if e := os.Getenv("DATABASE_DSN"); e != "" {
 		c.DatabaseDSN = e
+	}
+	if e := os.Getenv("TRUSTED_SUBNET"); e != "" {
+		c.TrustedSubnet = e
 	}
 	if e := os.Getenv("ENABLE_HTTPS"); e != "" {
 		if e == "true" || e == "TRUE" {

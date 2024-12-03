@@ -20,8 +20,14 @@ type Storage struct {
 }
 
 // Функция создания хранилища
-func Make(filePath string) *Storage {
-	cache := *mapstorage.Make()
+func Make(filePath string) (*Storage, error) {
+	cachePoint, err := mapstorage.Make()
+	cache := *cachePoint
+
+	if err != nil {
+		slog.Error("Error when create cache", "err", err)
+		return nil, err
+	}
 
 	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0666)
 
@@ -34,10 +40,11 @@ func Make(filePath string) *Storage {
 		slog.Error("error when parse file", "err", err)
 		os.Exit(1)
 	}
+
 	for _, v := range items {
 		cache[v.ShortURL] = v.OriginalURL
 	}
 	slog.Info("readed n items", "n", len(cache))
 
-	return &Storage{cache: &cache, file: file}
+	return &Storage{cache: cachePoint, file: file}, nil
 }

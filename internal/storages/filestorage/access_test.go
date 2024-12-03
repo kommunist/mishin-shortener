@@ -45,7 +45,8 @@ func TestGet(t *testing.T) {
 			}
 			defer os.Remove(ex.fileName)
 
-			stor := Make(ex.fileName)
+			stor, err := Make(ex.fileName)
+			assert.NoError(t, err)
 			defer stor.Finish()
 
 			value, err := stor.Get(context.Background(), ex.short)
@@ -100,7 +101,9 @@ func TestPush(t *testing.T) {
 			}
 			defer os.Remove(ex.fileName)
 
-			stor := Make(ex.fileName)
+			stor, err := Make(ex.fileName)
+			assert.NoError(t, err)
+
 			defer stor.Finish()
 
 			if ex.pushError {
@@ -125,7 +128,8 @@ func TestPush(t *testing.T) {
 				stor.Finish()
 
 				// создали базу на том же файле
-				newStor := Make(ex.fileName)
+				newStor, err := Make(ex.fileName)
+				assert.NoError(t, err)
 				value, err = newStor.Get(context.Background(), ex.short)
 				assert.Equal(t, ex.original, value)
 				assert.NoError(t, err)
@@ -144,7 +148,8 @@ func TestPushBatch(t *testing.T) {
 		testData["vupsen"] = "pupsen"
 		testData["biba"] = "boba"
 
-		fs := Make(testFile.Name()) // создаем fs
+		fs, err := Make(testFile.Name()) // создаем fs
+		assert.NoError(t, err)
 		defer fs.Finish()
 		fs.PushBatch(context.Background(), &testData, "userID")
 

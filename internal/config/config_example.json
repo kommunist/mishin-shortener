@@ -1,0 +1,7 @@
+{
+    "server_address": "localhost:12345",
+    "base_url": "localhost:12345",
+    "file_storage_path": "/",
+    "database_dsn": "test_dsn",
+    "enable_https": true
+} 

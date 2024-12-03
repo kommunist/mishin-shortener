@@ -3,6 +3,7 @@ package middleware
 import (
 	"compress/gzip"
 	"io"
+	"log/slog"
 	"net/http"
 	"strings"
 )
@@ -95,6 +96,7 @@ func Gzip(h http.Handler) http.Handler {
 		if sendsGzip { // А если зашфирован, то вставляем gzip reader "между" хендлером и body
 			cr, err := newCompressReader(r.Body)
 			if err != nil {
+				slog.Error("Error when compress read", "err", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}

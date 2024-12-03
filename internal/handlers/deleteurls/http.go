@@ -4,21 +4,19 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
-	"mishin-shortener/internal/delasync"
 	"mishin-shortener/internal/secure"
 	"net/http"
 )
 
 // Обработчик запроса на удаление сокращенного URL.
 func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
-	u := r.Context().Value(secure.UserIDKey)
-	if u == nil {
+	var userID string
+	if r.Context().Value(secure.UserIDKey) == nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
+	} else {
+		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
-	userID := u.(string)
-
-	list := make([]string, 0)
 
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -28,6 +26,7 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	list := make([]string, 0)
 	err = json.Unmarshal(body, &list)
 	if err != nil {
 		slog.Error("Error while parsing json")
@@ -35,9 +34,7 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, v := range list {
-		h.DelChan <- delasync.DelPair{UserID: userID, Item: v}
-	}
+	h.Perform(r.Context(), list, userID)
 
 	w.WriteHeader(http.StatusAccepted)
 }

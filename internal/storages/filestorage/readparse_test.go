@@ -15,7 +15,7 @@ func TestReadAndParse(t *testing.T) {
 		testFile, _ := os.CreateTemp("", "pattern")
 		defer os.Remove(testFile.Name())
 
-		fs := Make(testFile.Name()) // создаем fs
+		fs, _ := Make(testFile.Name()) // создаем fs
 		defer fs.Finish()
 		fs.Push(context.Background(), "short0", "original0", "userID")
 		fs.Push(context.Background(), "short1", "original1", "userID")
@@ -35,7 +35,7 @@ func TestReadAndParse(t *testing.T) {
 		testFile, _ := os.CreateTemp("", "pattern")
 		defer os.Remove(testFile.Name())
 
-		fs := Make(testFile.Name()) // создаем fs
+		fs, _ := Make(testFile.Name()) // создаем fs
 		defer fs.Finish()
 
 		testFile.WriteString("aaa\n")

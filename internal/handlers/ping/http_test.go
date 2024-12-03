@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPingHandler(t *testing.T) {
+func TestCall(t *testing.T) {
 	exList := []struct {
 		name     string
 		returned error

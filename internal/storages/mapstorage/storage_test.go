@@ -2,6 +2,7 @@ package mapstorage
 
 import (
 	"context"
+	"mishin-shortener/internal/delasync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -49,5 +50,37 @@ func TestGet(t *testing.T) {
 		value, err := db.Get(context.Background(), "another_key")
 		assert.Equal(t, value, "")
 		assert.EqualError(t, err, "not found")
+	})
+}
+
+func TestGetByUserID(t *testing.T) {
+	db := Storage{}
+
+	t.Run("empty_test", func(t *testing.T) {
+		res, err := db.GetByUserID(context.Background(), "qq")
+		assert.Equal(t, map[string]string{}, res)
+		assert.NoError(t, err)
+
+	})
+}
+
+func TestDeleteByUserID(t *testing.T) {
+	db := Storage{}
+
+	t.Run("empty_test", func(t *testing.T) {
+		err := db.DeleteByUserID(context.Background(), []delasync.DelPair{})
+		assert.NoError(t, err)
+
+	})
+}
+
+func TestGetStats(t *testing.T) {
+	db := Storage{}
+
+	t.Run("empty_test", func(t *testing.T) {
+		users, urls, err := db.GetStats(context.Background())
+		assert.NoError(t, err)
+		assert.Equal(t, 0, users)
+		assert.Equal(t, 0, urls)
 	})
 }

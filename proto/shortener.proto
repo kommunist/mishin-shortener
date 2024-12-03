@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package grpc_shortener;
+
+option go_package = "internal/grpcShortener";
+
+service Ping { rpc Ping(PingRequest) returns(PingResponse); }
+service Create { rpc Create(CreateRequest) returns(CreateResponse); }
+service Stats { rpc GetStats(GetStatsRequest) returns(GetStatsResponse); }
+service CreateBatch { rpc CreateBatch(CreateBatchRequest) returns(CreateBatchResponse); }
+service Get { rpc Get(GetRequest) returns(GetResponse); }
+service UserUrls{ rpc UserUrls(UserUrlsRequest) returns(UserUrlsResponse); }
+service DeleteUrls{ rpc DeleteUrls(DeleteUrlsRequest) returns(DeleteUrlsResponse); }
+
+// GetStats
+message GetStatsRequest {}
+message GetStatsResponse {
+    uint32 count_urls = 1;
+    uint32 count_users = 2;
+}
+
+// Ping
+message PingRequest {}
+message PingResponse {}
+
+//Create
+message CreateRequest{
+    string original = 1;
+}
+message CreateResponse{
+    string short = 1;
+}
+
+//CreateBatch
+
+message CreateBatchRequest{
+    repeated CreateBatchRequestItem list = 1;
+}
+message CreateBatchRequestItem {
+    string correlation_id = 1;
+    string original_url = 2;
+}
+
+message CreateBatchResponse{
+    repeated CreateBatchResponseItem list = 1;
+}
+message CreateBatchResponseItem {
+    string correlation_id = 1;
+    string short_url = 2;
+}
+
+// Get
+message GetRequest {
+    string short = 1;
+}
+message GetResponse {
+    string original = 1;
+}
+
+
+//UserUrls
+message UserUrlsRequest{}
+message UserUrlsResponseItem{
+    string short = 1;
+    string original = 2;
+}
+message UserUrlsResponse {
+    repeated UserUrlsResponseItem list = 1;
+}
+
+//DeleteUrls
+message DeleteUrlsRequestItem {
+    string short = 1;
+}
+message DeleteUrlsRequest {
+    repeated DeleteUrlsRequestItem list = 1;
+}
+message DeleteUrlsResponse {}
