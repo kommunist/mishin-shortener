@@ -2,6 +2,7 @@ package grpcserver
 
 import (
 	"log/slog"
+	"mishin-shortener/internal/api/grpc/interceptors"
 	"mishin-shortener/internal/config"
 	"mishin-shortener/internal/delasync"
 	"mishin-shortener/internal/handlers/createjson"
@@ -73,7 +74,13 @@ func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelP
 	}
 	h.listener = listener
 
-	h.server = grpc.NewServer(grpc.UnaryInterceptor(logInterceptor))
+	h.server = grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			interceptors.Log,
+			interceptors.AuthCheck,
+			interceptors.AuthSet,
+		),
+	)
 
 	pb.RegisterPingServer(h.server, &h.ping)
 	pb.RegisterCreateServer(h.server, &h.simpleCreate)

@@ -3,7 +3,7 @@ package app
 import (
 	"log"
 	"log/slog"
-	"mishin-shortener/internal/api/grpcserver"
+	"mishin-shortener/internal/api/grpc/grpcserver"
 	"mishin-shortener/internal/api/httpserver"
 	"mishin-shortener/internal/config"
 	"mishin-shortener/internal/delasync"
