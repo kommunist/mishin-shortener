@@ -65,16 +65,9 @@ func (c *MainConfig) getConfigFromJSON() error {
 	}
 
 	// открываем файл на чтение
-	file, err := os.Open(jsonConfigPath)
+	data, err := os.ReadFile(jsonConfigPath)
 	if err != nil {
-		slog.Error("Error when open config from json")
-		return err
-	}
-	defer file.Close()
-
-	_, err = file.Read(data)
-	if err != nil {
-		slog.Error("Error when read json file")
+		slog.Error("Error when read json")
 		return err
 	}
 

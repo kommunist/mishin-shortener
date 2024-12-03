@@ -22,4 +22,17 @@ func TestCall(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	t.Run("happy_path_on_start_with_tls_full", func(t *testing.T) {
+		t.Setenv("ENABLE_HTTPS", "true")
+
+		h, err := Make()
+		assert.NoError(t, err)
+		go func() {
+			time.Sleep(5 * time.Second)
+			h.stop()
+		}()
+		err = h.Call()
+		assert.NoError(t, err)
+	})
+
 }

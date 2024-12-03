@@ -15,6 +15,7 @@ func TestInitConfig(t *testing.T) {
 		t.Setenv("TRUSTED_SUBNET", "0.0.0.0/32")
 		t.Setenv("ENABLE_HTTPS", "true")
 		t.Setenv("ENABLE_PROFILE", "true")
+		t.Setenv("CONFIG", "config_example.json")
 
 		c := MakeConfig()
 		c.InitConfig()
