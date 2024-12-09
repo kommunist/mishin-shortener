@@ -27,16 +27,16 @@ func AuthCheck(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
 		}
 	}
 
-	if authToken != "" {
-		userID, err := secure.Decrypt(authToken)
-		if err != nil || userID == "" { // и если не удалось расшифровать
-			return nil, status.Error(codes.Unauthenticated, "check auth failed")
-		} else { // единственный положительный сценарий
-			newCtx := context.WithValue(ctx, secure.UserIDKey, userID)
-			return handler(newCtx, req)
-		}
-	} else {
+	if authToken == "" {
 		return nil, status.Error(codes.Unauthenticated, "check auth failed")
+	}
+
+	userID, err := secure.Decrypt(authToken)
+	if err != nil || userID == "" { // и если не удалось расшифровать
+		return nil, status.Error(codes.Unauthenticated, "check auth failed")
+	} else { // единственный положительный сценарий
+		newCtx := context.WithValue(ctx, secure.UserIDKey, userID)
+		return handler(newCtx, req)
 	}
 
 }

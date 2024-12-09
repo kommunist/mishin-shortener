@@ -27,7 +27,7 @@ func (a *HTTPHandler) start() error {
 }
 
 func (a *HTTPHandler) startWithTLS() error {
-	err := a.Server.ListenAndServeTLS("/etc/ssl/self_created/MyCertificate.crt", "/etc/ssl/self_created/MyKey.key")
+	err := a.Server.ListenAndServeTLS(a.setting.CertPath, a.setting.CertKeyPath)
 	if err != nil && err != http.ErrServerClosed {
 		slog.Error("Server failed to start with tls", "err", err)
 		return err

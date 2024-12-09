@@ -9,13 +9,11 @@ import (
 
 // Обработчик, возвращающий все сокращенные урлы пользователя.
 func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
-	var userID string
 	if r.Context().Value(secure.UserIDKey) == nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
-	} else {
-		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
+	userID := r.Context().Value(secure.UserIDKey).(string)
 
 	data, err := h.Perform(r.Context(), userID)
 	if err != nil {

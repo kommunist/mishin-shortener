@@ -49,7 +49,7 @@ type GRPCHandler struct {
 }
 
 // Конструктор структуры пакета GRPC
-func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelPair) *GRPCHandler {
+func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelPair) (*GRPCHandler, error) {
 	h := GRPCHandler{
 		setting:         setting,
 		userUrls:        userurls.Make(setting, storage),
@@ -64,13 +64,14 @@ func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelP
 	stats, err := stats.Make(setting, storage)
 	if err != nil {
 		slog.Error("Error when make stats handler", "err", err)
-		panic(err) // сделать вынос ошибки
+		return &GRPCHandler{}, err
 	}
 	h.stats = stats
 
 	listener, err := net.Listen("tcp", ":3200")
 	if err != nil {
-		slog.Error("Error when listen net", "err", err) // сделать возврат err
+		slog.Error("Error when listen net", "err", err)
+		return &GRPCHandler{}, err
 	}
 	h.listener = listener
 
@@ -90,5 +91,5 @@ func Make(setting config.MainConfig, storage CommonStorage, c chan delasync.DelP
 	pb.RegisterUserUrlsServer(h.server, &h.userUrls)
 	pb.RegisterDeleteUrlsServer(h.server, &h.deleteURLs)
 
-	return &h
+	return &h, nil
 }

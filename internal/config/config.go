@@ -16,6 +16,8 @@ type MainConfig struct {
 	DatabaseDSN     string `json:"database_dsn"`
 	EnableHTTPS     bool   `json:"enable_https"`
 	TrustedSubnet   string `json:"trusted_subnet"`
+	CertPath        string `json:"cert_path"`
+	CertKeyPath     string `json:"cert_key_path"`
 
 	EnableProfile bool
 }
@@ -30,6 +32,8 @@ func MakeConfig() MainConfig {
 		EnableHTTPS:     false,
 		EnableProfile:   false,
 		TrustedSubnet:   "0.0.0.0/32",
+		CertPath:        "certs/MyCertificate.crt",
+		CertKeyPath:     "certs/MyKey.key",
 	}
 
 	return config
@@ -87,6 +91,8 @@ func (c *MainConfig) initFlags() {
 		flag.StringVar(&c.FileStoragePath, "f", c.FileStoragePath, "file path for file storage")
 		flag.StringVar(&c.DatabaseDSN, "d", c.DatabaseDSN, "database DSN")
 		flag.BoolVar(&c.EnableHTTPS, "s", c.EnableHTTPS, "database DSN")
+		flag.StringVar(&c.CertPath, "cert_path", c.CertPath, "path to cert")
+		flag.StringVar(&c.CertKeyPath, "cert_key_path", c.CertKeyPath, "path to key of cert")
 		flag.StringVar(&c.TrustedSubnet, "t", c.TrustedSubnet, "set trusted subnet")
 		flag.BoolVar(&c.EnableProfile, "prof", c.EnableProfile, "start profile server on localhost:6060")
 		slog.Info("flags inited")
@@ -120,5 +126,11 @@ func (c *MainConfig) parse() {
 		if e == "true" || e == "TRUE" {
 			c.EnableProfile = true
 		}
+	}
+	if e := os.Getenv("CERT_PATH"); e != "" {
+		c.CertPath = e
+	}
+	if e := os.Getenv("CERT_KEY_PATH"); e != "" {
+		c.CertKeyPath = e
 	}
 }

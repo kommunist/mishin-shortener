@@ -21,13 +21,11 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 
 	status := http.StatusCreated
 
-	var userID string
 	if r.Context().Value(secure.UserIDKey) == nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
-	} else {
-		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
+	userID := r.Context().Value(secure.UserIDKey).(string)
 
 	hashed, err := h.Perform(r.Context(), body, userID)
 	if err != nil {

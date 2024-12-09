@@ -71,7 +71,11 @@ func Make() (item, error) {
 	del := delasync.Make(storage) // создали асинхронный обработчик удалений
 
 	h := httpserver.Make(c, storage, del.DelChan)
-	g := grpcserver.Make(c, storage, del.DelChan)
+	g, err := grpcserver.Make(c, storage, del.DelChan)
+	if err != nil {
+		slog.Error("Error when mage grpcserver", "err", err)
+		return item{}, err
+	}
 
 	return item{HTTPAPI: h, GRPCAPI: g, deleter: del, storage: storage, setting: c}, nil
 }
