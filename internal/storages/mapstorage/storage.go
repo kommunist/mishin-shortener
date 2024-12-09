@@ -12,8 +12,8 @@ import (
 type Storage map[string]string
 
 // Создает структуру хранения данных.
-func Make() *Storage {
-	return &Storage{}
+func Make() (*Storage, error) {
+	return &Storage{}, nil
 }
 
 // Сохранение в базу новой пары сокращенный/полный
@@ -48,12 +48,17 @@ func (db *Storage) Get(ctx context.Context, short string) (string, error) {
 
 // Получение из базы списка сокращенных ссылок для пользователя(не реализовано)
 func (db *Storage) GetByUserID(ctx context.Context, userID string) (map[string]string, error) {
-	return nil, nil
+	return map[string]string{}, nil
 }
 
 // Удаление из базы базы сокращенного URL для пользователя(не реализовано)
 func (db *Storage) DeleteByUserID(ctx context.Context, list []delasync.DelPair) error {
 	return nil
+}
+
+// Получение статистики о кол-ве пользователей и урлов в базе
+func (db *Storage) GetStats(ctx context.Context) (int, int, error) {
+	return 0, 0, nil
 }
 
 // Восстановление коннектов к базе(не реализовано)

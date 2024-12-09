@@ -22,6 +22,12 @@ type ResponseItem struct {
 
 // Обработчик запроса на сокращение в формате JSON.
 func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
+	if r.Context().Value(secure.UserIDKey) == nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	userID := r.Context().Value(secure.UserIDKey).(string)
+
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -38,14 +44,6 @@ func (h *Handler) Call(w http.ResponseWriter, r *http.Request) {
 		slog.Error("Parsing Error", "err", err)
 		http.Error(w, "Parsing Error", http.StatusInternalServerError)
 		return
-	}
-
-	var userID string
-	if r.Context().Value(secure.UserIDKey) == nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	} else {
-		userID = r.Context().Value(secure.UserIDKey).(string)
 	}
 
 	hashed := hasher.GetMD5Hash([]byte(input.URL))

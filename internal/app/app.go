@@ -3,7 +3,8 @@ package app
 import (
 	"log"
 	"log/slog"
-	"mishin-shortener/internal/api"
+	"mishin-shortener/internal/api/grpc/grpcserver"
+	"mishin-shortener/internal/api/httpserver"
 	"mishin-shortener/internal/config"
 	"mishin-shortener/internal/delasync"
 	"mishin-shortener/internal/storages/filestorage"
@@ -22,25 +23,39 @@ type finisher interface {
 type item struct {
 	storage finisher
 	setting config.MainConfig
-	API     *api.ShortanerAPI
+	HTTPAPI *httpserver.HTTPHandler
+	GRPCAPI *grpcserver.GRPCHandler
+
 	deleter delasync.Handler
 }
 
 type commonStorage interface {
-	api.CommonStorage // методы для api
-	delasync.Remover  // методы для worker
-	finisher          // методы для закрытия
+	httpserver.CommonStorage // методы для httpApi
+	delasync.Remover         // методы для worker
+	finisher                 // методы для закрытия
 }
 
 func initStorage(c config.MainConfig) commonStorage {
 	if c.DatabaseDSN != "" {
-		return pgstorage.Make(c)
+		stor, err := pgstorage.Make(c)
+		if err != nil {
+			os.Exit(1)
+		}
+		return stor
 	}
 	if c.FileStoragePath != "" {
-		return filestorage.Make(c.FileStoragePath)
+		stor, err := filestorage.Make(c.FileStoragePath)
+		if err != nil {
+			os.Exit(1)
+		}
+		return stor
 	}
 
-	return mapstorage.Make()
+	stor, err := mapstorage.Make()
+	if err != nil {
+		os.Exit(1)
+	}
+	return stor
 }
 
 // Конструктор объекта item
@@ -55,9 +70,14 @@ func Make() (item, error) {
 	storage := initStorage(c)     // создали хранилище
 	del := delasync.Make(storage) // создали асинхронный обработчик удалений
 
-	a := api.Make(c, storage, del.DelChan)
+	h := httpserver.Make(c, storage, del.DelChan)
+	g, err := grpcserver.Make(c, storage, del.DelChan)
+	if err != nil {
+		slog.Error("Error when mage grpcserver", "err", err)
+		return item{}, err
+	}
 
-	return item{API: a, deleter: del, storage: storage, setting: c}, nil
+	return item{HTTPAPI: h, GRPCAPI: g, deleter: del, storage: storage, setting: c}, nil
 }
 
 // Основной метод объекта item
@@ -70,11 +90,16 @@ func (i *item) Call() error {
 	i.listenInterrupt()
 	i.deleter.InitWorker()
 
-	err := i.API.Call()
+	go func() {
+		i.GRPCAPI.Start()
+	}()
+
+	err := i.HTTPAPI.Call()
 	if err != nil {
 		slog.Error("Error from api component", "err", err)
 		return err
 	}
+
 	return nil
 }
 
@@ -87,15 +112,21 @@ func (i *item) listenInterrupt() { // регистрируем канал для
 func (i *item) waitInterrupt(sigint chan os.Signal) {
 	<-sigint // ждем сигнал прeрывания
 
+	i.stop()
+
+	close(sigint)
+
+}
+
+func (i *item) stop() {
 	i.deleter.Stop()
-	i.API.Stop()
+	i.HTTPAPI.Stop()
+	i.GRPCAPI.Stop()
 
 	err := i.storage.Finish()
 	if err != nil {
 		slog.Error("Error when winish storage", "err", err)
 	}
-
-	close(sigint)
 }
 
 func (i *item) startProfileServer() {

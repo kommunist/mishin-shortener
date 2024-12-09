@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateURLByJSONBatch(t *testing.T) {
+func TestCall(t *testing.T) {
 	exList := []struct {
 		name          string
 		inputJSON     []byte
@@ -23,13 +23,13 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		userID        string
 		status        int
 		checkBody     bool
-		responseItems []ResponseBatchItem
+		responseItems []responseBatchItem
 		storTimes     int
 	}{
 		{
 			name: "Start_POST_to_create_record_in_storage",
 			inputJSON: func() []byte {
-				data, _ := json.Marshal([]RequestBatchItem{
+				data, _ := json.Marshal([]requestBatchItem{
 					{CorrelationID: "123", OriginalURL: "biba"},
 					{CorrelationID: "456", OriginalURL: "boba"},
 				})
@@ -39,7 +39,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 			userID:    "qq",
 			status:    http.StatusCreated,
 			checkBody: true,
-			responseItems: []ResponseBatchItem{
+			responseItems: []responseBatchItem{
 				{CorrelationID: "123", ShortURL: "http://localhost:8080/931691969b142b3a0f11a03e36fcc3b7"},
 				{CorrelationID: "456", ShortURL: "http://localhost:8080/2cce0ec300cfe8dd3024939db0448893"},
 			},
@@ -48,7 +48,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 		{
 			name: "Start_POST_to_create_record_in_storage_without_user_in_context",
 			inputJSON: func() []byte {
-				data, _ := json.Marshal([]RequestBatchItem{
+				data, _ := json.Marshal([]requestBatchItem{
 					{CorrelationID: "123", OriginalURL: "biba"},
 					{CorrelationID: "456", OriginalURL: "boba"},
 				})
@@ -109,7 +109,7 @@ func TestCreateURLByJSONBatch(t *testing.T) {
 
 			if ex.checkBody {
 				// проверим содержимое ответа
-				outputData := make([]ResponseBatchItem, 0, 2)
+				outputData := make([]responseBatchItem, 0, 2)
 
 				resBody, _ := io.ReadAll(res.Body)
 				json.Unmarshal(resBody, &outputData)
@@ -138,7 +138,7 @@ func BenchmarkCreateURLByJSONBatch(b *testing.B) {
 		stor := NewMockPusher(ctrl)
 		h := Make(c, stor)
 
-		inputData := []RequestBatchItem{
+		inputData := []requestBatchItem{
 			{CorrelationID: "123", OriginalURL: "biba"},
 			{CorrelationID: "456", OriginalURL: "boba"},
 		}

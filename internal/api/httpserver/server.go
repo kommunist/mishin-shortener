@@ -1,4 +1,4 @@
-package api
+package httpserver
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 )
 
 // Основной метод пакета API
-func (a *ShortanerAPI) Call() error {
+func (a *HTTPHandler) Call() error {
 	slog.Info("server started", "URL", a.setting.BaseServerURL)
 
 	if a.setting.EnableHTTPS {
@@ -17,7 +17,7 @@ func (a *ShortanerAPI) Call() error {
 	}
 }
 
-func (a *ShortanerAPI) start() error {
+func (a *HTTPHandler) start() error {
 	err := a.Server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		slog.Error("Server failed to start", "err", err)
@@ -26,9 +26,8 @@ func (a *ShortanerAPI) start() error {
 	return nil
 }
 
-func (a *ShortanerAPI) startWithTLS() error {
-
-	err := a.Server.ListenAndServeTLS("certs/MyCertificate.crt", "certs/MyKey.key")
+func (a *HTTPHandler) startWithTLS() error {
+	err := a.Server.ListenAndServeTLS(a.setting.CertPath, a.setting.CertKeyPath)
 	if err != nil && err != http.ErrServerClosed {
 		slog.Error("Server failed to start with tls", "err", err)
 		return err
@@ -37,7 +36,7 @@ func (a *ShortanerAPI) startWithTLS() error {
 }
 
 // Функция, останавливающая сервер
-func (a *ShortanerAPI) Stop() {
+func (a *HTTPHandler) Stop() {
 	err := a.Server.Shutdown(context.Background())
 	if err != nil {
 		slog.Error("Error when shutdown server", "err", err)

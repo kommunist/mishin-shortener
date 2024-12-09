@@ -1,4 +1,4 @@
-package api
+package httpserver
 
 import (
 	middleware "mishin-shortener/internal/midleware"
@@ -8,7 +8,7 @@ import (
 	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 )
 
-func (a *ShortanerAPI) initRouter() *chi.Mux {
+func (a *HTTPHandler) initRouter() *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(chiMiddleware.Timeout(60 * time.Second))
